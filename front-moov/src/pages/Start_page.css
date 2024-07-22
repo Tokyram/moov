@@ -1,11 +1,24 @@
-.splash-content {
+.splash-page {
     display: flex;
-    /* flex-direction: column; */
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
     width: 100%;
-    background-color: #f8f8f8;
+    background-color: #E8E5DE;
+    opacity: 1;
+    transition: opacity 1s ease-out;
+  }
+
+  .fade-out {
+    opacity: 0;
+  }
+  
+  .splash-content {
+    height: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
   .logo-container {
@@ -13,24 +26,26 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
     img{
-        width: 30%;
+        width: 80%;
         height: auto;
     }
   }
-/*   
-  .logo {
-    width: 150px;
-    height: auto;
-  } */
+
   
   .footer-text {
+    font-size: 12px;
+    height: 10%;
     text-align: center;
-    margin-bottom: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: #e74c3c; /* Ajustez la couleur selon vos besoins */
-    font-size: 16px; /* Ajustez la taille du texte selon vos besoins */
+
+    label{
+        color: #646464;
+    }
   }
   
-  .splash-page{
-    background-color: #f8f8f8;
-  }
+ 

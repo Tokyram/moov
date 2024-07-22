@@ -1,30 +1,33 @@
-import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { IonContent, IonPage } from '@ionic/react';
+import React, { useEffect, useState } from 'react';
+import { useIonRouter } from '@ionic/react';
 import './Start_page.css';
 
 const Start_page: React.FC = () => {
-  const history = useHistory();
+  const router = useIonRouter();
+  const [fade, setFade] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      history.push('/home'); // Remplacez '/home' par la route de votre page principale
-    }, 3000); // Délai en millisecondes avant la redirection
+      setFade(true); // Déclenche la transition de fondu
+      setTimeout(() => {
+        router.push('/home'); // Redirection après la fin de la transition
+      }, 1000); // Durée de la transition (doit correspondre à celle définie en CSS)
+    }, 3000); // Délai avant de commencer la transition
 
     return () => clearTimeout(timer);
-  }, [history]);
+  }, [router]);
 
   return (
-    <IonPage className="splash-page">
-      <IonContent className="splash-content">
+    <div className={`splash-page ${fade ? 'fade-out' : ''}`}>
+      <div className="splash-content">
         <div className="logo-container">
-          <img src="../../public/logo.png" alt="Logo" className="logo" />
+          <img src="../../public/logo.png" alt="Logo" className="logo" /> {/* Assurez-vous que ce chemin est correct */}
         </div>
-        <div className="footer-text">
-          <p>Moov<br/>from</p>
-        </div>
-      </IonContent>
-    </IonPage>
+      </div>
+      <div className="footer-text">
+        <p>Moov <br /> <label>from wylog</label></p>
+      </div>
+    </div>
   );
 };
 
