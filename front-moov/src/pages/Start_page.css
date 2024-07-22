@@ -1,0 +1,36 @@
+.splash-content {
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: #f8f8f8;
+  }
+  
+  .logo-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img{
+        width: 30%;
+        height: auto;
+    }
+  }
+/*   
+  .logo {
+    width: 150px;
+    height: auto;
+  } */
+  
+  .footer-text {
+    text-align: center;
+    margin-bottom: 20%;
+    color: #e74c3c; /* Ajustez la couleur selon vos besoins */
+    font-size: 16px; /* Ajustez la taille du texte selon vos besoins */
+  }
+  
+  .splash-page{
+    background-color: #f8f8f8;
+  }
