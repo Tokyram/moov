@@ -21,18 +21,21 @@
     align-items: center;
   }
   
-  .logo-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+ 
 
-    img{
-        width: 80%;
+    .logo{
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* width: 20%; */
         height: auto;
+        svg{
+          width: 45%;
+          /* padding: 1%; */
+          color: #E8E5DE;
+        }
     }
-  }
-
   
   .footer-text {
     font-size: 12px;
@@ -48,4 +51,62 @@
     }
   }
   
- 
+  @media (prefers-reduced-motion) {
+    path {
+      animation: none !important;
+      stroke-dasharray: unset !important;
+    }
+  }
+  
+  @keyframes fillChange {
+    0% {
+      fill: #E8E5DE; /* Couleur initiale */
+    }
+    100% {
+      fill: #e74c3c; /* Couleur finale après 5 secondes */
+    }
+  }
+  
+  .path {
+    animation: fillChange 1s ease-in 1s ease-in; /* Animation de 0s mais avec un délai de 5s */
+  }
+  
+  
+  @keyframes grow {
+    0% {
+      stroke-dashoffset: 1px;
+      stroke-dasharray: 0 350px;
+      opacity: 0;
+      stroke: #f15800;
+    }
+    10% {
+      opacity: 1;
+      stroke: #e74c3c;
+
+    }
+    40% {
+      stroke-dasharray: 350px 0;
+      stroke: #f18900;
+    }
+    /* Moving back */
+    85% {
+      stroke-dasharray: 350px 0;
+    stroke: #e74c3c;
+
+    }
+    95%,
+    to {
+      stroke-dasharray: 0 350px;
+    }
+  }
+  
+  path {
+    stroke-dashoffset: 1px;
+    stroke-dasharray: 350px 0;
+    animation: grow 6s ease forwards infinite;
+    transform-origin: center;
+    stroke: #e74c3c;
+    stroke-width: 2.5px;
+    animation-delay: 0s; /* Animation du stroke commence immédiatement */
+  }
+  
