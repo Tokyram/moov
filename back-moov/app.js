@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const indexRouter = require('./routes/index');
+const utilisateurRouter = require('./routes/utilisateurRoute');
 
 const app = express();
 const port = 3000;
@@ -16,6 +17,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 app.use('/', indexRouter);
+
+// Utilisateurs routes
+app.use('/api/users', utilisateurRouter);
 
 // Gestion des erreurs 404
 app.use((req, res, next) => {
