@@ -16,6 +16,8 @@ import Start_page from './pages/Start_page';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { useEffect } from 'react';
 import './splash.css';
+import Inscription from './pages/Inscription';
+import Login_code from './pages/Login_code';
 setupIonicReact();
 
 const App: React.FC = () => {
@@ -37,6 +39,8 @@ const App: React.FC = () => {
         <IonRouterOutlet>
           <Route path="/" component={Start_page} exact={true} />
           <Route path="/home" component={Home} exact={true} />
+          <Route path="/inscription" component={Inscription} exact={true} />
+          <Route path="/login_code" component={Login_code} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

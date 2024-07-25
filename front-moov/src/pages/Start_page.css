@@ -109,4 +109,8 @@
     stroke-width: 2.5px;
     animation-delay: 0s; /* Animation du stroke commence immédiatement */
   }
+
+  path .ico{
+    stroke-width: 1;
+  }
   
