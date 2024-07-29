@@ -1,6 +1,8 @@
 const db = require('../db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const VerificationCode = require('../models/verificationCode');
+const SMSService = require('../services/smsService');
 
 class Utilisateur {
   constructor(id, nom, prenom, telephone, mail, mdp, adresse, photo, role, date_inscription, est_banni = false, date_banni = null) {
@@ -37,6 +39,15 @@ class Utilisateur {
     return null;
   }
 
+  static async findById(id) {
+    const result = await db.query('SELECT * FROM utilisateur WHERE id = $1', [id]);
+    if (result.rows.length > 0) {
+      const { id, nom, prenom, telephone, mail, mdp, adresse, photo, role, date_inscription, est_banni, date_banni } = result.rows[0];
+      return new Utilisateur(id, nom, prenom, telephone, mail, mdp, adresse, photo, role, date_inscription, est_banni, date_banni);
+    }
+    return null;
+  }
+
   async verifyPassword(password) {
     return await bcrypt.compare(password, this.mdp);
   }
@@ -63,10 +74,31 @@ class Utilisateur {
   static async authenticate(username, password) {
     const user = await Utilisateur.findByPhone(username);
     if (user && await user.verifyPassword(password)) {
-      const token = user.generateToken();
-      return { success: true, user, token };
+      const verifCode = await VerificationCode.create(user.id);
+      const smsSent = await SMSService.sendVerificationCode(user.telephone, verifCode.code);
+      console.log("userID", user.id);
+      if (smsSent) {
+        return { success: true, message: 'Code de vérification envoyé', userId: user.id };
+      } else {
+        return { success: false, message: 'Erreur lors de l\'envoi du SMS' };
+      }
     }
     return { success: false, message: 'Nom d\'utilisateur ou mot de passe incorrect' };
+  }
+
+  static async verifLogin(utilisateur_id, code) {
+    const verificationCode = await VerificationCode.findValidCode(utilisateur_id, code);
+    if(verificationCode) {
+      const user = await Utilisateur.findById(utilisateur_id);
+      if(user) {
+        const token = user.generateToken();
+        await verificationCode.delete();
+        return { success: true, user, token };
+      } else {
+        return { success: false, message: 'Utilisateur non trouvé' };
+      }
+    }
+    return { success: false, message: 'Code de vérification incorrect  ou expiré' };
   }
 
   toJSON() {

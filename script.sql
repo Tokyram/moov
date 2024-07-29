@@ -12,3 +12,10 @@ CREATE TABLE utilisateur (
   est_banni BOOLEAN,
   date_banni TIMESTAMP WITH TIME ZONE
 );
+
+CREATE TABLE verification_code (
+  id SERIAL PRIMARY KEY,
+  utilisateur_id INT,
+  code VARCHAR(255) NOT NULL,
+  expired_at TIMESTAMP
+);

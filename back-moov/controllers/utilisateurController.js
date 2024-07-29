@@ -17,12 +17,26 @@ class UtilisateurController {
     try {
       const result = await Utilisateur.authenticate(username, password);
       if (result.success) {
-        res.json({ user: result.user.toJSON(), token: result.token });
+        res.json({ user: result.userId, message: result.message });
       } else {
         res.status(401).json({ message: result.message });
       }
     } catch (error) {
       res.status(500).json({ message: 'Erreur lors de la connexion', error: error.message });
+    }
+  }
+
+  static async verificationLogin(req, res) {
+    const { userId, code } = req.body;
+    try {
+      const result = await Utilisateur.verifLogin(userId, code);
+      if (result.success) {
+        res.json({ user: result.user.toJSON(), token: result.token });
+      } else {
+        res.status(401).json({ message: result.message });
+      }
+    } catch (error) {
+      res.status(500).json({ message: 'Erreur lors de la vérification du code', error: error.message });
     }
   }
 
