@@ -2,7 +2,7 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 
 }
-.confirmation-button{
+.confirmation-button2{
     background-color: #EE3324;
     width: 100%;
     padding: 15px;
@@ -12,7 +12,7 @@
     /* margin-top: 10%; */
   }
 
-  .confirmation-bar {
+  .confirmation-bar2 {
   
     width: 100%;
     height: 100%;
@@ -24,9 +24,47 @@
     overflow: auto;
     
   }
-  .confirmation-item {
+  .confirmation-item2 {
     width: 95%;
     
+  }
+
+  @keyframes grow {
+    0% {
+      stroke-dashoffset: 1px;
+      stroke-dasharray: 0 350px;
+      opacity: 0;
+      stroke: #f15800;
+    }
+    10% {
+      opacity: 1;
+      stroke: #e74c3c;
+
+    }
+    40% {
+      stroke-dasharray: 350px 0;
+      stroke: #f18900;
+    }
+    /* Moving back */
+    85% {
+      stroke-dasharray: 350px 0;
+    stroke: #e74c3c;
+
+    }
+    95%,
+    to {
+      stroke-dasharray: 0 350px;
+    }
+  }
+  
+  .logo-login path {
+    stroke-dashoffset: 1px;
+    stroke-dasharray: 350px 0;
+    animation: grow 6s ease forwards infinite;
+    transform-origin: center;
+    stroke: #e74c3c;
+    stroke-width: 2.5px;
+    animation-delay: 0s; /* Animation du stroke commence immédiatement */
   }
 
 .login{

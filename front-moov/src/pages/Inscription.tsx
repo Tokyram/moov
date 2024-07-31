@@ -9,7 +9,7 @@ const Inscription: React.FC = () => {
       
 
         
-        <div className="confirmation-bar">
+        <div className="confirmation-bar2">
             <div className="login">
                 <div className="logo-login">
                 {/* <img src="assets/logo.png" alt="Logo" className="logo" /> */}
@@ -100,7 +100,7 @@ const Inscription: React.FC = () => {
                     </div>
                 </div>
                 
-                <button type='submit' className="confirmation-button">S'inscrire</button>
+                <button type='submit' className="confirmation-button2">S'inscrire</button>
             </form>
 
 

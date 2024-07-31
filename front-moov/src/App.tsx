@@ -18,6 +18,8 @@ import { useEffect } from 'react';
 import './splash.css';
 import Inscription from './pages/Inscription';
 import Login_code from './pages/Login_code';
+import MapComponent from './pages/MapComponent';
+
 setupIonicReact();
 
 const App: React.FC = () => {
@@ -41,6 +43,7 @@ const App: React.FC = () => {
           <Route path="/home" component={Home} exact={true} />
           <Route path="/inscription" component={Inscription} exact={true} />
           <Route path="/login_code" component={Login_code} exact={true} />
+          <Route path="/map" component={MapComponent} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

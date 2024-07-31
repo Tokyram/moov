@@ -24,7 +24,7 @@
  
 
     .logo{
-        flex: 1;
+        /* flex: 1; */
         display: flex;
         justify-content: center;
         align-items: center;
@@ -100,7 +100,7 @@
     }
   }
   
-  path {
+  .logo path {
     stroke-dashoffset: 1px;
     stroke-dasharray: 350px 0;
     animation: grow 6s ease forwards infinite;
@@ -110,7 +110,4 @@
     animation-delay: 0s; /* Animation du stroke commence immédiatement */
   }
 
-  path .ico{
-    stroke-width: 1;
-  }
   

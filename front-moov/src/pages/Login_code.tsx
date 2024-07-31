@@ -9,7 +9,7 @@ const Login_code: React.FC = () => {
       
 
         
-        <div className="confirmation-bar">
+        <div className="confirmation-bar2">
             <div className="login">
                 <div className="logo-login">
                 {/* <img src="assets/logo.png" alt="Logo" className="logo" /> */}
@@ -43,7 +43,7 @@ const Login_code: React.FC = () => {
                     </div>
                 </div>
                 
-                <button type='submit' className="confirmation-button">Envoyer</button>
+                <button type='submit' className="confirmation-button2">Envoyer</button>
             </form>
 
 

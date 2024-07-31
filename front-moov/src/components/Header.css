@@ -1,0 +1,235 @@
+/* Header.css */
+
+/* Styles généraux pour le header */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #e8e5de; /* Couleur de fond du header */
+    color: #181818; /* Couleur du texte */
+    z-index: 1002;
+    
+  }
+
+  .header .logo {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+  .header .logo.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .header .logo img {
+    width: 40px; /* Ajustez la taille de votre logo */
+  }
+  
+  .header .title {
+    font-size: 1.2rem;
+    font-weight: bolder; /* Taille du titre */
+  }
+  
+  .header .ico {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 20px;
+  }
+  
+  .header .ico .notification {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Menu burger */
+   .menu-burger {
+    display: none; /* Par défaut, le menu burger est caché */
+    border-radius: 50px;
+    z-index: 1005;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+
+  .menu-burger.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  
+   .menu-burger .bar {
+    width: 25px; /* Largeur des barres du menu burger */
+    height: 3px; /* Hauteur des barres du menu burger */
+    background-color: #181818; /* Couleur des barres du menu burger */
+    margin: 5px 0;
+    border-radius: 50px;
+    margin-left: 10px;
+  }
+  
+  /* Menu dropdown */
+  .menu-dropdown {
+    position: absolute;
+    top: 6%; /* Position sous le header */
+    right: 80%;
+    width: 80%;
+    height: 100%;
+    background-color: #E8E5DE;
+    box-shadow: 100px 10px 80px rgba(44, 44, 44, 2);
+    border-bottom-left-radius: 20px;
+    border-top-left-radius: 20px;
+    overflow: hidden;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Transition pour l'animation */
+    opacity: 1;
+    transform: translateX(100%); /* Déplace le menu en dehors de l'écran à droite */
+    pointer-events: none;
+    z-index: 1000; /* Z-index élevé pour s'afficher devant les autres éléments */
+  }
+  
+  .header.menu-open .menu-dropdown {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 10000;
+  }
+  
+ 
+  
+  /* Styles pour les écrans de taille maximale de 768px (tablettes et mobiles) */
+  @media (max-width: 768px) {
+    .header {
+      padding: 10px 20px;
+      z-index: 1000;
+    }
+  
+    .menu-burger {
+      display: block; /* Affiche le menu burger pour les écrans plus petits */
+      cursor: pointer;
+    }
+  
+    .menu-dropdown {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  
+    .menu-dropdown {
+      position: absolute;
+      top: 6%; /* Position sous le header */
+      right: 80%;
+      width: 80%;
+      height: 70%;
+      background-color: #E8E5DE;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-bottom-left-radius: 20px;
+      border-top-left-radius: 20px;
+      overflow: hidden;
+      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Transition pour l'animation */
+      opacity: 1;
+      transform: translateX(100%); /* Déplace le menu en dehors de l'écran à droite */
+      pointer-events: none;
+      z-index: 1000; /* Z-index élevé pour s'afficher devant les autres éléments */
+    }
+  
+    .header .menu-open .menu-dropdown {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(34, 34, 34, 0.5); /* Couleur de fond semi-transparente */
+      opacity: 0; /* Démarre avec une opacité de 0 */
+      transition: opacity 0.3s ease-in-out; /* Transition douce pour l'opacité */
+      pointer-events: none; /* Empêche les interactions avec la couche */
+      z-index: 999; /* Z-index inférieur à celui du menu dropdown */
+    }
+  
+    .header.menu-open + .overlay {
+      opacity: 1; /* Augmente l'opacité lorsque le menu est ouvert */
+      pointer-events: auto; /* Active les interactions avec la couche */
+    }
+  }
+  .col {
+    display: block;
+    float:left;
+    margin: 1% 0 1% 1.6%;
+  }
+  
+  .col:first-of-type {
+    margin-left: 0;
+  }
+  
+
+  
+  /* CLEARFIX */
+  
+  .cf:before,
+  .cf:after {
+      content: " ";
+      display: table;
+  }
+  
+  .cf:after {
+      clear: both;
+  }
+  
+ 
+  /* ALL */
+  
+  .row .three{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #181818;
+    text-align: center;
+  }
+  
+  .hamburger .line{
+    width: 35px;
+    height: 5px;
+    background-color: #181818;
+    display: block;
+    margin: 5px auto;
+    border-radius: 10px;
+    -webkit-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .hamburger:hover{
+    cursor: pointer;
+  }
+  
+  /* ONE */
+  
+  #hamburger-1.is-active .line:nth-child(2){
+    opacity: 0;
+  }
+  
+  #hamburger-1.is-active .line:nth-child(1){
+    z-index: 1004;
+    color: #E8E5DE;
+    background-color: #ffffff;
+    -webkit-transform: translateY(9px) rotate(45deg);
+    -ms-transform: translateY(9px) rotate(45deg);
+    -o-transform: translateY(9px) rotate(45deg);
+    transform: translateY(9px) rotate(45deg);
+  }
+  
+  #hamburger-1.is-active .line:nth-child(3){
+    z-index: 1004;
+
+    color: #E8E5DE;
+    background-color: #ffffff;
+    -webkit-transform: translateY(-12px) rotate(-45deg);
+    -ms-transform: translateY(-12px) rotate(-45deg);
+    -o-transform: translateY(-12px) rotate(-45deg);
+    transform: translateY(-12px) rotate(-45deg);
+  }
+  
+  
