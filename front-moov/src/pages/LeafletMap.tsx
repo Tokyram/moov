@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L, { LatLngExpression } from 'leaflet';
@@ -24,6 +24,7 @@ interface LeafletMapProps {
 }
 
 const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistance, setStart, setEnd }) => {
+  const [initialCenter, setInitialCenter] = useState(false); // État pour suivre si l'utilisateur a été centré initialement
 
   const MapClickHandler = () => {
     useMapEvents({
@@ -49,13 +50,14 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
     const map = useMap();
 
     useEffect(() => {
-      if (position) {
-        // Vérifiez si position est une paire de coordonnées
+      if (position && !initialCenter) {
+        // Vérifiez si position est une paire de coordonnées et centrer uniquement si l'utilisateur n'a pas encore été centré
         if (Array.isArray(position)) {
-          map.setView(position,13);
+          map.setView(position, 15);
+          setInitialCenter(true); // Marquer comme centré initialement
         }
       }
-    }, [position, map]);
+    }, [position, initialCenter, map]);
 
     useEffect(() => {
       let routingControl: L.Control | undefined;
@@ -67,7 +69,6 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
             L.latLng(end[0], end[1])
           ],
           routeWhileDragging: true
-          
         })
           .on('routesfound', function (e) {
             const routes = e.routes;
@@ -92,7 +93,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
   return (
     <>
       {position && (
-        <MapContainer  style={{ height: '100%', border: 'none' }}>
+        <MapContainer style={{ height: '100%', border: 'none' }}>
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
@@ -101,7 +102,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
               <Popup className='leaflet-popup-content'>
                 <div>
                   Position actuelle
-                  <button  onClick={() => setStart([position[0], position[1]])}>
+                  <button onClick={() => setStart([position[0], position[1]])}>
                     Définir comme point de départ
                   </button>
                 </div>

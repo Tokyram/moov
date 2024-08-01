@@ -38,7 +38,7 @@ const Inscription: React.FC = () => {
 
                 <div className="inputForm">
                     <i className="bi bi-person"></i>
-                    <input placeholder="votre prénom" className="input" type="number"/>
+                    <input placeholder="votre prénom" className="input" type="text"/>
                 </div>
 
                 <div className="flex-column">

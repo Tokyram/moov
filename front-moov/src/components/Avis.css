@@ -1,3 +1,83 @@
-.aviscontent {
+
+.confirmation-button4{
+    background-color: #181818;
+    width: 100%;
+    padding: 15px;
+    border-radius: 50px;
+    font-size: 16px;
+    color: #E8E5DE;
+    display: flex;
+    justify-content:space-between ;
+    /* margin-top: 10%; */
+  }
+
+  .confirmation-bar4 {
+    position: relative; 
+    margin-top: -50px;
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+    z-index: 5;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-image: url(../assets/logo.svg);
+    background-repeat: no-repeat;
+    background-position: bottom center;
     background-color: #E8E5DE;
-}
+    
+    .reussi{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: auto;
+        flex-direction: column;
+        margin-top: 50px;
+        i{
+            font-size: 100px;
+            color: #09ff00;
+        }
+        h2{
+            width: 60%;
+            text-align: center;
+            color: #181818;
+            font-weight: bolder;
+        }
+    }
+    
+  }
+  .confirmation-item4 {
+    width: 95%;
+    
+  }
+
+  /* Avis.css */
+
+.stars {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 2.6rem;
+    padding: 2px;
+    align-items: center;
+
+    .tt{
+        color: #181818;
+        font-size: 12px;
+    }
+  }
+  
+  .stars .bi-star {
+    padding: 2px;
+    font-size: 2.6rem;
+    color: #d3d3d3; /* Couleur des étoiles vides */
+  }
+  
+  .stars .bi-star-fill {
+    font-size: 2.6rem;
+    padding: 2px;
+    color: #f18900; /* Couleur des étoiles pleines */
+  }
+  

@@ -148,6 +148,7 @@
     padding: 10px;
     display: flex;
     align-items: center;
+    position: relative;
     justify-content: center;
     font-size: 14px;
     background-color: #E8E5DE;
@@ -158,6 +159,7 @@
     display: flex;
     align-items: center;
     width: 95%;
+    position: relative;
   }
   
   .input {
@@ -290,7 +292,7 @@
     color: #E8E5DE;
     display: flex;
     align-items: center;
-    justify-content:space-around;
+    justify-content:space-between;
   }
 
   /* Style pour l'overlay de popup */
@@ -376,4 +378,30 @@
   padding: 20px 20px;
   margin: 5px;
   cursor: pointer;
+}
+
+
+.suggestions {
+  list-style-type: none;
+  padding: 15px;
+  margin: 15px;
+  background-color: #E8E5DE;
+  position: absolute; /* Position absolutely within the search-item */
+  top: 100%; /* Position it below the search-item */
+  left: 0;
+  right: 0;
+  z-index: 1010; /* Ensure it's above other elements */
+  max-height: 150px;
+  overflow-y: auto;
+  border-radius: 20px;
+  box-shadow: 0 4px 30px rgba(41, 41, 41, 0.5); /* Add a shadow for better visibility */
+}
+
+.suggestions li {
+  padding: 10px;
+  color: #181818;
+}
+
+.suggestions li:hover {
+  background: #E8E5DE;
 }

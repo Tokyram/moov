@@ -5,22 +5,31 @@ import Header from '../components/Header';
 import Menu from '../components/Menu';
 const LeafletMap = lazy(() => import('./LeafletMap'));
 import 'leaflet/dist/leaflet.css';
+interface Suggestion {
+  display_name: string;
+  lat: string;
+  lon: string;
+}
 
 const MapComponent: React.FC = () => {
   const [searchText, setSearchText] = useState('');
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+
   const [position, setPosition] = useState<[number, number]  | null>(null);
   const [start, setStart] = useState<[number, number] | null>(null);
   const [end, setEnd] = useState<[number, number] | null>(null);
   const [distance, setDistance] = useState<number | null>(null);
+
   const [isVisible, setIsVisible] = useState(true);
   const [isVisiblee, setIsVisiblee] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [startLocation, setStartLocation] = useState<string | null>(null);
   const [endLocation, setEndLocation] = useState<string | null>(null);
+
   const [showDatePopup, setShowDatePopup] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
-
+  
   const handleClose = () => {
     setIsVisible(false);
   };
@@ -30,7 +39,6 @@ const MapComponent: React.FC = () => {
   };
 
   const handleConfirmClick = () => {
-    console.log('handleConfirmClick called');
     setShowDatePopup(true);
   };
 
@@ -101,6 +109,45 @@ const MapComponent: React.FC = () => {
       });
   };
 
+  const fetchSuggestions = (query: any) => {
+    if (!position) {
+      alert('Unable to determine current location');
+      return;
+    }
+  
+    const [lat, lon] = position as [number, number];
+    const viewbox = `${lon - 0.1},${lat - 0.1},${lon + 0.1},${lat + 0.1}`;
+    
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&viewbox=${viewbox}&bounded=1`)
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setSuggestions(data);
+        } else {
+          setSuggestions([]);
+        }
+      });
+  };
+    const handleSearchTextChange = (e: { target: { value: any; }; }) => {
+      const query = e.target.value;
+      setSearchText(query);
+      if (query.length > 2) { // Ne commencez la recherche que si le texte est suffisamment long
+        fetchSuggestions(query);
+      } else {
+        setSuggestions([]);
+      }
+    };
+
+    const handleSuggestionClick = (location: { lat: string; lon: string; display_name: React.SetStateAction<string>; }) => {
+      const searchedPosition: [number, number] = [parseFloat(location.lat), parseFloat(location.lon)];
+      setPosition(searchedPosition);
+      setEnd(searchedPosition);
+      setSearchText(location.display_name); // Met à jour le champ de recherche avec le nom sélectionné
+      setSuggestions([]); // Efface les suggestions après sélection
+    };
+    
+    
+
   const reverseGeocode = (lat: number, lon: number, setLocation: React.Dispatch<React.SetStateAction<string | null>>) => {
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
       .then(response => response.json())
@@ -136,7 +183,7 @@ const MapComponent: React.FC = () => {
           <div className="search-item">
             <input
               value={searchText}
-              onChange={e => setSearchText(e.target.value)}
+              onChange={handleSearchTextChange}
               className="input"
               placeholder="Recherche de lieu"
             />
@@ -144,6 +191,15 @@ const MapComponent: React.FC = () => {
               <i className="bi bi-search" style={{ fontSize: '1.5rem' }}></i>
             </button>
           </div>
+          {suggestions.length > 0 && (
+            <ul className="suggestions">
+              {suggestions.map((suggestion, index) => (
+                <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                  {suggestion.display_name}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="distance-labels">
@@ -222,7 +278,7 @@ const MapComponent: React.FC = () => {
             <div className="popup-content">
 
               <div className="titrepopup2">
-              <i className="bi bi-check-circle-fill"></i>
+                <i className="bi bi-check-circle-fill"></i>
                 <h4>Réservation effectuée</h4>
               </div>
 
