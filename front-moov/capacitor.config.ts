@@ -13,7 +13,9 @@ const config: CapacitorConfig = {
       splashFullScreen: false,
       splashImmersive: false
     }
+    
   }
+  
 };
 
 export default config;

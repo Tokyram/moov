@@ -100,7 +100,7 @@
     }
   }
   
-  .logo path {
+ path {
     stroke-dashoffset: 1px;
     stroke-dasharray: 350px 0;
     animation: grow 6s ease forwards infinite;

@@ -10,12 +10,23 @@ export default defineConfig({
     react(),
     legacy()
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return id.toString().split('node_modules/')[1].split('/')[0].toString();
+          }
+        },
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash][extname]',
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
   },
-
-
-
 })

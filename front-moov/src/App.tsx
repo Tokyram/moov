@@ -19,6 +19,9 @@ import './splash.css';
 import Inscription from './pages/Inscription';
 import Login_code from './pages/Login_code';
 import MapComponent from './pages/MapComponent';
+import 'core-js/stable'; // Pour les polyfills ES6/ES7
+import 'regenerator-runtime/runtime'; // Pour les générateurs et les async/await
+import Avis from './components/Avis';
 
 setupIonicReact();
 
@@ -44,6 +47,7 @@ const App: React.FC = () => {
           <Route path="/inscription" component={Inscription} exact={true} />
           <Route path="/login_code" component={Login_code} exact={true} />
           <Route path="/map" component={MapComponent} exact={true} />
+          <Route path="/avis" component={Avis} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

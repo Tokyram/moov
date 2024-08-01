@@ -5,36 +5,42 @@ import L, { LatLngExpression } from 'leaflet';
 import 'leaflet-routing-machine';
 import './MapComponent.css';
 
+const locationIcon = new L.Icon({
+  iconUrl: 'assets/l.png', // Utilisez le chemin correct vers votre icône
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
+});
+
+L.Marker.prototype.options.icon = locationIcon;
+
 interface LeafletMapProps {
-    position: LatLngExpression | null;
-    start: [number, number] | null;
-    end: [number, number] | null;
-    setDistance: (distance: number | null) => void; // Fonction pour mettre à jour la distance
-    setStart: React.Dispatch<React.SetStateAction<[number, number] | null>>; // Fonction pour mettre à jour la position de départ
-    setEnd: React.Dispatch<React.SetStateAction<[number, number] | null>>; // Fonction pour mettre à jour la position d'arrivée
+  position: LatLngExpression | null;
+  start: [number, number] | null;
+  end: [number, number] | null;
+  setDistance: (distance: number | null) => void;
+  setStart: React.Dispatch<React.SetStateAction<[number, number] | null>>;
+  setEnd: React.Dispatch<React.SetStateAction<[number, number] | null>>;
 }
 
 const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistance, setStart, setEnd }) => {
+
   const MapClickHandler = () => {
     useMapEvents({
-        click(e) {
-            const clickedPosition: [number, number] = [e.latlng.lat, e.latlng.lng];
-            if (start && end) {
-                // Si les deux positions sont déjà définies, réinitialiser la position de fin
-                setStart(clickedPosition);
-                setEnd(null); // Réinitialiser la position de fin
-              } else if (start && !end) {
-                // Si la position de départ est définie mais pas la position d'arrivée
-                setEnd(clickedPosition);
-              } else if (!start) {
-                // Si aucune position de départ n'est définie
-                setStart(clickedPosition);
-              } else if (start && !end) {
-                // Si la position de départ est définie et que la position d'arrivée est nulle
-                setStart(null); // Supprimer la position de départ
-              }
-            }
-    
+      click(e) {
+        const clickedPosition: [number, number] = [e.latlng.lat, e.latlng.lng];
+        if (!start) {
+          // Définir la position de départ
+          setStart(clickedPosition);
+        } else if (start && !end) {
+          // Définir la position de fin
+          setEnd(clickedPosition);
+        } else if (start && end) {
+          // Réinitialiser les positions de départ et de fin si elles sont déjà définies
+          setStart(clickedPosition);
+          setEnd(null);
+        }
+      }
     });
     return null;
   };
@@ -44,7 +50,10 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
 
     useEffect(() => {
       if (position) {
-        map.setView(position, 13);
+        // Vérifiez si position est une paire de coordonnées
+        if (Array.isArray(position)) {
+          map.setView(position,13);
+        }
       }
     }, [position, map]);
 
@@ -58,6 +67,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
             L.latLng(end[0], end[1])
           ],
           routeWhileDragging: true
+          
         })
           .on('routesfound', function (e) {
             const routes = e.routes;
@@ -82,24 +92,34 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
   return (
     <>
       {position && (
-        <MapContainer center={position} zoom={13} style={{ height: '100%', border: 'none' }}>
+        <MapContainer  style={{ height: '100%', border: 'none' }}>
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
-          {position && (
-            <Marker position={position}  icon={new L.Icon({ iconUrl: 'assets/red.png', iconSize: [27, 27] })}>
-                
-              <Popup className='leaflet-popup-content'>Position actuelle</Popup>
+          {position && Array.isArray(position) && (
+            <Marker position={position} icon={locationIcon}>
+              <Popup className='leaflet-popup-content'>
+                <div>
+                  Position actuelle
+                  <button  onClick={() => setStart([position[0], position[1]])}>
+                    Définir comme point de départ
+                  </button>
+                </div>
+              </Popup>
             </Marker>
           )}
           {start && (
-            <Marker position={start} icon={new L.Icon({ iconUrl: 'assets/red.png', iconSize: [27, 27] })}>
-              <Popup className='leaflet-popup-content'>Départ</Popup>
+            <Marker position={start} icon={locationIcon}>
+              <Popup className='leaflet-popup-content'>
+                Départ
+              </Popup>
             </Marker>
           )}
           {end && (
-            <Marker position={end} icon={new L.Icon({ iconUrl: 'assets/red.png', iconSize: [27, 27] })}>
-              <Popup className='leaflet-popup-content'>Destination</Popup>
+            <Marker position={end} icon={locationIcon}>
+              <Popup className='leaflet-popup-content'>
+                Destination
+              </Popup>
             </Marker>
           )}
           <MapClickHandler />

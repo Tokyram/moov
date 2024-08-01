@@ -33,6 +33,13 @@ const Menu: React.FC = () => {
         <hr style={{ backgroundColor: '#b4b4b4', width: '90%' }} />
 
         <li>
+          <a href="/map">
+            <i className="bi bi-arrow-down-right-square-fill"></i>
+            <span className="link_name">Menu</span>
+          </a>
+         
+        </li>
+        <li>
           <a href="#">
             <i className="bi bi-arrow-down-right-square-fill"></i>
             <span className="link_name">Réservation</span>
@@ -57,6 +64,15 @@ const Menu: React.FC = () => {
           </div>
           
         </li>
+        <li>
+          <div className="iocn-link">
+            <a href="/avis">
+            <i className="bi bi-wallet-fill"></i>
+              <span className="link_name">Avis</span>
+            </a>
+          </div>
+          
+        </li>
        
         <li>
           <div className="profile-details2">
@@ -70,7 +86,7 @@ const Menu: React.FC = () => {
             </div>
 
             <div className="iocn-link">
-                <a href="#">
+                <a href="/home">
                 <i className="bi bi-door-open-fill"></i>
                 <span className="link_name">Déconnexion</span>
                 </a>

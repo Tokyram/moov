@@ -1,13 +1,13 @@
 /* Style personnalisé pour le contenu du popup */
+
 .homeMap{
-    background-color: hsl(0, 0%, 9%);
+    /* background-color: hsl(0, 0%, 9%); */
     height: 100%;
 }
 
 .homeMap .content{
     height: 100%;
     width: 100%;
-
     .map{
         /* z-index: 0; */
         height: 100%;
@@ -18,10 +18,22 @@
     height: 100%;
 }
 
+.leaflet-popup-content button{
+  border-radius: 10px;
+  color: #181818;
+  background-color: #E8E5DE;
+  padding: 5px;
+  margin: 5px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 10px;
+  border: 1px solid #f18900;
+}
+
+
+
 .leaflet-popup-content {
     /* border: 2px solid #007bff;  */
     border-radius: 5px; /* Coins arrondis du popup */
-    padding: 5px; /* Espacement intérieur du popup */
+    /* padding: 5px; */
     color: #ffffff; /* Couleur du texte */
     font-family: Arial, sans-serif; /* Police du texte */
   }
@@ -107,6 +119,11 @@
     align-items: center;
     margin: 5px;
     background-color: #E8E5DE !important;
+    
+  }
+
+  .leaflet-touch .leaflet-bar a{
+    line-height: 25px !important;
   }
 
   .leaflet-control-zoom{
@@ -173,14 +190,47 @@
     margin-top: -1px;
     color: #181818;
   }
+
+  .distance-labels .label-item .label-value{
+    width: 70%;
+    display: flex;
+    justify-content: flex-end;
+    font-weight: none !important;
+    .loc{
+      width: 200px; /* Définissez une largeur appropriée pour votre cas */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      
+      color: #EE3324;
+    }
+    span{
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+    .distance{
+      background-color: #EE3324;
+      border-radius: 20px;
+      padding: 5px;
+      padding-left: 10px;
+      padding-right: 10px;
+      box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 10px;
+      color: #E8E5DE !important;
+    }
+  }
   
   .label-item{
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin: 5px;
-    font-weight: bolder;
-    font-size: 14px;
+    /* font-weight: bolder; */
+    font-size: 12px;
+    
+    .label{
+      font-weight: bolder;
+    }
   }
 
   .confirmation-bar3 {
@@ -203,7 +253,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: rgba(255, 255, 255, 0.315); /* Couleur avec opacité */
+    background-color: rgba(255, 255, 255, 0.178); /* Couleur avec opacité */
     backdrop-filter: blur(4px); /* Initialisation du flou */
     padding: 10px;
     border-radius: 20px;
@@ -219,7 +269,7 @@
         padding: 10px;
     }
     .close-button{
-        color: #181818;
+        color: #E8E5DE;
         width: 27px;
         height: auto;
         background-color: transparent !important;
@@ -238,4 +288,92 @@
     border-radius: 50px;
     font-size: 16px;
     color: #E8E5DE;
+    display: flex;
+    align-items: center;
+    justify-content:space-around;
   }
+
+  /* Style pour l'overlay de popup */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Assure que le popup est au-dessus des autres éléments */
+}
+
+/* Style pour le contenu du popup */
+.popup-content {
+  background: #fff; /* Fond blanc pour le popup */
+  border-radius: 20px; /* Coins arrondis */
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Ombre pour le popup */
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  .inputForm{
+    border: 1px solid #e5e5e5;
+  }
+
+}
+.titrepopup{
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  img{
+    width: 27px;
+    height: auto;
+
+  }
+  h4{
+    font-weight: bolder;
+    color: #181818;
+    padding-left: 10px;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+}
+.titrepopup2{
+  display: block;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  i{
+    color: #09ff00;
+    font-size: 3rem !important;
+  }
+  h4{
+    font-weight: bolder;
+    color: #181818;
+    padding-left: 10px;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+/* Style pour les boutons du popup */
+.popup-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+  .cancel-button{
+    background-color: #E8E5DE !important;
+    color: #181818;
+  }
+}
+
+.popup-buttons button {
+  width: 150px;
+  background-color: #181818; /* Couleur de fond des boutons */
+  color: #E8E5DE; /* Couleur du texte des boutons */
+  border: none;
+  border-radius: 50px;
+  padding: 20px 20px;
+  margin: 5px;
+  cursor: pointer;
+}

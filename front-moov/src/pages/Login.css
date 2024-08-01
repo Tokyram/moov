@@ -126,7 +126,14 @@
     padding-left: 10px;
     transition: 0.2s ease-in-out;
     background-color: #ffffff;
+    
+  }
 
+  .inputForm i{
+    
+    color: #929292;
+    font-size: 1rem;
+    margin-left: 6px;
   }
 
   input{
