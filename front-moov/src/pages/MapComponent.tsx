@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Menu from '../components/Menu';
 const LeafletMap = lazy(() => import('./LeafletMap'));
 import 'leaflet/dist/leaflet.css';
+import RechercheMap from '../components/RechercheMap';
 interface Suggestion {
   display_name: string;
   lat: string;
@@ -85,69 +86,6 @@ const MapComponent: React.FC = () => {
     };
   }, []);
 
-  const searchLocation = () => {
-    if (!position) {
-      alert('Unable to determine current location');
-      return;
-    }
-
-    const [lat, lon] = position as [number, number];
-    const viewbox = `${lon - 0.1},${lat - 0.1},${lon + 0.1},${lat + 0.1}`;
-    
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchText}&viewbox=${viewbox}&bounded=1`)
-      .then(response => response.json())
-      .then(data => {
-        if (data && data.length > 0) {
-          const result = data.find((location: any) => location.type === 'city' || location.type === 'administrative');
-          const location = result ? result : data[0];
-          const searchedPosition: [number, number] = [parseFloat(location.lat), parseFloat(location.lon)];
-          setPosition(searchedPosition);
-          setEnd(searchedPosition);
-        } else {
-          alert('Location not found');
-        }
-      });
-  };
-
-  const fetchSuggestions = (query: any) => {
-    if (!position) {
-      alert('Unable to determine current location');
-      return;
-    }
-  
-    const [lat, lon] = position as [number, number];
-    const viewbox = `${lon - 0.1},${lat - 0.1},${lon + 0.1},${lat + 0.1}`;
-    
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&viewbox=${viewbox}&bounded=1`)
-      .then(response => response.json())
-      .then(data => {
-        if (data && data.length > 0) {
-          setSuggestions(data);
-        } else {
-          setSuggestions([]);
-        }
-      });
-  };
-    const handleSearchTextChange = (e: { target: { value: any; }; }) => {
-      const query = e.target.value;
-      setSearchText(query);
-      if (query.length > 2) { // Ne commencez la recherche que si le texte est suffisamment long
-        fetchSuggestions(query);
-      } else {
-        setSuggestions([]);
-      }
-    };
-
-    const handleSuggestionClick = (location: { lat: string; lon: string; display_name: React.SetStateAction<string>; }) => {
-      const searchedPosition: [number, number] = [parseFloat(location.lat), parseFloat(location.lon)];
-      setPosition(searchedPosition);
-      setEnd(searchedPosition);
-      setSearchText(location.display_name); // Met à jour le champ de recherche avec le nom sélectionné
-      setSuggestions([]); // Efface les suggestions après sélection
-    };
-    
-    
-
   const reverseGeocode = (lat: number, lon: number, setLocation: React.Dispatch<React.SetStateAction<string | null>>) => {
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
       .then(response => response.json())
@@ -180,26 +118,13 @@ const MapComponent: React.FC = () => {
       
       <div className="content">
         <div className="search-bar">
-          <div className="search-item">
-            <input
-              value={searchText}
-              onChange={handleSearchTextChange}
-              className="input"
-              placeholder="Recherche de lieu"
-            />
-            <button onClick={searchLocation} className="button">
-              <i className="bi bi-search" style={{ fontSize: '1.5rem' }}></i>
-            </button>
-          </div>
-          {suggestions.length > 0 && (
-            <ul className="suggestions">
-              {suggestions.map((suggestion, index) => (
-                <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
-                  {suggestion.display_name}
-                </li>
-              ))}
-            </ul>
-          )}
+          <RechercheMap
+            searchText={searchText}
+            suggestions={suggestions}
+            position={position}
+            setPosition={setPosition}
+            setEnd={setEnd}
+          /> 
         </div>
 
         <div className="distance-labels">
@@ -243,7 +168,6 @@ const MapComponent: React.FC = () => {
             </button>
           </div>
         </div>
-
         {/* Date Picker Popup */}
         {showDatePopup && (
           <div className="popup-overlay">
