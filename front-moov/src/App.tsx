@@ -22,6 +22,7 @@ import MapComponent from './pages/MapComponent';
 import 'core-js/stable'; // Pour les polyfills ES6/ES7
 import 'regenerator-runtime/runtime'; // Pour les générateurs et les async/await
 import Avis from './components/Avis';
+import Profil from './pages/Profil';
 
 setupIonicReact();
 
@@ -48,6 +49,7 @@ const App: React.FC = () => {
           <Route path="/login_code" component={Login_code} exact={true} />
           <Route path="/map" component={MapComponent} exact={true} />
           <Route path="/avis" component={Avis} exact={true} />
+          <Route path="/profil" component={Profil} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

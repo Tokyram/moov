@@ -264,7 +264,7 @@
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-    
+
     img{
       width: 20%;
         padding: 10px;
@@ -405,3 +405,16 @@
 .suggestions li:hover {
   background: #E8E5DE;
 }
+
+.search-item .clear-button {
+  position: absolute; 
+  right: 50px; /* Ajustez cette valeur en fonction de vos besoins */
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  margin-top: -5px;
+  cursor: pointer;
+  color: #4b4b4b;
+  z-index: 1000;
+}
+

@@ -18,7 +18,7 @@ const Menu: React.FC = () => {
         <ul className="nav-links">
         <li>
           <div className="profile-details">
-          <a href="#">
+          <a href="/profil">
             <div className="profile-content">
               <img src="assets/user.png" alt="profileImg" />
             </div>

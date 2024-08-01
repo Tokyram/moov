@@ -13,15 +13,7 @@
     
   }
 
-  .header .logo {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-  }
-  .header .logo.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  
 
   .header .logo img {
     width: 40px; /* Ajustez la taille de votre logo */
@@ -52,15 +44,10 @@
     display: none; /* Par défaut, le menu burger est caché */
     border-radius: 50px;
     z-index: 1005;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    ;
   }
 
-  .menu-burger.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
+ 
   
   
    .menu-burger .bar {

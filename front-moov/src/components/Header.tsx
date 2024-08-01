@@ -9,12 +9,6 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ toggleMenu }) => {
   const [isHamburgerActive, setIsHamburgerActive] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    // Ajouter la classe 'show' après le montage du composant
-    setIsVisible(true);
-  }, []);
 
   const handleHamburgerClick = () => {
     setIsHamburgerActive(!isHamburgerActive);
@@ -23,7 +17,7 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu }) => {
 
   return (
     <div className="header">
-      <div className={`logo ${isVisible ? 'show' : ''}`}>
+      <div className="logo" >
         <img src="assets/logo.png" alt="Logo" />
       </div>
       <div className="title">
@@ -33,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu }) => {
         <div className="notification">
           <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem' }}></i>
         </div>
-        <div className={`menu-burger ${isVisible ? 'show' : ''}`} onClick={handleHamburgerClick}>
+        <div className="menu-burger" onClick={handleHamburgerClick}>
           <div className="row cf">
             <div className="three col">
               <div className={`hamburger ${isHamburgerActive ? "is-active" : ""}`} id="hamburger-1">
