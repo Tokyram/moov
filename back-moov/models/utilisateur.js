@@ -74,14 +74,8 @@ class Utilisateur {
   static async authenticate(username, password) {
     const user = await Utilisateur.findByPhone(username);
     if (user && await user.verifyPassword(password)) {
-      const verifCode = await VerificationCode.create(user.id);
-      const smsSent = await SMSService.sendVerificationCode(user.telephone, verifCode.code);
-      console.log("userID", user.id);
-      if (smsSent) {
-        return { success: true, message: 'Code de vérification envoyé', userId: user.id };
-      } else {
-        return { success: false, message: 'Erreur lors de l\'envoi du SMS' };
-      }
+      const token = user.generateToken();
+      return { success: true, user, token };
     }
     return { success: false, message: 'Nom d\'utilisateur ou mot de passe incorrect' };
   }

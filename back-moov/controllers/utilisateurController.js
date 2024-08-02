@@ -17,7 +17,7 @@ class UtilisateurController {
     try {
       const result = await Utilisateur.authenticate(username, password);
       if (result.success) {
-        res.json({ user: result.userId, message: result.message });
+        res.json({ user: result.user.toJSON(), token: result.token });
       } else {
         res.status(401).json({ message: result.message });
       }
