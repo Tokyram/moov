@@ -23,11 +23,9 @@ class Utilisateur {
   static async create(nom, prenom, telephone, mail, mdp, adresse, photo, role) {
     const hashedPassword = await bcrypt.hash(mdp, 10);
     const date_inscription = new Date();
-    const result = await db.query(
-      'INSERT INTO utilisateur (nom, prenom, telephone, mail, mdp, adresse, photo, role, date_inscription, est_banni) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id',
-      [nom, prenom, telephone, mail, hashedPassword, adresse, photo, role, date_inscription, false]
-    );
-    return new Utilisateur(result.rows[0].id, nom, prenom, telephone, mail, hashedPassword, adresse, photo, role, date_inscription, est_banni, date_banni);
+    return {
+      nom, prenom, telephone, mail, hashedPassword, adresse, photo, role, date_inscription, est_banni: false
+    };
   }
 
   static async findByPhone(username) {
@@ -61,7 +59,7 @@ class Utilisateur {
         telephone: this.telephone,
         adresse: this.adresse,
         photo: this.photo,
-        tole: this.role,
+        role: this.role,
         date_inscription: this.date_inscription,
         est_banni: this.est_banni,
         date_banni: this.date_banni
@@ -80,19 +78,41 @@ class Utilisateur {
     return { success: false, message: 'Nom d\'utilisateur ou mot de passe incorrect' };
   }
 
-  static async verifLogin(utilisateur_id, code) {
-    const verificationCode = await VerificationCode.findValidCode(utilisateur_id, code);
-    if(verificationCode) {
-      const user = await Utilisateur.findById(utilisateur_id);
-      if(user) {
+  static async verifyRegistration(code) {
+    try {
+      console.log('Vérification du code:', code);
+      const verificationCode = await VerificationCode.findValidCode(code);
+      if(verificationCode) {
+        console.log('Code de vérification trouvé:', verificationCode);
+        const userData = verificationCode.user_data;
+        console.log('Données utilisateur:', userData);
+        
+        const result = await db.query(
+          'INSERT INTO utilisateur (nom, prenom, telephone, mail, mdp, adresse, photo, role, date_inscription, est_banni) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
+          [userData.nom, userData.prenom, userData.telephone, userData.mail, userData.mdp, userData.adresse, userData.photo, userData.role, userData.date_inscription, userData.est_banni]
+        );
+        
+        console.log('Utilisateur inséré:', result.rows[0]);
+        
+        const user = new Utilisateur(result.rows[0].id, result.rows[0].nom, result.rows[0].prenom, result.rows[0].telephone, result.rows[0].mail, result.rows[0].mdp, result.rows[0].adresse, result.rows[0].photo, result.rows[0].role, result.rows[0].date_inscription, result.rows[0].est_banni, result.rows[0].date_banni);
         const token = user.generateToken();
         await verificationCode.delete();
-        return { success: true, user, token };
+  
+        // Utilisez une fonction de remplacement pour exclure les propriétés non sérialisables
+        const safeUser = JSON.parse(JSON.stringify(user, (key, value) => {
+          if (key === 'someCircularProperty') return undefined; // Remplacez 'someCircularProperty' par la propriété problématique
+          return value;
+        }));
+  
+        return { success: true, user: safeUser, token };
       } else {
-        return { success: false, message: 'Utilisateur non trouvé' };
+        console.log('Code de vérification non trouvé ou expiré');
+        return { success: false, message: 'Code de vérification incorrect ou expiré' };
       }
+    } catch (error) {
+      console.error('Erreur lors de la vérification du code:', error);
+      return { success: false, message: 'Erreur lors de la vérification du code', error: error.message };
     }
-    return { success: false, message: 'Code de vérification incorrect  ou expiré' };
   }
 
   toJSON() {

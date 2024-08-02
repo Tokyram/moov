@@ -15,7 +15,7 @@ CREATE TABLE utilisateur (
 
 CREATE TABLE verification_code (
   id SERIAL PRIMARY KEY,
-  utilisateur_id INT,
-  code VARCHAR(255) NOT NULL,
-  expired_at TIMESTAMP
+  code VARCHAR(6) NOT NULL,
+  expired_at TIMESTAMP NOT NULL,
+  user_data JSONB NOT NULL
 );
