@@ -124,8 +124,11 @@ const RechercheMap: React.FC<RechercheMapProps> = ({
       {/* Liste des suggestions */}
       {localSuggestions.length > 0 && (
         <ul className="suggestions">
+        <h4>Suggestions</h4>
+
           {localSuggestions.map((suggestion, index) => (
             <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+              <i className="bi bi-geo-alt-fill"></i>
               {suggestion.display_name}
             </li>
           ))}

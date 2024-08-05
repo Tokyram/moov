@@ -6,10 +6,19 @@ import 'regenerator-runtime/runtime';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 import './MapComponent.css';
+import PopupModificationProfil from '../components/PopupModificationProfil';
 const Profil: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-
+  const [showModificationPopup, setShowModificationPopup] = useState(false);
+  const [selectedNom, setSelectedNom] = useState<string>('');
+  const [selectedPrenom, setSelectedPrenom] = useState<string>('');
+  const [selectedTelephone, setSelectedTelephone] = useState<number | null>(null);
+  const [selectedEmail, setSelectedEmail] = useState<string>('');
+  const [selectedPhoto, setSelectedPhoto] = useState<string>('');
+  const handleConfirmClick = () => {
+    setShowModificationPopup(true);
+  };
   useEffect(() => {
     // Ajouter la classe 'show' après le montage du composant
     setIsVisible(true);
@@ -28,7 +37,7 @@ const Profil: React.FC = () => {
                 <div className="image">
                     <img src="assets/user.png" alt="" />
                     <div className="modification-info">
-                        <button className='bouton-modification'>
+                        <button className='bouton-modification' onClick={handleConfirmClick}>
                             
                             <i className="bi bi-pen-fill"></i>
                         </button>
@@ -36,6 +45,21 @@ const Profil: React.FC = () => {
                 </div>
                 <h4>@nom de l'utilisateur</h4>
             </div>
+            {showModificationPopup && (
+            <PopupModificationProfil
+                selectedNom={selectedNom}
+                setSelectedNom={setSelectedNom}
+                selectedPrenom={selectedPrenom}
+                setSelectedPrenom={setSelectedPrenom}
+                selectedTelephone={selectedTelephone}
+                setSelectedTelephone={setSelectedTelephone}
+                selectedEmail={selectedEmail}
+                setSelectedEmail={setSelectedEmail}
+                selectedPhoto={selectedPhoto}
+                setSelectedPhoto={setSelectedPhoto}
+                setShowModificationPopup={setShowModificationPopup}
+                />
+            )}
             <div className="information">
                 <div className="label-info">
                     <label className="info">votre-email@gmail.com</label>
@@ -68,7 +92,8 @@ const Profil: React.FC = () => {
                             <h1>50</h1>
 
                             <div className="bouton-reservetion">
-                                <button className='bouton-modification'>
+                                <button className='btn'>
+                                    <i className='animation'></i>
                                     Réserver
                                     <i className="bi bi-plus-circle-fill"></i>
                                 </button>

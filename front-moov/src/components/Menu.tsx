@@ -74,7 +74,7 @@ const Menu: React.FC = () => {
           
         </li>
        
-        <li>
+       
           <div className="profile-details2">
           <div className={`a ${isVisible ? 'show' : ''}`}>
             <div className="profile-content">
@@ -93,7 +93,7 @@ const Menu: React.FC = () => {
             </div>
           </div>
           
-        </li>
+        
 
         
         

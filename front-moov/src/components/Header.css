@@ -43,7 +43,7 @@
    .menu-burger {
     display: none; /* Par défaut, le menu burger est caché */
     border-radius: 50px;
-    z-index: 1005;
+    z-index: 1010;
     ;
   }
 
@@ -96,6 +96,7 @@
     .menu-burger {
       display: block; /* Affiche le menu burger pour les écrans plus petits */
       cursor: pointer;
+      z-index: 1010;
     }
   
     .menu-dropdown {

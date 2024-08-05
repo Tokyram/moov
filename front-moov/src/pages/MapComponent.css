@@ -109,7 +109,7 @@
     padding-right: 10px;
     display: flex;
     height: auto;
-    z-index: 997;
+    /* z-index: 997; */
   }
 
   .leaflet-control-zoom-in{
@@ -122,9 +122,9 @@
     
   }
 
-  .leaflet-touch .leaflet-bar a{
+  /* .leaflet-touch .leaflet-bar a{
     line-height: 25px !important;
-  }
+  } */
 
   .leaflet-control-zoom{
     height: 100px;
@@ -239,7 +239,7 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    z-index: 999;
+    z-index: 998;
     display: flex;
     height: auto !important;
     justify-content: center;
@@ -254,27 +254,43 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: rgba(255, 255, 255, 0.178);
+    /* background-color: rgba(255, 255, 255, 0.178); */
     backdrop-filter: blur(4px);
     padding: 10px;
     border-radius: 20px;
     font-size: 14px;
     margin-bottom: 3%;
     color: #E8E5DE;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-
+    border: 2px solid #0000;
+    background: linear-gradient(#131219, #131219) padding-box, linear-gradient(
+        var(--angle),
+        #EE3324,
+        #f18900
+      ) border-box;
+    animation: 4s rotate linear infinite;
     img{
       width: 20%;
         padding: 10px;
     }
     .close-button{
       color: #E8E5DE;
-      width: 27px;
+      width: px;
       height: auto;
       background-color: transparent !important;
+      margin-top: -90px;
   }
+  }
+
+  @keyframes rotate {
+    to {
+      --angle: 360deg;
+    }
+  }
+  
+  @property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
   }
   
   .confirmation-label3.show {
@@ -318,8 +334,15 @@
   max-width: 500px;
   width: 90%;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
   .inputForm{
     border: 1px solid #e5e5e5;
+    /* margin-top: 20px; */
+    width: 100%;
   }
 
 }
@@ -385,21 +408,31 @@
   list-style-type: none;
   padding: 15px;
   margin: 15px;
-  background-color: #E8E5DE;
+  background-color: #ffffff;
   position: absolute; /* Position absolutely within the search-item */
   top: 100%; /* Position it below the search-item */
   left: 0;
   right: 0;
-  z-index: 1010; /* Ensure it's above other elements */
-  max-height: 150px;
+  z-index: 1000; /* Ensure it's above other elements */
+  max-height: 200px;
   overflow-y: auto;
   border-radius: 20px;
-  box-shadow: 0 4px 30px rgba(41, 41, 41, 0.5); /* Add a shadow for better visibility */
+  box-shadow: 0 4px 30px rgba(41, 41, 41, 0.4); /* Add a shadow for better visibility */
+  h4{
+    color: #181818;
+    margin: none !important;
+    margin-left: 10px;
+  }
 }
 
 .suggestions li {
   padding: 10px;
   color: #181818;
+
+  i{
+    color: #EE3324;
+    margin: 10px;
+  }
 }
 
 .suggestions li:hover {
@@ -418,3 +451,95 @@
   z-index: 1000;
 }
 
+/* input[type="file"]::file-selector-button {
+  background-color: #EE3324;
+  color: #E8E5DE;
+  margin-top: -6px;
+  border-radius: 20px;
+  border : none !important;
+  width: 100%;
+  height: 40px;
+} */
+
+.custum-file-upload {
+  height: 200px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: space-between;
+  gap: 20px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #cacaca;
+  background-color: rgba(255, 255, 255, 1);
+  /* padding: 1.5rem; */
+  border-radius: 20px;
+  /* margin: 6px; */
+  box-shadow: 0px 48px 35px -48px rgba(0,0,0,0.2);
+}
+
+.custum-file-upload .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custum-file-upload .icon i {
+  font-size: 5rem;
+  color: #EE3324;
+}
+
+.custum-file-upload .text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custum-file-upload .text span {
+  font-weight: 400;
+  color: rgba(75, 85, 99, 1);
+}
+
+.custum-file-upload input {
+  display: none;
+}
+
+.btn {
+  outline: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f18900;
+  min-width: 100px;
+  width: 150px;
+  border: 0;
+  border-radius: 50px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
+  box-sizing: border-box;
+  padding: 16px 20px;
+  color: #E8E5DE;
+  font-size: 12px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  overflow: hidden;
+}
+
+.btn:hover {
+  opacity: .95;
+}
+
+.btn .animation {
+  border-radius: 100%;
+  animation: ripple 0.6s linear infinite;
+}
+
+@keyframes ripple {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.1), 0 0 0 20px rgba(255, 255, 255, 0.1), 0 0 0 40px rgba(255, 255, 255, 0.1), 0 0 0 60px rgba(255, 255, 255, 0.1);
+  }
+
+  100% {
+    box-shadow: 0 0 0 20px rgba(255, 255, 255, 0.1), 0 0 0 40px rgba(255, 255, 255, 0.1), 0 0 0 60px rgba(255, 255, 255, 0.1), 0 0 0 80px rgba(255, 255, 255, 0);
+  }
+}
