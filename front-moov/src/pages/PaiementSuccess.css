@@ -31,9 +31,15 @@
         font-size: var(--text12);
     }
 
-    h4{
-        margin: 0;
+    .name-job1{
+      .job{
+        h4{
+          margin: 0;
+          color: var(--background-color);
+      }
+      }
     }
+    
     span{
         color: var(--secondary-color);
     }

@@ -69,7 +69,7 @@
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
         border: 0.5px solid rgba(255, 255, 255, 0.849);
         border-radius: 20px;
-        background-image: url('assets/flour.svg');
+        background-image: url('assets/flour.png');
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
@@ -142,6 +142,9 @@
                     }
                     p{
                         margin: 0;
+                        color: var(--background-color);
+                    }
+                    h4{
                         color: var(--background-color);
                     }
                 }
