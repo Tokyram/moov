@@ -23,7 +23,7 @@ const Menu: React.FC = () => {
               <img src="assets/user.png" alt="profileImg" />
             </div>
             <div className="name-job">
-              <div className="profile_name">Nom de l'utilisateur</div>
+              <div className="profile_name">Nom de l'utilisateur*</div>
               <div className="job">voir votre profil</div>
             </div>
             </a>
@@ -35,21 +35,21 @@ const Menu: React.FC = () => {
         <li>
           <a href="/map">
             <i className="bi bi-globe-americas"></i>
-            <span className="link_name">Accueil</span>
+            <span className="link_name">Accueil*</span>
           </a>
          
         </li>
         <li>
           <a href="/paiement">
             <i className="bi bi-currency-exchange"></i>
-            <span className="link_name">Paiement</span>
+            <span className="link_name">Paiement*</span>
           </a>
          
         </li>
         <li>
-          <a href="#">
+          <a href="/reservation">
             <i className="bi bi-arrow-down-right-square-fill"></i>
-            <span className="link_name">Réservation</span>
+            <span className="link_name">Réservation*</span>
           </a>
          
         </li>
@@ -75,7 +75,7 @@ const Menu: React.FC = () => {
           <div className="iocn-link">
             <a href="/avis">
             <i className="bi bi-wallet-fill"></i>
-              <span className="link_name">Avis</span>
+              <span className="link_name">Avis*</span>
             </a>
           </div>
           

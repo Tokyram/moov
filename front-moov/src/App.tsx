@@ -26,6 +26,7 @@ import Profil from './pages/Profil';
 import Paiement from './pages/Paiement';
 import PaiementSuccess from './pages/PaiementSuccess';
 import Service from './pages/Service';
+import Reservation from './pages/Reservation';
 
 setupIonicReact();
 
@@ -56,6 +57,7 @@ const App: React.FC = () => {
           <Route path="/paiement" component={Paiement} exact={true} />
           <Route path="/paiementSuccess" component={PaiementSuccess} exact={true} />
           <Route path="/service" component={Service} exact={true} />
+          <Route path="/reservation" component={Reservation} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

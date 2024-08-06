@@ -23,7 +23,7 @@ const Paiement: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleConfirmAvis = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleConfirmPaiement = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Empêcher le formulaire de se soumettre normalement
     setShowPaiementPopup(true); // Afficher le popup de succès
   };
@@ -32,11 +32,11 @@ const Paiement: React.FC = () => {
     setShowSuccessPopup(false);
   };
 
-  const handleCancelDate = () => {
+  const handleCancelPaiement = () => {
     setShowPaiementPopup(false);
   };
 
-  const handleConfirmDate = () => {
+  const handleConfirmationPaiement = () => {
     setShowPaiementPopup(false);
     history.push('/paiementSuccess');
   };
@@ -62,7 +62,7 @@ const Paiement: React.FC = () => {
                         <img src="assets/mastercard.svg" alt="mc" />
                     </div>
                     <div className="form-carte">
-                        <form className="form" onSubmit={handleConfirmAvis}>
+                        <form className="form" onSubmit={handleConfirmPaiement}>
                             <div className="cle">
                                 <div className="flex-column">
                                     <label>Numéro de carte </label>
@@ -134,8 +134,8 @@ const Paiement: React.FC = () => {
               </p>
 
               <div className="popup-buttons">
-                <button className="cancel-button" onClick={handleCancelDate}>Annuler</button>
-                <button onClick={handleConfirmDate}>Confirmer</button>
+                <button className="cancel-button" onClick={handleCancelPaiement}>Annuler</button>
+                <button onClick={handleConfirmationPaiement}>Confirmer</button>
               </div>
 
             </div>
