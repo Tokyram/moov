@@ -23,6 +23,9 @@ import 'core-js/stable'; // Pour les polyfills ES6/ES7
 import 'regenerator-runtime/runtime'; // Pour les générateurs et les async/await
 import Avis from './components/Avis';
 import Profil from './pages/Profil';
+import Paiement from './pages/Paiement';
+import PaiementSuccess from './pages/PaiementSuccess';
+import Service from './pages/Service';
 
 setupIonicReact();
 
@@ -50,6 +53,9 @@ const App: React.FC = () => {
           <Route path="/map" component={MapComponent} exact={true} />
           <Route path="/avis" component={Avis} exact={true} />
           <Route path="/profil" component={Profil} exact={true} />
+          <Route path="/paiement" component={Paiement} exact={true} />
+          <Route path="/paiementSuccess" component={PaiementSuccess} exact={true} />
+          <Route path="/service" component={Service} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

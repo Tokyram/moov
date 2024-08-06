@@ -1,0 +1,39 @@
+@import url('Main.css');
+  
+.content-service{
+    background-color: var(--background-color);
+    width: 100%;
+    height: 100%;
+    position: relative; 
+    margin-top: -55px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 15px;
+
+    form{
+        
+        width: 90%;
+        height: auto;
+        gap: 10px;
+        display: grid;
+        button{
+            margin-top: 10px;
+        }
+    }
+
+    /* .formservice{
+        gap: 20px;
+
+
+    } */
+}
+
+.banner{
+    margin-top: 60px;
+    /* .a-btn-card2{
+        gap: 10px;
+
+    } */
+}

@@ -1,0 +1,169 @@
+/* variables.css */
+/* *{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+} */
+@import url('Main.css');
+  
+.content-paiement{
+    background-color: var(--background-color);
+    width: 100%;
+    height: 100%;
+    position: relative; 
+    margin-top: -55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.prix{
+    height: 25%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    color: var(--text-color);
+    h4{
+        font-size: var(--titre18);
+    }
+    
+    h1{
+        margin: 0 !important;
+        font-size: 42px;
+        font-weight: bolder;
+        line-height: 2rem;
+
+    }
+}
+
+.carte{
+    height: 75%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .titre-carte{
+        display: flex;
+        align-items: center;
+        i{
+            color: var(--secondary-color);
+        }
+        h4{
+            color: var(--text-color);
+            margin: 0 !important;
+            margin-left: 10px !important;
+            font-size: var(--titre18);
+        }
+        
+    }
+
+    .paiement{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        padding: 15px;
+        flex-direction: column;
+        background-color: rgba(255, 255, 255, 0.096);
+        backdrop-filter: blur(4px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        border: 0.5px solid rgba(255, 255, 255, 0.849);
+        border-radius: 20px;
+        background-image: url('assets/flour.svg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+
+        .type-carte{
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            gap: 5px;
+
+            img{
+                width: 60px;
+                height: auto;
+            }
+        }
+
+        .form-carte{
+            height: 100%;
+            width: 100%;
+
+            form{
+
+                .flex-column{
+                    margin:5px;
+                    label{
+                        color: var(--text-color);
+                        font-size: var(--text16);
+                    }
+                }
+
+                height: 100%;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+
+                .cle{
+                .input2{
+                    margin-top: 10px;
+
+                    display: flex;
+
+                    
+
+                }
+            } 
+                
+                .a-btn-card{
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    border-radius: 20px;
+                    font-size: var(--text16);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 10px;
+                    border: 2px solid #0000;
+                    background: linear-gradient(#131219, #131219) padding-box, linear-gradient(
+                        var(--angle),
+                        #EE3324,
+                        #f18900
+                    ) border-box;
+                    animation: 4s rotate linear infinite;
+                    opacity: 0;
+                    transform: translateY(20px);
+                    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+                    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+                    img{
+                        width: 57px;
+                        height: auto;
+                    }
+                    p{
+                        margin: 0;
+                        color: var(--background-color);
+                    }
+                }
+
+                @keyframes rotate {
+                    to {
+                      --angle: 360deg;
+                    }
+                  }
+                  
+                  @property --angle {
+                    syntax: "<angle>";
+                    initial-value: 0deg;
+                    inherits: false;
+                  }
+                
+
+                .a-btn-card.show{
+                    opacity: 1;
+                    transform: translateY(0);
+                  }
+            }
+        }
+    }
+}

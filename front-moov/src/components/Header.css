@@ -13,6 +13,10 @@
     
   }
 
+  .heade::after{
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  }
+
   
 
   .header .logo img {

@@ -34,8 +34,15 @@ const Menu: React.FC = () => {
 
         <li>
           <a href="/map">
-            <i className="bi bi-arrow-down-right-square-fill"></i>
-            <span className="link_name">Menu</span>
+            <i className="bi bi-globe-americas"></i>
+            <span className="link_name">Accueil</span>
+          </a>
+         
+        </li>
+        <li>
+          <a href="/paiement">
+            <i className="bi bi-currency-exchange"></i>
+            <span className="link_name">Paiement</span>
           </a>
          
         </li>
@@ -81,7 +88,7 @@ const Menu: React.FC = () => {
                 <img src="assets/logo.png" alt="profileImg" />
             </div>
             <div className="name-job">
-                <div className="job"><p>En cas de problème, consultez notre <a href="#"> service technique </a>  ou vous pouvez aller dans la <a href="#">page d’aide.</a></p></div>
+                <div className="job"><p>En cas de problème, consultez notre <a href="/service"> service technique </a>  ou vous pouvez aller dans la <a href="/service">page d’aide.</a></p></div>
             </div>
             </div>
 

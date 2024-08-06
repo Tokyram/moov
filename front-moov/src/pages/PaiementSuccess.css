@@ -1,0 +1,58 @@
+@import url('Main.css');
+
+.a-btn-card2{
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    font-size: var(--text16);
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    flex-direction: column;
+    gap: 10px;
+    border: 2px solid #0000;
+    background: linear-gradient(#131219, #131219) padding-box, linear-gradient(
+        var(--angle),
+        #EE3324,
+        #f18900
+    ) border-box;
+    animation: 4s rotate linear infinite;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    img{
+        width: 27px;
+        height: auto;
+    }
+    p{
+        margin: 0;
+        color: var(--background-color);
+        font-size: var(--text12);
+    }
+
+    h4{
+        margin: 0;
+    }
+    span{
+        color: var(--secondary-color);
+    }
+}
+
+@keyframes rotate {
+    to {
+      --angle: 360deg;
+    }
+  }
+  
+  @property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+
+.a-btn-card2.show{
+    opacity: 1;
+    transform: translateY(0);
+  }

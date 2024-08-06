@@ -217,7 +217,7 @@
         width: 100%;
         height: 100%;
         border-radius: 20px;
-        background-color: rgba(255, 255, 255, 0.178);
+        background-color: rgba(255, 255, 255, 0.096);
         backdrop-filter: blur(4px);
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
         display: flex;
@@ -225,7 +225,11 @@
         justify-content: space-around;
         align-items: center;
         color: #181818;
-
+        background-image: url('assets/flou.svg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center ;
+       
         .avis-stat{
             flex: 1 1 auto; 
             padding: 0 25px;
@@ -240,6 +244,11 @@
             flex: 1 1 auto !important;
             width: 100%;
             height: 20%;
+
+            p{
+                font-size: 16px;
+                font-weight: bold;
+            }
         }
 
         .start-avis-stat{
