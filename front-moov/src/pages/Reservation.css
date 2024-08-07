@@ -20,6 +20,7 @@
     background-color: var(--white-color);
     border-radius: 20px;
     margin-top: 10px;
+    z-index: 0;
     .statut-reservation{
         display: flex;
         align-items: center;
@@ -61,16 +62,20 @@
             align-items: center;
             color: var(--text-color);
             gap: 20px;
-
-            i{
-                box-shadow: 0 0px 15px rgba(0, 0, 0, 0.1);
-                width: 30px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 20px;
-                border-radius: 10px;
+            a{
+                text-decoration: none;
+                i{
+                    box-shadow: 0 0px 15px rgba(0, 0, 0, 0.1);
+                    width: 30px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 20px;
+                    border-radius: 10px;
+                    color: var(--text-color);
+                }
             }
+            
             p{
                 box-shadow: 0 0px 15px rgba(0, 0, 0, 0.1);
                 width: 70px;
@@ -124,7 +129,7 @@
         }
 
         .annuler-course{
-            
+            z-index: 1;
 
             
 
@@ -211,14 +216,22 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
     align-items: center;
-    background-color: transparent;    
+    background-color: transparent;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;    
     p{
       color: var(--white-color);
       margin: 0;
     }
   
+  }
+
+  .popup-overlay3 .popup-content3.show{
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .close-button3{
@@ -294,10 +307,12 @@
             h4{
                 color: var(--background-color);
                 text-align: start;
+                width: 90%;
+                margin-left: -10px;
             }
             i{
                 color: var(--background-color);
-                margin-left: 10px;
+                /* margin-left: 10px; */
             }
         }
 
@@ -316,16 +331,26 @@
         border-radius: 20px;
         margin-top: 10px; ;
         font-size: var(--text12);
+        display: flex;
+        flex-direction: column;
+        align-items: start;
          p{
             text-align: start;
             color: var(--text-color);
             font-weight: bolder;
-            line-height: 1.5rem;
+            line-height: 1.2rem;
 
             span{
                 font-weight: 500;
                 color: var(--text-color);
             }
+         }
+
+         h1{
+            margin: 0;
+            color: var(--text-color);
+            font-weight: 1000;
+            font-size: var(--titre42);
          }
     }
   }

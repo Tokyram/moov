@@ -91,7 +91,7 @@ const Reservation: React.FC = () => {
                 </div>
 
                 {reservations.map(reservation => (
-                    <div className="reservations" key={reservation.id} onClick={() => handleConfirmClickDetail(reservation.id)}>
+                    <div className="reservations" key={reservation.id} >
                         <div className="statut-reservation">
                             <div className="ico-stat">
                                 <i className="bi bi-car-front-fill"></i>
@@ -99,10 +99,12 @@ const Reservation: React.FC = () => {
                             </div>
                             <div className="ico-stat2">
                                 <p>{reservation.price}</p>
-                                <i className="bi bi-pen-fill"></i>
+                                <a href="/map">
+                                    <i className="bi bi-pen-fill"></i>
+                                </a>
                             </div>
                         </div>
-                        <div className="fond-reservation">
+                        <div className="fond-reservation" onClick={() => handleConfirmClickDetail(reservation.id)}>
                             <img src={reservation.carImg} alt="car" />
                         </div>
                         <div className="info-reservation">
@@ -130,7 +132,7 @@ const Reservation: React.FC = () => {
                         <button className="close-button3" onClick={handleCloseDetail}>
                           &times;
                         </button>
-                        <div className="popup-content3">
+                        <div className={`popup-content3 ${isVisible ? 'show' : ''}`}>
                             <div className="titrepopup3">
                               <div className="titre-detail">
                                   <div className="titre">

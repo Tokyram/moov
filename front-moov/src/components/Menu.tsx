@@ -64,9 +64,9 @@ const Menu: React.FC = () => {
         </li>
         <li>
           <div className="iocn-link">
-            <a href="#">
+            <a href="/facture">
             <i className="bi bi-wallet-fill"></i>
-              <span className="link_name">Facture</span>
+              <span className="link_name">Facture*</span>
             </a>
           </div>
           
