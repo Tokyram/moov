@@ -2,6 +2,9 @@ const Utilisateur = require('../models/utilisateur');
 const bcrypt = require('bcrypt');
 const VerificationCode = require('../models/verificationCode');
 const SMSService = require('../services/smsService');
+const fs = require('fs');
+const path = require('path');
+const config = require('../config');
 
 class UtilisateurController {
   static async register(req, res) {
@@ -122,6 +125,38 @@ class UtilisateurController {
     }
   }
 
+  static async updateProfile(req, res) {
+    try {
+      const { id, nom, prenom, adresse, mail } = req.body;
+      const user = await Utilisateur.findById(id);
+      
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'Utilisateur non trouvé' });
+      }
+
+      let photoPath = user.photo;
+      if (req.file) {
+        photoPath = req.file.path;
+        if (user.photo) {
+          fs.unlink(user.photo, (err) => {
+            if (err) console.error('Erreur lors de la suppression de l\'ancienne photo:', err);
+          });
+        }
+      }
+
+      const result = await Utilisateur.updateProfile(user, nom, prenom, adresse, photoPath, mail);
+      res.json(result);
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du profil:', error);
+      res.status(500).json({ success: false, message: 'Erreur serveur', error: error.message });
+    }
+  }
+
+  static servePhoto(req, res) {
+    const filename = req.params.filename;
+    const filepath = path.join(config.uploadsDir, filename);
+    res.sendFile(filepath);
+  }
 }
 
 module.exports = UtilisateurController;
