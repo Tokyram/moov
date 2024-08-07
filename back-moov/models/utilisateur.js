@@ -72,8 +72,12 @@ class Utilisateur {
   static async authenticate(username, password) {
     const user = await Utilisateur.findByPhone(username);
     if (user && await user.verifyPassword(password)) {
-      const token = user.generateToken();
-      return { success: true, user, token };
+      if(!user.est_banni) {
+        const token = user.generateToken();
+        return { success: true, user, token };
+      } else {
+        return { success: false, message: 'Utilisateur banni du plateforme, contactez l\'administrateur!' };
+      }
     }
     return { success: false, message: 'Nom d\'utilisateur ou mot de passe incorrect' };
   }
