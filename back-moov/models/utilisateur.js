@@ -72,8 +72,12 @@ class Utilisateur {
   static async authenticate(username, password) {
     const user = await Utilisateur.findByPhone(username);
     if (user && await user.verifyPassword(password)) {
-      const token = user.generateToken();
-      return { success: true, user, token };
+      if(!user.est_banni) {
+        const token = user.generateToken();
+        return { success: true, user, token };
+      } else {
+        return { success: false, message: 'Utilisateur banni du plateforme, contactez l\'administrateur!' };
+      }
     }
     return { success: false, message: 'Nom d\'utilisateur ou mot de passe incorrect' };
   }
@@ -171,6 +175,33 @@ class Utilisateur {
       
     } catch (error) {
       return { success: false, message: 'Erreur lors de la récupération du mot de passe', error: error.message };
+    }
+  }
+
+  static async updateProfile(user, nom, prenom, adresse, photo, mail) {
+    try {
+      let query = 'UPDATE utilisateur SET nom = $1, prenom = $2, adresse = $3, mail= $4';
+      let params = [nom, prenom, adresse, mail];
+
+      if (photo) {
+        query += ', photo = $5';
+        params.push(photo);
+      }
+
+      query += ' WHERE id = $' + (params.length + 1) + ' RETURNING *';
+      params.push(user.id);
+
+      const result = await db.query(query, params);
+      
+      if (result.rows.length > 0) {
+        Object.assign(this, result.rows[0]);
+        return { success: true, message: 'Profil mis à jour avec succès' };
+      } else {
+        return { success: false, message: 'Erreur lors de la mise à jour du profil' };
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du profil:', error);
+      return { success: false, message: 'Erreur lors de la mise à jour du profil', error: error.message };
     }
   }
 
