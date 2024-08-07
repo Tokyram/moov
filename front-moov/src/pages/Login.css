@@ -1,14 +1,12 @@
-*{
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+@import url('Main.css');
 
-}
 .confirmation-button2{
-    background-color: #EE3324;
+    background-color: var(--primary-color);
     width: 100%;
     padding: 15px;
     border-radius: 50px;
-    font-size: 16px;
-    color: #E8E5DE;
+    font-size: var(--text);
+    color: var(--background-color);
     /* margin-top: 10%; */
   }
 
@@ -35,21 +33,21 @@
       stroke-dashoffset: 1px;
       stroke-dasharray: 0 350px;
       opacity: 0;
-      stroke: #f15800;
+      stroke: var(--primary-color);
     }
     10% {
       opacity: 1;
-      stroke: #e74c3c;
+      stroke: var(--primary-color);
 
     }
     40% {
       stroke-dasharray: 350px 0;
-      stroke: #f18900;
+      stroke: var(--secondary-color);
     }
     /* Moving back */
     85% {
       stroke-dasharray: 350px 0;
-    stroke: #e74c3c;
+    stroke: var(--primary-color);
 
     }
     95%,
@@ -63,7 +61,7 @@
     stroke-dasharray: 350px 0;
     animation: grow 6s ease forwards infinite;
     transform-origin: center;
-    stroke: #e74c3c;
+    stroke: var(--primary-color);
     stroke-width: 2.5px;
     animation-delay: 0s; /* Animation du stroke commence immédiatement */
   }
@@ -76,7 +74,7 @@
     justify-content: center;
 
     h4{
-        color: #636363;
+        color: var(--text-color);
     }
 
     .logo-login {
@@ -91,7 +89,7 @@
 }
 
 .home{
-    background-color: #E8E5DE;
+    background-color: var(--background-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -102,13 +100,11 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-  width: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    width: 100%;
   }
   
   ::placeholder {
     color: #d8d8d8;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
   
   .form button {
@@ -126,26 +122,26 @@
     align-items: center;
     padding-left: 10px;
     transition: 0.2s ease-in-out;
-    background-color: #ffffff;
+    background-color: var(--white-color);
     
   }
 
   .inputForm i{
     
-    color: #929292;
-    font-size: 1rem;
+    color: var(--grey-color);
+    font-size: var(--text16);
     margin-left: 6px;
   }
 
   input{
-    background-color: #ffffff;
-    color: #181818;
+    background-color: var(--white-color);
+    color: var(--text-color);
   }
   
   .input {
     margin-left: 10px;
-    background-color: #ffffff;
-    color: #181818;
+    background-color: var(--white-color);
+    color: var(--text-color);
     border-radius: 50px;
     border: none;
     width: 100%;
@@ -158,7 +154,7 @@
   }
   
   .inputForm:focus-within {
-    border: 1.5px solid #EE3324;
+    border: 1.5px solid var(--primary-color);
   }
   
   .flex-row {
@@ -174,7 +170,7 @@
     align-items: center;
   }
   .flex-row > div > label {
-    font-size: 12px;
+    font-size: var(--text12);
     color: rgb(66, 66, 66);
     font-weight: 400;
     margin-left: 10px;
@@ -183,14 +179,14 @@
   .flex-row > div > input{
     width: 20px;
     height: 20px;
-    border: 0.5px solid #181818;
-    background-color: #ff0000;
+    border: 0.5px solid var(--text-color);
+    background-color: var(--primary-color);
   }
   
   .span {
     font-size: 14px;
     margin-left: 5px;
-    color: #EE3324;
+    color: var(--primary-color);
     font-weight: 500;
     cursor: pointer;
   }
@@ -200,7 +196,7 @@
   .p {
     text-align: center;
     color: rgb(148, 148, 148);
-    font-size: 14px;
+    font-size: var(--text12);
     margin: 5px 0;
     margin-top: 5%;
   }
@@ -215,21 +211,20 @@
     align-items: center;
     font-weight: 500;
     gap: 10px;
-    border: 1px solid #ededef;
-    background-color: white;
+    background-color: var(--white-color);
     cursor: pointer;
     transition: 0.2s ease-in-out;
   }
   
   .btn:hover {
-    border: 1px solid #EE3324;
+    border: 1px solid var(--primary-color);
     ;
   }
 
   .radio{
 
-    background-color: #E8E5DE;
-    border: 1pc solid #181818;
+    background-color: var(--background-color);
+    border: 1pc solid var(--text-color);
   }
   
       

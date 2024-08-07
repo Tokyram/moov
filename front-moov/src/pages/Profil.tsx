@@ -6,6 +6,7 @@ import 'regenerator-runtime/runtime';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 import './MapComponent.css';
+import { Route, useHistory } from 'react-router-dom';
 import PopupModificationProfil from '../components/PopupModificationProfil';
 const Profil: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,6 +17,7 @@ const Profil: React.FC = () => {
   const [selectedTelephone, setSelectedTelephone] = useState<number | null>(null);
   const [selectedEmail, setSelectedEmail] = useState<string>('');
   const [selectedPhoto, setSelectedPhoto] = useState<string>('');
+  const history = useHistory();
   const handleConfirmClick = () => {
     setShowModificationPopup(true);
   };
@@ -25,6 +27,10 @@ const Profil: React.FC = () => {
   }, []);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleConfirm = () => {
+    history.push('/reservation');
   };
   return (
      
@@ -91,10 +97,10 @@ const Profil: React.FC = () => {
                         <div className="ttt">
                             <h1>50</h1>
 
-                            <div className="bouton-reservetion">
-                                <button className='btn'>
+                            <div className="bouton-reservation">
+                                <button className='btn' onClick={handleConfirm}>
                                     <i className='animation'></i>
-                                    Réserver
+                                        Réserver
                                     <i className="bi bi-plus-circle-fill"></i>
                                 </button>
                             </div>

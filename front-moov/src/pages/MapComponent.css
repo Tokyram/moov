@@ -36,7 +36,6 @@
     border-radius: 5px; /* Coins arrondis du popup */
     /* padding: 5px; */
     color: var(--white-color); /* Couleur du texte */
-    font-family: Arial, sans-serif; /* Police du texte */
   }
   
   /* Style personnalisé pour le conteneur du popup */
@@ -173,7 +172,7 @@
   }
 
   ::placeholder{
-    color: #ccc;
+    color: var(--grey-color);
   }
   
   .button {
@@ -199,6 +198,7 @@
     display: flex;
     justify-content: flex-end;
     font-weight: none !important;
+
     .loc{
       width: 200px; /* Définissez une largeur appropriée pour votre cas */
       white-space: nowrap;
@@ -253,33 +253,63 @@
   
   .confirmation-label3 {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    /* background-color: rgba(255, 255, 255, 0.178); */
+    align-items: start;
+    justify-content: start;
+    flex-direction: column;
+    gap: 10px;
     backdrop-filter: blur(4px);
     padding: 10px;
     border-radius: 20px;
-    font-size: 14px;
+    font-size: var(--text16);
     margin-bottom: 3%;
+    background-color:rgba(235, 232, 219, 0.26);
+    padding: 15px;
     color: var(--background-color);
-    border: 2px solid #0000;
-    background: linear-gradient(#131219, #131219) padding-box, linear-gradient(
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    /* border: 2px solid var(--text-color);
+    background: linear-gradient(var(--text-color), var(--text-color)) padding-box, linear-gradient(
         var(--angle),
         var(--primary-color),
-        #f18900
+       var(--secondary-color)
       ) border-box;
-    animation: 4s rotate linear infinite;
+    animation: 4s rotate linear infinite; */
+    animation: pulse-animation 2s infinite;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    .notice{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
     img{
-      width: 20%;
-        padding: 10px;
+      width: 27px;
+    }
+    p{
+      color: var(--background-color);
+      margin: 0;
     }
     .close-button{
       color: var(--background-color);
-      width: px;
-      height: auto;
+      height: 100%;
       background-color: transparent !important;
-      margin-top: -90px;
+      /* margin-top: -60px; */
+      display: flex;
+      align-items: center;
+      float: right !important;;
+      button{
+        right: 0;
+        height: 100%;
+      }
   }
+  }
+
+  @keyframes pulse-animation {
+    0% {
+      box-shadow: 0 0 0 0px rgba(255, 255, 255, 0.2);
+    }
+    100% {
+      box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
+    }
   }
 
   @keyframes rotate {
@@ -341,7 +371,7 @@
   gap: 10px;
   align-items: center;
   .inputForm{
-    border: 1px solid #e5e5e5;
+    border: 1px solid var(--grey-color);
     /* margin-top: 20px; */
     width: 100%;
   }
@@ -453,7 +483,7 @@
   font-size: 1.5rem;
   margin-top: -5px;
   cursor: pointer;
-  color: #4b4b4b;
+  color: var(--grey-color);
   z-index: 1000;
 }
 
@@ -515,7 +545,7 @@
   outline: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   background: var(--primary-color);
   min-width: 100px;
   width: 150px;

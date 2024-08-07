@@ -25,7 +25,9 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu }) => {
       </div>
       <div className="ico">
         <div className="notification">
-          <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem' }}></i>
+          <a href="/notification">
+            <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem' }}></i>
+          </a>
         </div>
         <div className="menu-burger" onClick={handleHamburgerClick}>
           <div className="row cf">

@@ -1,3 +1,5 @@
+@import url('Main.css');
+
 .splash-page {
     display: flex;
     flex-direction: column;
@@ -5,7 +7,7 @@
     align-items: center;
     height: 100%;
     width: 100%;
-    background-color: #E8E5DE;
+    background-color: var(--background-color);
     opacity: 1;
     transition: opacity 1s ease-out;
   }
@@ -33,21 +35,21 @@
         svg{
           width: 45%;
           /* padding: 1%; */
-          color: #E8E5DE;
+          color: var(--background-color);
         }
     }
   
   .footer-text {
-    font-size: 12px;
+    font-size: var(--text12);
     height: 10%;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #e74c3c; /* Ajustez la couleur selon vos besoins */
+    color: var(--primary-color); /* Ajustez la couleur selon vos besoins */
 
     label{
-        color: #646464;
+        color: var(--grey-color);
     }
   }
   
@@ -60,10 +62,10 @@
   
   @keyframes fillChange {
     0% {
-      fill: #E8E5DE; /* Couleur initiale */
+      fill: var(--background-color); /* Couleur initiale */
     }
     100% {
-      fill: #e74c3c; /* Couleur finale après 5 secondes */
+      fill: var(--primary-color); /* Couleur finale après 5 secondes */
     }
   }
   
@@ -81,17 +83,17 @@
     }
     10% {
       opacity: 1;
-      stroke: #e74c3c;
+      stroke: var(--primary-color);
 
     }
     40% {
       stroke-dasharray: 350px 0;
-      stroke: #f18900;
+      stroke: var(--secondary-color);
     }
     /* Moving back */
     85% {
       stroke-dasharray: 350px 0;
-    stroke: #e74c3c;
+    stroke: var(--primary-color);
 
     }
     95%,
@@ -105,7 +107,7 @@
     stroke-dasharray: 350px 0;
     animation: grow 6s ease forwards infinite;
     transform-origin: center;
-    stroke: #e74c3c;
+    stroke: var(--primary-color);
     stroke-width: 2.5px;
     animation-delay: 0s; /* Animation du stroke commence immédiatement */
   }

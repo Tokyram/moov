@@ -1,5 +1,5 @@
 /* Header.css */
-
+@import url('../pages/Main.css');
 /* Styles généraux pour le header */
 .header {
     display: flex;
@@ -7,8 +7,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    background-color: #e8e5de; /* Couleur de fond du header */
-    color: #181818; /* Couleur du texte */
+    background-color: var(--background-color); /* Couleur de fond du header */
+    color: var(--text-color); /* Couleur du texte */
     z-index: 1002;
     
   }
@@ -40,6 +40,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    i{
+      color: var(--text-color);
+    }
   }
 
   
@@ -57,7 +61,7 @@
    .menu-burger .bar {
     width: 25px; /* Largeur des barres du menu burger */
     height: 3px; /* Hauteur des barres du menu burger */
-    background-color: #181818; /* Couleur des barres du menu burger */
+    background-color: var(--text-color); /* Couleur des barres du menu burger */
     margin: 5px 0;
     border-radius: 50px;
     margin-left: 10px;
@@ -70,7 +74,7 @@
     right: 80%;
     width: 80%;
     height: 100%;
-    background-color: #E8E5DE;
+    background-color: var(--background-color);
     box-shadow: 100px 10px 80px rgba(44, 44, 44, 2);
     border-bottom-left-radius: 20px;
     border-top-left-radius: 20px;
@@ -110,11 +114,11 @@
   
     .menu-dropdown {
       position: absolute;
-      top: 6%; /* Position sous le header */
+      top: 6%; 
       right: 80%;
       width: 80%;
       height: 70%;
-      background-color: #E8E5DE;
+      background-color: var(--background-color);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       border-bottom-left-radius: 20px;
       border-top-left-radius: 20px;
@@ -180,14 +184,14 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    color: #181818;
+    color: var(--text-color);
     text-align: center;
   }
   
   .hamburger .line{
     width: 35px;
     height: 5px;
-    background-color: #181818;
+    background-color: var(--text-color);
     display: block;
     margin: 5px auto;
     border-radius: 10px;
@@ -208,8 +212,8 @@
   
   #hamburger-1.is-active .line:nth-child(1){
     z-index: 1004;
-    color: #E8E5DE;
-    background-color: #ffffff;
+    color: var(--background-color);
+    background-color: var(--white-color);
     -webkit-transform: translateY(9px) rotate(45deg);
     -ms-transform: translateY(9px) rotate(45deg);
     -o-transform: translateY(9px) rotate(45deg);
@@ -219,8 +223,8 @@
   #hamburger-1.is-active .line:nth-child(3){
     z-index: 1004;
 
-    color: #E8E5DE;
-    background-color: #ffffff;
+    color: var(--background-color);
+    background-color: var(--white-color);
     -webkit-transform: translateY(-12px) rotate(-45deg);
     -ms-transform: translateY(-12px) rotate(-45deg);
     -o-transform: translateY(-12px) rotate(-45deg);

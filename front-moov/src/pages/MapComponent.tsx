@@ -155,11 +155,17 @@ const MapComponent: React.FC = () => {
           <div className="confirmation-item3">
             {isVisible && (
               <div className={`confirmation-label3 ${isVisiblee ? 'show' : ''}`}>
-                <img src="assets/logo.png" alt="Logo" />
+
+                <div className="notice">
+                  
+                  <img src="assets/logo.png" alt="Logo" />
+                  <button className="close-button" onClick={handleClose}>
+                    &times;
+                  </button>
+                </div>
+                
                 <p>Veuillez cliquer sur votre localisation pour le définir en point de départ ou cliquez deux points pour définir votre destination</p>
-                <button className="close-button" onClick={handleClose}>
-                  &times;
-                </button>
+                
               </div>
             )}
             <button className="confirmation-button3" onClick={handleConfirmClick}>
