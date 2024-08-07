@@ -579,3 +579,18 @@
     box-shadow: 0 0 0 20px rgba(255, 255, 255, 0.1), 0 0 0 40px rgba(255, 255, 255, 0.1), 0 0 0 60px rgba(255, 255, 255, 0.1), 0 0 0 80px rgba(255, 255, 255, 0);
   }
 }
+
+.cancel-button {
+  position: absolute;
+  bottom: 52%;
+  right: 15px;
+  z-index: 1010;
+  padding: 7px;
+  background-color: var(--secondary-color);
+  color: var(--background-color);
+  border: none;
+  border-radius: 50px;
+  font-size: var(--text16);
+  animation: pulse-animation 2s infinite;
+}
+

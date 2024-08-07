@@ -172,6 +172,26 @@ const MapComponent: React.FC = () => {
               Confirmer la destination
               <i className="bi bi-check-circle-fill"></i>
             </button>
+            
+            {/* <button className="confirmation-button3" style={{ backgroundColor: 'var(--text-color)', color: 'var(--background-color)' }} onClick={handleConfirmClick}>
+              En attente de chauffeur...
+              <i className="bi bi-check-circle-fill"></i>
+            </button>
+
+            <button className="confirmation-button3" style={{ backgroundColor: 'var(--text-color)', color: 'var(--background-color)' }} onClick={handleConfirmClick}>
+              En attente de validation...
+              <i className="bi bi-check-circle-fill"></i>
+            </button>
+
+            <button className="confirmation-button3" style={{ backgroundColor: 'var(--secondary-color)', color: 'var(--white-color)' }} onClick={handleConfirmClick}>
+              Commencer la couse
+              <i className="bi bi-check-circle-fill"></i>
+            </button>
+
+            <button className="confirmation-button3" style={{ backgroundColor: 'var(--win-color)', color: 'var(--text-color)' }} onClick={handleConfirmClick}>
+              Arriver à la destination
+              <i className="bi bi-check-circle-fill"></i>
+            </button> */}
           </div>
         </div>
         {/* Date Picker Popup */}
