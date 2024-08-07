@@ -21,6 +21,9 @@
     justify-content: space-between;
     align-items: center;
     overflow: auto;
+    background-image: url('assets/logo.svg');
+    background-repeat: no-repeat;
+    background-position: bottom center;
     
   }
   .confirmation-item2 {
@@ -157,7 +160,7 @@
     border: 1.5px solid var(--primary-color);
   }
   
-  .flex-row {
+  .flex-row1 {
     height: 40px;
     display: flex;
     /* flex-direction: row; */
@@ -176,18 +179,18 @@
       }
     }
   }
-  .flex-row > div {
+  .flex-row1 > div {
     display: flex;
     align-items: center;
   }
-  .flex-row > div > label {
+  .flex-row1 > div > label {
     font-size: var(--text12);
     color: rgb(66, 66, 66);
     font-weight: 400;
     margin-left: 10px;
   }
 
-  .flex-row > div > input{
+  .flex-row1 > div > input{
     width: 20px;
     height: 20px;
     border: 0.5px solid var(--text-color);

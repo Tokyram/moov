@@ -41,7 +41,7 @@ const Login: React.FC = () => {
                     <input placeholder="***************" className="input" type="password"/>
                 </div>
         
-                <div className="flex-row">
+                <div className="flex-row1">
                         <input type="radio"/>
                         <label>Se souvenir de moi </label>
                         <p className="p"><span className="span"><a className="span" href="/mdpcode">Mot de passe oublier ?</a></span></p>

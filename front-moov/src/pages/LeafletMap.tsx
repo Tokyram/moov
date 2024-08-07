@@ -98,7 +98,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
 
   return (
     <>
-          <button className="cancel-button" onClick={handleCancelPoints}>
+          <button className="cancel-button1" onClick={handleCancelPoints}>
             <i className="bi bi-arrow-clockwise"></i>
           </button>
       {position && (

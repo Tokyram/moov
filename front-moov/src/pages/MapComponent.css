@@ -580,11 +580,11 @@
   }
 }
 
-.cancel-button {
+.cancel-button1 {
   position: absolute;
   bottom: 52%;
   right: 15px;
-  z-index: 1010;
+  z-index: 1000;
   padding: 7px;
   background-color: var(--secondary-color);
   color: var(--background-color);
