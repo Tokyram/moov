@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Login.css'; 
 
-const Login_code: React.FC = () => {
- 
+const Mdp_code: React.FC = () => {
+    const [isVisible, setIsVisible] = useState(false);
+    useEffect(() => {
+        setIsVisible(true);
+    }, []);
 
   return (
     <div className="home">
@@ -21,7 +24,7 @@ const Login_code: React.FC = () => {
 
             </div>
 
-            <form className="form" action='/home'>
+            <form className="form" action='/mdpo'>
 
                
         
@@ -30,19 +33,25 @@ const Login_code: React.FC = () => {
                 </div>
                 <div className="inputForm">
                     <i className="bi bi-key"></i>
-                    <input placeholder="***************" className="input" type="password"/>
-                </div>
-        
-                <div className="flex-row">
-                    <div>
-                        <input type="radio"/>
-                        <label>Se souvenir de moi </label>
-                    </div>
+                    <input placeholder="Saisir le code de confirmation" className="input" type="password"/>
                 </div>
                 
                 <button type='submit' className="confirmation-button2">Envoyer</button>
             </form>
 
+                <div className="banner">
+                    <div className={`a-btn-card2 ${isVisible ? 'show' : ''}`}>
+                        <div className="profile-content">
+                            <img src="assets/logo.png" alt="profileImg" />
+                        </div>
+                        <div className="name-job1">
+                            <div className="job"><h4>UN CODE DE CONFIRMATION VOUS EST ENVOYE PAR SMS</h4></div>
+                        </div>
+                        <div className="name-job">
+                            <div className="job"><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever.</p></div>
+                        </div>
+                    </div>
+                </div>
 
             <p className="p">Vouz n'avez pas de compte? <span className="span"><a className="span" href="/inscription">S'inscrire</a></span></p>
 
@@ -52,4 +61,4 @@ const Login_code: React.FC = () => {
   );
 };
 
-export default Login_code;
+export default Mdp_code;

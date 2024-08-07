@@ -189,11 +189,11 @@
   }
   
   .hamburger .line{
-    width: 35px;
+    width: 30px;
     height: 5px;
     background-color: var(--text-color);
     display: block;
-    margin: 5px auto;
+    margin: 4px auto;
     border-radius: 10px;
     -webkit-transition: all 0.3s ease-in-out;
     -o-transition: all 0.3s ease-in-out;
@@ -225,10 +225,10 @@
 
     color: var(--background-color);
     background-color: var(--white-color);
-    -webkit-transform: translateY(-12px) rotate(-45deg);
-    -ms-transform: translateY(-12px) rotate(-45deg);
-    -o-transform: translateY(-12px) rotate(-45deg);
-    transform: translateY(-12px) rotate(-45deg);
+    -webkit-transform: translateY(-10px) rotate(-45deg);
+    -ms-transform: translateY(-10px) rotate(-45deg);
+    -o-transform: translateY(-10px) rotate(-45deg);
+    transform: translateY(-9px) rotate(-45deg);
   }
   
   

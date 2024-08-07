@@ -90,10 +90,19 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
     return null;
   };
 
+  const handleCancelPoints = () => {
+    setStart(null);
+    setEnd(null);
+    setDistance(null);
+  };
+
   return (
     <>
+          <button className="cancel-button" onClick={handleCancelPoints}>
+            <i className="bi bi-arrow-clockwise"></i>
+          </button>
       {position && (
-        <MapContainer style={{ height: '100%', border: 'none' }}>
+        <MapContainer style={{ height: '100%', border: 'none', position: 'relative' }}>
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
