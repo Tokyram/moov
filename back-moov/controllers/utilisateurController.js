@@ -20,6 +20,12 @@ class UtilisateurController {
         date_inscription: new Date().toISOString(),
         est_banni: false
       };
+
+      const userInvalide = await Utilisateur.findByPhone(telephone);
+
+      if(userInvalide) {
+        res.status(400).json({ message: 'Numero de téléphone déjà utilisé' });
+      }
   
       console.log('Final UserData:', userData);
       
@@ -59,20 +65,6 @@ class UtilisateurController {
     }
   }
 
-  static async verificationLogin(req, res) {
-    const { userId, code } = req.body;
-    try {
-      const result = await Utilisateur.verifLogin(userId, code);
-      if (result.success) {
-        res.json({ user: result.user.toJSON(), token: result.token });
-      } else {
-        res.status(401).json({ message: result.message });
-      }
-    } catch (error) {
-      res.status(500).json({ message: 'Erreur lors de la vérification du code', error: error.message });
-    }
-  }
-
   static async verifyRegistration(req, res) {
     const { code } = req.body;
     console.log('Code reçu:', code);
@@ -93,6 +85,43 @@ class UtilisateurController {
   static async getProfile(req, res) {
     res.json({ user: req.user.toJSON() });
   }
+
+  static async initiateresetPassword(req, res) {
+    const { telephone } = req.body;
+    
+    const result = await Utilisateur.initiateResetPassword(telephone);
+
+    if(result.success) {
+      res.status(200).json({ message: result.message, code: result?.code, verificationId: result?.verificationId });
+    } else {
+      res.status(400).json({ message: result.message, code: result?.code, error: result?.error });
+    }
+  }
+
+  static async verifyResetPassword(req, res) {
+    const { code } = req.body;
+
+    const result = await Utilisateur.verifyResetPassword(code);
+
+    if(result.success) {
+      res.status(200).json({ user_id: result.user_id });
+    } else {
+      res.status(400).json({ message: result.message, error: result?.error });
+    }
+  }
+
+  static async applyResetPassword(req, res) {
+    const { userId, mdp } = req.body;
+    
+    const result = await Utilisateur.applyResetPassword(userId, mdp);
+
+    if(result.success) {
+      res.status(200).json({ message: result.message });
+    } else {
+      res.status(400).json({ message: result.message, error: result?.error });
+    }
+  }
+
 }
 
 module.exports = UtilisateurController;

@@ -89,7 +89,7 @@ class Utilisateur {
         
         const result = await db.query(
           'INSERT INTO utilisateur (nom, prenom, telephone, mail, mdp, adresse, photo, role, date_inscription, est_banni) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
-          [userData.nom, userData.prenom, userData.telephone, userData.mail, userData.mdp, userData.adresse, userData.photo, userData.role, userData.date_inscription, userData.est_banni]
+          [userData.nom, userData.prenom, userData.telephone, userData.mail, userData.mdp, userData.adresse, userData.photo ?? "", userData.role, userData.date_inscription, userData.est_banni]
         );
         
         console.log('Utilisateur inséré:', result.rows[0]);
@@ -115,6 +115,65 @@ class Utilisateur {
     }
   }
 
+  static async initiateResetPassword(telephone) {
+    try {
+
+      const user = await this.findByPhone(telephone);
+      if (!user) {
+        return { success: false, message: 'Utilisateur non trouvé' };
+      }
+
+      const jsonUserData = JSON.stringify(user);
+
+      const verifCode = await VerificationCode.create(jsonUserData);
+      const smsSent = await SMSService.sendVerificationCode(telephone, verifCode.code);
+
+      if(smsSent) {
+        return { success: true, message: 'Code de vérification envoyé', verificationId: verifCode.id, code: verifCode.code }
+      } else {
+        return { success: false, message: 'Erreur lors de l\'envoi du SMS',  code: verifCode.code }
+      }
+    } catch (error) {
+      console.error('Erreur lors de la récupération du mot de passe:', error);
+      return { success: false, message: 'Erreur lors de la récupération du mot de passe', error: error.message };
+    }
+  }
+
+  static async verifyResetPassword(code) {
+    try {
+      const verificationCode = await VerificationCode.findValidCode(code);
+      if(verificationCode) {
+        const userData = verificationCode.user_data;
+
+        const user = await this.findByPhone(userData.telephone);
+        if (!user) {
+          return { success: false, message: 'Utilisateur non trouvé' };
+        }
+
+        await verificationCode.delete();
+
+        return { success: true, user_id: user.id };
+
+      } else {
+        return { success: false, message: 'Code de vérification incorrect ou expiré' };
+      }
+    } catch(error) {
+      return { success: false, message: 'Erreur lors de la vérification du code', error: error.message };
+    }
+  }
+
+  static async applyResetPassword(userId, password) {
+    try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await db.query('UPDATE utilisateur SET mdp = $1 WHERE id = $2', [hashedPassword, userId]);
+
+      return { success: true, message: 'Mot de passe réinitialisé avec succès' };
+      
+    } catch (error) {
+      return { success: false, message: 'Erreur lors de la récupération du mot de passe', error: error.message };
+    }
+  }
+
   toJSON() {
     return {
       id: this.id,
@@ -124,7 +183,7 @@ class Utilisateur {
       telephone: this.telephone,
       adresse: this.adresse,
       photo: this.photo,
-      tole: this.role,
+      role: this.role,
       date_inscription: this.date_inscription,
       est_banni: this.est_banni,
       date_banni: this.date_banni
