@@ -55,9 +55,9 @@ const Menu: React.FC = () => {
         </li>
         <li>
           <div className="iocn-link">
-            <a href="#">
+            <a href="/notification">
                 <i className="bi bi-bell-fill"></i>
-              <span className="link_name">Notification</span>
+              <span className="link_name">Notification*</span>
             </a>
           </div>
          

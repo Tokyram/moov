@@ -19,7 +19,7 @@
     height: auto;
     background-color: var(--white-color);
     border-radius: 20px;
-
+    margin-top: 10px;
     .statut-reservation{
         display: flex;
         align-items: center;
@@ -182,4 +182,150 @@
     }
   }
   
+
   
+
+   /* Style pour l'overlay de popup */
+.popup-overlay3 {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    align-items:center;
+    z-index: 1000; /* Assure que le popup est au-dessus des autres éléments */
+  }
+  
+  /* Style pour le contenu du popup */
+  .popup-content3 {
+    background: var(--white-color); /* Fond blanc pour le popup */
+    border-radius: 20px; /* Coins arrondis */
+    padding: 20px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    background-color: transparent;    
+    p{
+      color: var(--white-color);
+      margin: 0;
+    }
+  
+  }
+
+  .close-button3{
+    display: flex;
+    justify-content: flex-end;
+    width: 80%;
+    background-color: transparent;
+
+    button{
+        background-color: transparent;
+        font-size: 2rem;
+    }
+  }
+
+  .titrepopupMerci{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--text-color);
+    border-radius: 20px;
+    padding: 10px;
+    width: 100%;
+
+    /* margin-bottom: 10px; */
+    img{
+        width: 40px;
+        height: auto;
+        margin: 10px;
+    }
+    h4{
+        text-align: left;
+        width: 50%;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        color: var(--background-color);
+    }
+  }
+
+  .titrepopup3{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: var(--text-color);
+    border-radius: 20px;
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 5px;
+    img{
+      width: 27px;
+      height: auto;
+  
+    }
+    h4{
+      font-weight: bolder;
+      color: var(--text-color);
+      padding-left: 10px;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
+
+    .titre-detail{
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+
+        .titre{
+            display: flex;
+            align-items: flex-start;
+            flex-direction: column;
+            justify-content: center;
+            h4{
+                color: var(--background-color);
+                text-align: start;
+            }
+            i{
+                color: var(--background-color);
+                margin-left: 10px;
+            }
+        }
+
+        .numero{
+            
+        }
+        h4{
+            font-weight: 500;
+            color: var(--background-color);}
+    }
+
+    .info-detail{
+        background-color: var(--background-color);
+        width: 100%;
+        padding: 10px;
+        border-radius: 20px;
+        margin-top: 10px; ;
+        font-size: var(--text12);
+         p{
+            text-align: start;
+            color: var(--text-color);
+            font-weight: bolder;
+            line-height: 1.5rem;
+
+            span{
+                font-weight: 500;
+                color: var(--text-color);
+            }
+         }
+    }
+  }
