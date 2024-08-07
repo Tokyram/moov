@@ -20,6 +20,12 @@ class UtilisateurController {
         date_inscription: new Date().toISOString(),
         est_banni: false
       };
+
+      const userInvalide = await Utilisateur.findByPhone(telephone);
+
+      if(userInvalide) {
+        res.status(400).json({ message: 'Numero de téléphone déjà utilisé' });
+      }
   
       console.log('Final UserData:', userData);
       
