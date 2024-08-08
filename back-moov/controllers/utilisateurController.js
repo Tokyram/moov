@@ -157,6 +157,28 @@ class UtilisateurController {
     const filepath = path.join(config.uploadsDir, filename);
     res.sendFile(filepath);
   }
+
+  static async listUsers(req, res) {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const role = req.query.role;
+      
+      const users = await Utilisateur.findAll({ skip: (page - 1) * limit, limit });
+      const total = await Utilisateur.count();
+  
+      res.json({
+        success: true,
+        data: users.map(user => user.toJSON()), // Exclure le mot de passe des résultats
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalUsers: total
+      });
+    } catch(error) {
+      console.error('Erreur lors de la récupération de la liste des utilisateurs:', error);
+      res.status(500).json({ success: false, message: 'Erreur serveur', error: error.message });
+    }
+  }
 }
 
 module.exports = UtilisateurController;

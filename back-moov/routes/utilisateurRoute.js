@@ -27,5 +27,6 @@ const upload = multer({ storage: storage });
 
 router.put('/profile', authMiddleware, upload.single('photo'), UtilisateurController.updateProfile);
 router.get('/photo/:filename', UtilisateurController.servePhoto);
+router.get('/list', authMiddleware, UtilisateurController.listUsers);
 
 module.exports = router;

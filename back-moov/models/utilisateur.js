@@ -205,6 +205,50 @@ class Utilisateur {
     }
   }
 
+  static async findAll({ skip = 0, limit = 10 }) {
+    let users = [];
+
+    const params = [skip, limit];
+
+    const result = await db.query(
+      `SELECT * FROM utilisateur ORDER BY id OFFSET $1 LIMIT $2`,
+      params
+    );
+  
+    for (const row of result.rows) {
+      users.push(
+        new Utilisateur(
+          row.id,
+          row.nom,
+          row.prenom,
+          row.telephone,
+          row.mail,
+          row.mdp,
+          row.adresse,
+          row.photo,
+          row.role,
+          row.date_inscription,
+          row.est_banni,
+          row.date_banni
+        )
+      );
+    }
+  
+    return users;
+  }
+  
+  static async count() {
+    let whereClause = '';
+    const params = [];
+    
+    const result = await db.query(
+      `SELECT COUNT(*) FROM utilisateur`,
+      params
+    );
+  
+    return parseInt(result.rows[0].count);
+  }
+
   toJSON() {
     return {
       id: this.id,
