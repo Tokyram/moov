@@ -5,6 +5,7 @@ const SMSService = require('../services/smsService');
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');
+const { error } = require('console');
 
 class UtilisateurController {
   static async register(req, res) {
@@ -179,6 +180,19 @@ class UtilisateurController {
       res.status(500).json({ success: false, message: 'Erreur serveur', error: error.message });
     }
   }
+
+  static async bannirUser(req, res) {
+    const user_id = req.params.userId;
+
+    const result = await Utilisateur.bannirUser(user_id);
+
+    if(result.success) {
+      res.status(200).json({ message: result.message });
+    } else {
+      res.json({ message: result.message, error: result?.error });
+    }
+  }
+
 }
 
 module.exports = UtilisateurController;

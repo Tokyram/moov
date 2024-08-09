@@ -249,6 +249,26 @@ class Utilisateur {
     return parseInt(result.rows[0].count);
   }
 
+  static async bannirUser(user_id) {
+    try {
+
+      let dateNow = new Date();
+
+      const user = this.findById(user_id);
+
+      if(user.est_banni) {
+        return { success: false, message: "Utilisateur déjà banni du plateforme"};
+      }
+
+      await db.query('UPDATE utilisateur SET est_banni = $1, date_banni = $2 WHERE id = $3', [true, dateNow, user_id]);
+
+      return { success: true, message: 'Utilisateur banni avec succès'};
+
+    } catch(error) {
+      return { success: false, message: 'Erreur lors de la désactivation d\'un utilisateur', error: error.message };
+    }
+  }
+
   toJSON() {
     return {
       id: this.id,
