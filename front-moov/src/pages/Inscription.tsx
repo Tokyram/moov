@@ -77,7 +77,7 @@ const Inscription: React.FC = () => {
                     <input placeholder="***************" className="input" type="password"/>
                 </div>
         
-                <div className="flex-row">
+                <div className="flex-row1">
                     <div>
                         <input type="radio"/>
                         <label>Se souvenir de moi </label>

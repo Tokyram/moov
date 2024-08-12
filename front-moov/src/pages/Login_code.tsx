@@ -28,17 +28,18 @@ const Login_code: React.FC = () => {
                 <div className="flex-column">
                 <label>Code de confirmation </label>
                 </div>
-                <div className="inputForm">
+                {/* <div className="inputForm">
                     <i className="bi bi-key"></i>
                     <input placeholder="***************" className="input" type="password"/>
+                </div> */}
+                <div className="codeForm">
+                    <input type="text" name="text" className="code" placeholder='0'/>
+                    <input type="text" name="text" className="code" placeholder='0'/>
+                    <input type="text" name="text" className="code" placeholder='0'/>
+                    <input type="text" name="text" className="code" placeholder='0'/>
                 </div>
         
-                <div className="flex-row">
-                    <div>
-                        <input type="radio"/>
-                        <label>Se souvenir de moi </label>
-                    </div>
-                </div>
+                
                 
                 <button type='submit' className="confirmation-button2">Envoyer</button>
             </form>

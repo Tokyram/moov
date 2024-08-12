@@ -241,4 +241,41 @@
     border: 1pc solid var(--text-color);
   }
   
-      
+    /* From Uiverse.io by Shoh2008 */ 
+.code {
+  max-width: 190px;
+  width: 50px;
+  height: 50px;
+  outline: none;
+  margin: 5px;
+  transition: .5s;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  /* text-overflow: ellipsis; */
+  /* transform: rotate(90deg); */
+  color: var(--grey-color);
+}
+
+code:focus {
+  width: 150px;
+  /* transform: rotate(0); */
+}
+
+.codeForm {
+  border-radius: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  display:flex ;
+  /* margin-bottom: 10%; */
+  justify-content: center;
+  transition: 0.2s ease-in-out;
+  /* background-color: var(--white-color); */
+  background-color: transparent;
+  
+}

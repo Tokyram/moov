@@ -31,10 +31,17 @@ const Mdp_code: React.FC = () => {
                 <div className="flex-column">
                 <label>Code de confirmation </label>
                 </div>
-                <div className="inputForm">
+                <div className="codeForm">
+                    <input type="text" name="text" className="code" placeholder='0'/>
+                    <input type="text" name="text" className="code" placeholder='0'/>
+                    <input type="text" name="text" className="code" placeholder='0'/>
+                    <input type="text" name="text" className="code" placeholder='0'/>
+                </div>
+                {/* <div className="inputForm">
                     <i className="bi bi-key"></i>
                     <input placeholder="Saisir le code de confirmation" className="input" type="password"/>
-                </div>
+                    
+                </div> */}
                 
                 <button type='submit' className="confirmation-button2">Envoyer</button>
             </form>

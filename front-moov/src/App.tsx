@@ -31,6 +31,7 @@ import Notification from './pages/Notification';
 import Facture from './pages/Facture';
 import Mdp_code from './pages/Mdp_code';
 import Mot_de_passe_oublie from './pages/Mot_de_passe_oublie';
+import Reservation_chauffeur from './pages/Reservation_chauffeur';
 
 setupIonicReact();
 
@@ -62,6 +63,7 @@ const App: React.FC = () => {
           <Route path="/paiementSuccess" component={PaiementSuccess} exact={true} />
           <Route path="/service" component={Service} exact={true} />
           <Route path="/reservation" component={Reservation} exact={true} />
+          <Route path="/reservation_chauffeur" component={Reservation_chauffeur} exact={true} />
           <Route path="/notification" component={Notification} exact={true} />
           <Route path="/facture" component={Facture} exact={true} />
           <Route path="/mdpcode" component={Mdp_code} exact={true} />

@@ -54,6 +54,13 @@ const Menu: React.FC = () => {
          
         </li>
         <li>
+          <a href="/reservation_chauffeur">
+            <i className="bi bi-arrow-down-right-square-fill"></i>
+            <span className="link_name">Réservation chauffeur*</span>
+          </a>
+         
+        </li>
+        <li>
           <div className="iocn-link">
             <a href="/notification">
                 <i className="bi bi-bell-fill"></i>
