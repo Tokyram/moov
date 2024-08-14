@@ -23,10 +23,17 @@
   border-radius: 10px;
   color: var(--text-color);
   background-color: var(--background-color);
-  padding: 5px;
-  margin: 5px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 10px;
-  border: 1px solid var(--primary-color)
+  padding:5px 10px;
+  margin:  5px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 10px 10px;
+  border: 1px solid var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transform: scale(1) !important;
+	animation: pulse-animation 2s infinite;
+
 }
 
 
@@ -36,12 +43,18 @@
     border-radius: 5px; /* Coins arrondis du popup */
     /* padding: 5px; */
     color: var(--white-color); /* Couleur du texte */
+    /* margin: 10px !important; */
+    p{
+      margin: 0 !important;
+      line-height: 1.5rem !important;
+      font-size: var(--text12);
+    }
   }
   
   /* Style personnalisé pour le conteneur du popup */
   .leaflet-popup {
     max-width: 200px; /* Largeur maximale du popup */
-    font-size: 14px; /* Taille de la police */
+    font-size: var(--text12); /* Taille de la police */
   }
   
   /* Style personnalisé pour la flèche du popup */

@@ -147,6 +147,7 @@ const MapComponent: React.FC = () => {
               setDistance={setDistance}
               setStart={setStart}
               setEnd={setEnd}
+              
             />
           </Suspense>
         </div>
