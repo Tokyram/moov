@@ -51,8 +51,8 @@
    .menu-burger {
     display: none; /* Par défaut, le menu burger est caché */
     border-radius: 50px;
-    z-index: 1010;
-    ;
+    z-index: 1100;
+    /* position: relative; */
   }
 
  
@@ -89,7 +89,7 @@
   .header.menu-open .menu-dropdown {
     opacity: 1;
     pointer-events: auto;
-    z-index: 10000;
+    z-index: 1000;
   }
   
  
@@ -104,12 +104,13 @@
     .menu-burger {
       display: block; /* Affiche le menu burger pour les écrans plus petits */
       cursor: pointer;
-      z-index: 1010;
+      z-index: 1100;
     }
   
     .menu-dropdown {
       opacity: 1;
       pointer-events: auto;
+      
     }
   
     .menu-dropdown {
@@ -198,6 +199,7 @@
     -webkit-transition: all 0.3s ease-in-out;
     -o-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
+    z-index: 1020;
   }
   
   .hamburger:hover{

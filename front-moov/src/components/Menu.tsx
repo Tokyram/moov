@@ -14,6 +14,9 @@ const Menu: React.FC = () => {
   }, []);
 
   return (
+    
+    
+
       <div className='sidebar'>
         <ul className="nav-links">
         <li>
@@ -104,7 +107,7 @@ const Menu: React.FC = () => {
                 <img src="assets/logo.png" alt="profileImg" />
             </div>
             <div className="name-job">
-                <div className="job"><p>En cas de problème, consultez notre <a href="/service"> service technique </a>  ou vous pouvez aller dans la <a href="/service">page d’aide.</a></p></div>
+                <div className="job"><p>En cas de problème, consultez notre <a href="/service"> <i className="bi bi-link-45deg"></i> service technique </a>  ou vous pouvez aller dans la <a href="/service">  page d’aide <i className="bi bi-info-circle"></i>. </a></p></div>
             </div>
             </div>
 

@@ -233,7 +233,7 @@
         justify-content: space-around;
         align-items: center;
         color: var(--text-color);
-        background-image: url('assets/flouo.png');
+        background-image: url('../../public/assets/flouo.png');
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center ;

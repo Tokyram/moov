@@ -32,10 +32,10 @@ const Mdp_code: React.FC = () => {
                 <label>Code de confirmation </label>
                 </div>
                 <div className="codeForm">
-                    <input type="text" name="text" className="code" placeholder='0'/>
-                    <input type="text" name="text" className="code" placeholder='0'/>
-                    <input type="text" name="text" className="code" placeholder='0'/>
-                    <input type="text" name="text" className="code" placeholder='0'/>
+                    <input maxLength={1} minLength={0} type="text" name="text" className="code" placeholder='0'/>
+                    <input maxLength={1} minLength={0} type="text" name="text" className="code" placeholder='0'/>
+                    <input maxLength={1} minLength={0} type="text" name="text" className="code" placeholder='0'/>
+                    <input maxLength={1} minLength={0} type="text" name="text" className="code" placeholder='0'/>
                 </div>
                 {/* <div className="inputForm">
                     <i className="bi bi-key"></i>

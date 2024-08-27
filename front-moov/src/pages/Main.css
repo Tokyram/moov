@@ -16,9 +16,17 @@
   }
 
   *{
-    /* font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Karla', sans-serif;
   }
   
- 
+  @font-face {
+    font-family: 'Karla';
+    src: url('/assets/fonts/Karla-VariableFont_wght.ttf') format('truetype');
+    /* src: url('/assets/fonts/Karla-Italic-VariableFont_wght.ttf') format('truetype'); */
+    /* font-weight: normal; */
+    font-style: normal;
+  }
+
+
+  
 

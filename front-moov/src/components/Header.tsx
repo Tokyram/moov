@@ -40,6 +40,7 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu }) => {
         <div className="notification">
           <a href="/notification">
             <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem' }}></i>
+            <i className="fi fi-ss-bell-notification-social-media"></i>
           </a>
         </div>
         <div className="menu-burger" onClick={handleHamburgerClick}>

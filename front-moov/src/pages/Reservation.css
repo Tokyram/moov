@@ -345,7 +345,7 @@
         background-color: var(--background-color);
         width: 100%;
         padding: 10px;
-        border-radius: 20px;
+        border-radius: 14px;
         margin-top: 10px; ;
         font-size: var(--text12);
         display: flex;

@@ -79,7 +79,7 @@ const RechercheMap: React.FC<RechercheMapProps> = ({
   const handleSearchTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchTextLocal(query);
-    if (query.length > 2) {
+    if (query.length > 0,5) {
       fetchSuggestions(query); // Fetch des suggestions si la longueur du texte de recherche est supérieure à 2 caractères
     } else {
       setLocalSuggestions([]);
@@ -103,23 +103,28 @@ const RechercheMap: React.FC<RechercheMapProps> = ({
 
   return (
     <>
-      <div className="search-item">
-        <input
+      <div className="search">
+        {/* <input
           value={searchTextLocal}
           onChange={handleSearchTextChange}
           className="input"
           placeholder="Recherche de lieu"
-        />
+        /> */}
+        <input type="text" value={searchTextLocal} onChange={handleSearchTextChange} className="search__input" placeholder="Rechercher un lieu"></input>
         {/* Bouton pour effacer le texte de recherche */}
         {searchTextLocal && (
           <button onClick={clearSearchText} className="clear-button">
             &times;
           </button>
-        )}
+          )}
         {/* Bouton pour lancer la recherche */}
-        <button onClick={searchLocation} className="button">
+        {/* <button onClick={searchLocation} className="button">
           <i className="bi bi-search" style={{ fontSize: '1.5rem' }}></i>
-        </button>
+        </button> */}
+
+        <button onClick={searchLocation} className="search__button">
+        <i className="bi bi-search" style={{ fontSize: '1.5rem' }}></i>
+    </button>
       </div>
       {/* Liste des suggestions */}
       {localSuggestions.length > 0 && (
