@@ -3,6 +3,7 @@ const path = require('path');
 const indexRouter = require('./routes/index');
 const utilisateurRouter = require('./routes/utilisateurRoute');
 const voitureRouter = require('./routes/voitureRoute');
+const chauffeurVoitureRouter = require('./routes/chauffeurVoitureRoute');
 
 
 const app = express();
@@ -23,6 +24,7 @@ app.use('/', indexRouter);
 // Utilisateurs routes
 app.use('/api/users', utilisateurRouter);
 app.use('/api/cars', voitureRouter);
+app.use('/api/cars_driver', chauffeurVoitureRouter);
 
 // Gestion des erreurs 404
 app.use((req, res, next) => {
