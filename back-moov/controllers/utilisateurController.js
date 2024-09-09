@@ -193,6 +193,18 @@ class UtilisateurController {
     }
   }
 
+  static async listChauffeurs(req, res) {
+    try {
+      const chauffeurs = Utilisateur.findAllChauffeur();
+
+      res.json({ success: true, data: chauffeurs.map(chauffeur => chauffeur.toJSON())});
+
+    } catch(error) {
+      console.error('Erreur lors de la récupération de la liste des chauffeurs:', error);
+      res.status(500).json({ success: false, message: 'Erreur serveur', error: error.message });
+    }
+  }
+
 }
 
 module.exports = UtilisateurController;

@@ -19,3 +19,17 @@ CREATE TABLE verification_code (
   expired_at TIMESTAMP NOT NULL,
   user_data JSONB NOT NULL
 );
+
+CREATE TABLE voiture (
+  id SERIAL PRIMARY KEY,
+  marque VARCHAR(255) NOT NULL,
+  modele VARCHAR(255) NOT NULL,
+  immatriculation VARCHAR(10) UNIQUE NOT NULL
+);
+
+CREATE TABLE chauffeur_voiture (
+  id SERIAL PRIMARY KEY,
+  chauffeur_id VARCHAR(255) NOT NULL,
+  voiture_id VARCHAR(255) NOT NULL,
+  date_affectation TIMESTAMP NOT NULL
+);

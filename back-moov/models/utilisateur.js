@@ -269,6 +269,33 @@ class Utilisateur {
     }
   }
 
+  static async findAllChauffeur() {
+    let chauffeurs = [];
+
+    const result = await db.query("SELECT * FROM utilisateur WHERE role = 'CHAUFFEUR'");
+
+    for (const row of result.rows) {
+      chauffeurs.push(
+        new Utilisateur(
+          row.id,
+          row.nom,
+          row.prenom,
+          row.telephone,
+          row.mail,
+          row.mdp,
+          row.adresse,
+          row.photo,
+          row.role,
+          row.date_inscription,
+          row.est_banni,
+          row.date_banni
+        )
+      );
+    }
+
+    return chauffeurs;
+  }
+
   toJSON() {
     return {
       id: this.id,

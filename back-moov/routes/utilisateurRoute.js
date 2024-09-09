@@ -29,5 +29,6 @@ router.put('/profile', authMiddleware, upload.single('photo'), UtilisateurContro
 router.get('/photo/:filename', UtilisateurController.servePhoto);
 router.get('/list', authMiddleware, UtilisateurController.listUsers);
 router.put('/bannir/:userId', authMiddleware, UtilisateurController.bannirUser);
+router.get('/chauffeurs', authMiddleware, UtilisateurController.listChauffeurs);
 
 module.exports = router;

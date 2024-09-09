@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const indexRouter = require('./routes/index');
 const utilisateurRouter = require('./routes/utilisateurRoute');
+const voitureRouter = require('./routes/voitureRoute');
+
 
 const app = express();
 const port = 3000;
@@ -20,6 +22,7 @@ app.use('/', indexRouter);
 
 // Utilisateurs routes
 app.use('/api/users', utilisateurRouter);
+app.use('/api/cars', voitureRouter);
 
 // Gestion des erreurs 404
 app.use((req, res, next) => {
