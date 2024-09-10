@@ -29,7 +29,7 @@ CREATE TABLE voiture (
 
 CREATE TABLE chauffeur_voiture (
   id SERIAL PRIMARY KEY,
-  chauffeur_id VARCHAR(255) NOT NULL,
-  voiture_id VARCHAR(255) NOT NULL,
+  chauffeur_id INT NOT NULL,
+  voiture_id INT NOT NULL,
   date_affectation TIMESTAMP NOT NULL
 );

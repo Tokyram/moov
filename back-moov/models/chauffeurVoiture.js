@@ -20,8 +20,8 @@ class ChauffeurVoiture {
 
     static async assignationCarDriver(idChauffeur, idVoiture) {
 
-        const result = await db.query('INSERT INTO chauffeur_voiture (chauffeur_id, voiture_id) VALUES ($1, $2) RETURNING *',
-            [idChauffeur, idVoiture]
+        const result = await db.query('INSERT INTO chauffeur_voiture (chauffeur_id, voiture_id, date_affectation) VALUES ($1, $2, $3) RETURNING *',
+            [idChauffeur, idVoiture, new Date()]
         );
 
         return result;

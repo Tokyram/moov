@@ -8,7 +8,7 @@ class ChauffeurVoitureController {
 
             const findCarDriver = await ChauffeurVoiture.findCarDriver(idChauffeur, idVoiture);
 
-            if(findCarDriver) {
+            if(!findCarDriver) {
                 const ass = await ChauffeurVoiture.assignationCarDriver(idChauffeur, idVoiture);
                 res.json({message: 'Assignation effectuée', data: ass});
             } else {
