@@ -61,6 +61,55 @@ class Course {
         );
     }
 
+    static async findReservationAttente({skip = 0, limit = 10}) {
+        let courses = [];
+
+        const params = [skip, limit];
+
+        const result = await db.query(
+            `SELECT * FROM course WHERE status = 'EN ATTENTE' OFFSET $1 LIMIT $2`,
+            params
+        );
+
+        for(const row of result.rows) {
+            courses.push(
+                new Course(
+                    row.id,
+                    row.passager_id,
+                    row.chauffeur_id,
+                    row.date_heure_depart,
+                    {
+                        longitude: row.adresse_depart_longitude,
+                        latitude: row.adresse_depart_latitude,
+                        adresse: row.adresse_depart
+                    },
+                    {
+                        longitude: row.adresse_arrivee_longitude,
+                        latitude: row.adresse_arrivee_latitude,
+                        adresse: row.adresse_arrivee
+                    },
+                    row.status,
+                    row.prix,
+                    row.kilometre
+                )
+            )
+        }
+
+        return courses;
+    }
+
+    static async countReservationAttente() {
+        let whereClause = '';
+        const params = [];
+        
+        const result = await db.query(
+          `SELECT COUNT(*) FROM course WHERE status = 'EN ATTENTE'`,
+          params
+        );
+      
+        return parseInt(result.rows[0].count);
+    }
+
     toJSON() {
         return {
             id: this.id,
