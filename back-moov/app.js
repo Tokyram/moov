@@ -4,6 +4,7 @@ const indexRouter = require('./routes/index');
 const utilisateurRouter = require('./routes/utilisateurRoute');
 const voitureRouter = require('./routes/voitureRoute');
 const chauffeurVoitureRouter = require('./routes/chauffeurVoitureRoute');
+const courseRouter = require('./routes/courseRoute');
 
 
 const app = express();
@@ -21,10 +22,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routes
 app.use('/', indexRouter);
 
-// Utilisateurs routes
+// Routes
 app.use('/api/users', utilisateurRouter);
 app.use('/api/cars', voitureRouter);
 app.use('/api/cars_driver', chauffeurVoitureRouter);
+app.use('/api/courses', courseRouter);
 
 // Gestion des erreurs 404
 app.use((req, res, next) => {
