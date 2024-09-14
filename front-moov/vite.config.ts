@@ -29,4 +29,14 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
   },
+
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://192.168.1.140:3000',
+        changeOrigin: true,
+        secure: true, // Utilisé pour accepter les certificats auto-signés
+      },
+    },
+  },
 })

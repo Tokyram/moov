@@ -1,10 +1,15 @@
-apply plugin: 'com.android.application'
+// apply plugin: 'com.android.application'
+// apply plugin: 'com.google.gms.google-services'
 
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+}
 android {
     namespace "io.ionic.starter" // Assurez-vous que cela est correctement mis à jour
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "io.ionic.moov" // Nouveau nom du paquet
+        applicationId "com.moov.moov" // Nouveau nom du paquet
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -35,7 +40,7 @@ repositories {
         dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
     }
 }
-
+ 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
@@ -46,6 +51,9 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+    implementation platform('com.google.firebase:firebase-bom:33.2.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging:24.0.1'
 }
 
 apply from: 'capacitor.build.gradle'

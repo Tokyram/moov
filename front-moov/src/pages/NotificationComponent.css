@@ -1,0 +1,14 @@
+/* styles.css */
+.toastify__toast--default {
+    background-color: #333;
+    color: #fff;
+    border-radius: 8px;
+    
+  }
+.nofi{
+    height: 300px;
+    width: 300px;
+    /* display: flex; */
+    /* align-items: center; */
+    /* flex-direction: column; */
+}
