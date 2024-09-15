@@ -6,5 +6,7 @@ const router = express.Router();
 
 router.post('/reserver', authMiddleware, CourseController.reserver);
 router.get('/attente', authMiddleware, CourseController.findReservationAttente);
+router.post('/accepter', authMiddleware, CourseController.accepterCourseChauffeur);
+router.post('/refuser', authMiddleware, CourseController.refuserCourseChauffeur);
 
 module.exports = router;

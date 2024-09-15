@@ -99,15 +99,28 @@ class Course {
     }
 
     static async countReservationAttente() {
-        let whereClause = '';
-        const params = [];
         
         const result = await db.query(
-          `SELECT COUNT(*) FROM course WHERE status = 'EN ATTENTE'`,
-          params
+          `SELECT COUNT(*) FROM course WHERE status = 'EN ATTENTE'`
         );
       
         return parseInt(result.rows[0].count);
+    }
+
+    static async findConfirmationChauffeur(courseId, chauffeurId, status) {
+        const result = await db.query(
+            `SELECT COUNT(*) FROM confirmation_course_chauffeur WHERE course_id = $1 AND chauffeur_id = $2 AND status = $3`,
+            [courseId, chauffeurId, status]
+        );
+
+        return parseInt(result.rows[0].count);
+    }
+
+    static async confirmationCourseChauffeur(courseId, chauffeurId, status) {
+        const query = `INSERT INTO confirmation_course_chauffeur (course_id, chauffeur_id, status) VALUES ($1, $2, $3) RETURNING *`;
+        const result = await db.query(query, [courseId, chauffeurId, status]);
+
+        return result.rows[0];
     }
 
     toJSON() {

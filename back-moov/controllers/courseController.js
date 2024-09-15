@@ -1,4 +1,5 @@
 const Course = require('../models/course');
+const { param } = require('../routes/courseRoute');
 
 class CourseController {
     static async reserver(req, res) {
@@ -40,6 +41,58 @@ class CourseController {
         } catch(error) {
             console.error('Erreur lors de la récupération de la liste des réservation en cours:', error);
             res.status(500).json({ success: false, message: 'Erreur serveur', error: error.message });
+        }
+    }
+
+    static async accepterCourseChauffeur(req, res) {
+        try {
+            const { courseId, chauffeurId } = req.body;
+            const findAcceptation = await Course.findConfirmationChauffeur(courseId, chauffeurId, 'ACCEPTE');
+
+            if(findAcceptation > 0) {
+                res.status(400).json({ success: false, message: 'Vous avez déjà accepté cette course' });
+            }
+
+            const confirmation = await Course.confirmationCourseChauffeur(courseId, chauffeurId, 'ACCEPTE');
+            res.json({
+                success: true,
+                message: 'Course acceptée avec succès',
+                data: confirmation
+            })
+
+        } catch(error) {
+            console.error('Erreur lors de l\'acceptation de la course:', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Erreur serveur', 
+                error: error.message 
+            });
+        }
+    }
+
+    static async refuserCourseChauffeur(req, res) {
+        try {
+            const { courseId, chauffeurId } = req.body;
+            const findAcceptation = await Course.findConfirmationChauffeur(courseId, chauffeurId, 'REFUSE');
+
+            if(findAcceptation > 0) {
+                res.status(400).json({ success: false, message: 'Vous avez déjà refusé cette course' });
+            }
+
+            const confirmation = await Course.confirmationCourseChauffeur(courseId, chauffeurId, 'REFUSE');
+            res.json({
+                success: true,
+                message: 'Course refusée avec succès',
+                data: confirmation
+            })
+
+        } catch(error) {
+            console.error('Erreur lors du refus de la course:', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Erreur serveur', 
+                error: error.message 
+            });
         }
     }
 }
