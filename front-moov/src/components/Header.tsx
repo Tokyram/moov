@@ -4,7 +4,7 @@ import './Header.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useHistory, useLocation } from 'react-router';
 import { PushNotifications, PushNotificationSchema } from '@capacitor/push-notifications';
-import { setupNotificationListener } from '../../pushNotifications'; // Import de la fonction de gestion des notifications
+// import { addListeners, registerNotifications, getDeliveredNotifications } from '../../pushNotifications'; // Import de la fonction de gestion des notifications
 
 interface HeaderProps {
   toggleMenu: () => void;
@@ -17,27 +17,27 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu }) => {
   const history = useHistory();
   const [notificationData, setNotificationData] = useState<PushNotificationSchema | null>(null);
 
-  useEffect(() => {
-    // Initialiser les notifications
-    // setupNotificationListener();
-    setupNotificationListener((notification) => {
-      console.log('Notification reçue dans le composant :', notification);
-      setNotificationData(notification); // Mise à jour de l'état avec la notification reçue
-    });
-    // Fonction pour écouter les notifications
-    const handleNotificationReceived = (notification: any) => {
-      console.log('Notification reçue dans le Header :', notification);
-      setNotificationCount((prevCount) => prevCount + 1); // Incrémenter le compteur
-    };
+  // useEffect(() => {
+  //   // Initialiser les notifications
+  //   // setupNotificationListener();
+  //   addListeners((notification) => {
+  //     console.log('Notification reçue dans le composant :', notification);
+  //     setNotificationData(notification); // Mise à jour de l'état avec la notification reçue
+  //   });
+  //   // Fonction pour écouter les notifications
+  //   const handleNotificationReceived = (notification: any) => {
+  //     console.log('Notification reçue dans le Header :', notification);
+  //     setNotificationCount((prevCount) => prevCount + 1); // Incrémenter le compteur
+  //   };
 
-    // Ajouter un listener pour recevoir les notifications dans le Header
-    PushNotifications.addListener('pushNotificationReceived', handleNotificationReceived);
+  //   // Ajouter un listener pour recevoir les notifications dans le Header
+  //   PushNotifications.addListener('pushNotificationReceived', handleNotificationReceived);
 
-    // Nettoyer le listener à la destruction du composant
-    return () => {
-      PushNotifications.removeAllListeners();
-    };
-  }, []);
+  //   // Nettoyer le listener à la destruction du composant
+  //   return () => {
+  //     PushNotifications.removeAllListeners();
+  //   };
+  // }, []);
 
   const handleHamburgerClick = () => {
     setIsHamburgerActive(!isHamburgerActive);
@@ -70,13 +70,9 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu }) => {
         <div className="notification">
           <a href="/notification" onClick={handleNotificationClick}>
             <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i>
-<<<<<<< Updated upstream
-            {notificationCount >= 0 && (
-=======
-            {notificationCount > 0 && (
->>>>>>> Stashed changes
+            {/* {notificationCount >= 0 && (
               <span className="badge">{notificationCount}</span> // Afficher le badge rouge avec le nombre de notifications
-            )}
+            )} */}
           </a>
         </div>
         <div className="menu-burger" onClick={handleHamburgerClick}>

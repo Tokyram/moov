@@ -29,15 +29,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             System.out.println( "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            sendNotification(remoteMessage.getFrom(), remoteMessage.getNotification().getBody()  );
+
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
-        sendNotification(remoteMessage.getFrom(),remoteMessage.getNotification().getBody() );
-        sendNotification(remoteMessage.getFrom(),remoteMessage.getNotification().getBody() );
+
     }
 
-    private void sendNotification(String from, String body) {
+
+    private void sendNotification(String from, String body ) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
