@@ -20,6 +20,8 @@ class ChauffeurVoitureController {
             res.status(500).json({ message: 'Erreur', error: error.message });
         }
     }
+
+    
 }
 
 module.exports = ChauffeurVoitureController;
