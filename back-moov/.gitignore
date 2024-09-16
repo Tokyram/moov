@@ -40,3 +40,5 @@ temp/
 *.pid
 *.seed
 *.pid.lock
+
+serviceAccountKey.json
