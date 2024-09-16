@@ -14,10 +14,10 @@ dependencies {
     implementation project(':capacitor-camera')
     implementation project(':capacitor-haptics')
     implementation project(':capacitor-keyboard')
+    implementation project(':capacitor-local-notifications')
     implementation project(':capacitor-push-notifications')
     implementation project(':capacitor-splash-screen')
     implementation project(':capacitor-status-bar')
-    implementation 'com.google.firebase:firebase-messaging:24.0.1'
 
 }
 

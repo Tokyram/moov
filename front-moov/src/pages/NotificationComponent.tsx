@@ -1,35 +1,23 @@
-import React, { useEffect } from 'react';
-import { requestPushNotificationsPermission, setupNotificationListener } from '../../pushNotifications';
-import { ToastContainer } from 'react-toastify';
-import './NotificationComponent.css';
+import React, { useState } from 'react';
+import { PushNotificationSchema } from '@capacitor/push-notifications';
+import { usePushNotificationListener } from '../../pushNotifications';
 
 const NotificationComponent: React.FC = () => {
-  useEffect(() => {
-    const setupNotifications = async () => {
-      try {
-        await requestPushNotificationsPermission();
-        setupNotificationListener();
-      } catch (error) {
-        console.error('Erreur lors de la configuration des notifications :', error);
-      }
-    };
+  const [notifications, setNotifications] = useState<PushNotificationSchema[]>([]);
 
-    setupNotifications();
-  }, []);
+  usePushNotificationListener((notification) => {
+    // Ajouter la notification reçue à la liste
+    setNotifications(prevNotifications => [...prevNotifications, notification]);
+  });
 
   return (
     <div>
-      <ToastContainer 
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={true}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <h1>Notifications reçues :</h1>
+      <ul>
+        {notifications.map((notification, index) => (
+          <li key={index}>{notification.title} - {notification.body}</li>
+        ))}
+      </ul>
     </div>
   );
 };
