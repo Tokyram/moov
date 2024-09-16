@@ -158,6 +158,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
     setChauffeurs(chauffeurs);
     setRealTimeChauffeur(null); // Réinitialiser le suivi du chauffeur en temps réel
   };
+  console.log(position);
 
   return (
     <>

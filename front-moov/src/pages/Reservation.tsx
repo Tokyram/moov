@@ -128,7 +128,7 @@ const Reservation: React.FC = () => {
 
                 {showDetailPopup && (
                   
-                    <div className="popup-overlay3">
+                    <div className="popup-overlay3" onClick={handleCloseDetail}>
                         <button className="close-button3" onClick={handleCloseDetail}>
                           &times;
                         </button>

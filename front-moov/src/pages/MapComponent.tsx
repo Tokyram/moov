@@ -6,6 +6,7 @@ import Menu from '../components/Menu';
 const LeafletMap = lazy(() => import('./LeafletMap'));
 import 'leaflet/dist/leaflet.css';
 import RechercheMap from '../components/RechercheMap';
+import NotificationComponent from './NotificationComponent';
 interface Suggestion {
   display_name: string;
   lat: string;
@@ -113,6 +114,8 @@ const MapComponent: React.FC = () => {
 
   return (
     <div className="homeMap">
+      <NotificationComponent />
+
       <Header toggleMenu={toggleMenu} />
       {isMenuOpen && <Menu />}
       

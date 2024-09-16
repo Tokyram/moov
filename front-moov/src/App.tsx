@@ -47,12 +47,16 @@ const App: React.FC = () => {
         splashElement.classList.add('hidden');
       }
     }, 1000);
+    // Demande du token Firebase Cloud Messaging
+    
   }, []);
-
+ 
+  
   return (
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
+          {/* <Route path="/notification_push" component={NotificationComponent} exact={true} /> */}
           <Route path="/" component={Start_page} exact={true} />
           <Route path="/home" component={Home} exact={true} />
           <Route path="/inscription" component={Inscription} exact={true} />
