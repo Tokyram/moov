@@ -9,6 +9,16 @@ const getCompletedCoursesByPassager = async (passagerId) => {
     }
 };
 
+const getCompletedCoursesByChauffeur = async (chauffeurId) => {
+    try {
+        const courses = await Course.findCompletedCoursesByChauffeur(chauffeurId);
+        return courses;
+    } catch (error) {
+        throw new Error('Erreur dans le service de récupération des courses terminées pour le chauffeur : ' + error.message);
+    }
+};
+
 module.exports = {
-    getCompletedCoursesByPassager
+    getCompletedCoursesByPassager,
+    getCompletedCoursesByChauffeur
 };

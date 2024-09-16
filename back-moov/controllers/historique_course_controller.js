@@ -11,6 +11,18 @@ const getCompletedCourses = async (req, res) => {
     }
 };
 
+const getCompletedCoursesByChauffeur = async (req, res) => {
+    const chauffeurId = req.params.id;
+
+    try {
+        const courses = await courseService.getCompletedCoursesByChauffeur(chauffeurId);
+        res.status(200).json({ success: true, data: courses });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
-    getCompletedCourses
+    getCompletedCourses,
+    getCompletedCoursesByChauffeur
 };
