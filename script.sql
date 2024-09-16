@@ -71,3 +71,22 @@ CREATE TABLE confirmation_course_chauffeur (
   date_confirmation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   status VARCHAR(20) NOT NULL
 );
+
+CREATE TABLE paiement (
+  id SERIAL PRIMARY KEY,
+  course_id INT NOT NULL,
+  montant FLOAT NOT NULL,
+  date_paiement TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status VARCHAR(20) NOT NULL,
+  stripe_payment_intent_id VARCHAR(255) NOT NULL,
+  stripe_charge_id VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE facture (
+  id SERIAL PRIMARY KEY,
+  paiement_id INT NOT NULL,
+  montant FLOAT NOT NULL,
+  date_facture TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  stripe_invoice_id VARCHAR(255) NOT NULL,
+  stripe_invoice_url VARCHAR(255) NOT NULL
+);

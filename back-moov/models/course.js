@@ -149,6 +149,17 @@ class Course {
             kilometre: this.kilometre
         };
     }
+
+    static async attribuerChauffeur(courseId, chauffeurId) {
+        const query = `
+            UPDATE course 
+            SET chauffeur_id = $1, status = 'ATTRIBUEE' 
+            WHERE id = $2 AND status = 'EN ATTENTE'
+            RETURNING *
+        `;
+        const result = await db.query(query, [chauffeurId, courseId]);
+        return result.rows[0];
+    }
 }
 
 module.exports = Course;

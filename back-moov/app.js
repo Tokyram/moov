@@ -9,6 +9,7 @@ const voitureRouter = require('./routes/voitureRoute');
 const chauffeurVoitureRouter = require('./routes/chauffeurVoitureRoute');
 const notificationRoutes = require("./routes/notificationRoutes");
 const courseRouter = require('./routes/courseRoute');
+const paiementRouter = require('./routes/paiementRoute');
 const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
@@ -54,6 +55,7 @@ app.use('/api/cars_driver', chauffeurVoitureRouter);
 app.use('/api/notifications', notificationRoutes);
 app.use('/firebase', express.static(path.join(__dirname, 'public/firebase')));
 app.use('/api/courses', courseRouter);
+app.use('/api/paiement', paiementRouter);
 
 // Endpoint pour recevoir et enregistrer le token FCM
 app.post('/api/save-token', (req, res) => {
