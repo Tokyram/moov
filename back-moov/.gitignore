@@ -40,3 +40,4 @@ temp/
 *.pid
 *.seed
 *.pid.lock
+back-moov/serviceAccountKey.json
