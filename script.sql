@@ -31,7 +31,7 @@ CREATE TABLE chauffeur_voiture (
   id SERIAL PRIMARY KEY,
   chauffeur_id INT NOT NULL,
   voiture_id INT NOT NULL,
-  date_affectation TIMESTAMP NOT NULL
+  date_affectation TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE EXTENSION IF NOT EXISTS postgis;

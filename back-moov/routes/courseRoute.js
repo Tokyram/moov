@@ -8,5 +8,6 @@ router.post('/reserver', authMiddleware, CourseController.reserver);
 router.get('/attente', authMiddleware, CourseController.findReservationAttente);
 router.post('/accepter', authMiddleware, CourseController.accepterCourseChauffeur);
 router.post('/refuser', authMiddleware, CourseController.refuserCourseChauffeur);
+router.get('/chauffeurs-acceptes/:courseId', authMiddleware, CourseController.getChauffeurAcceptes);
 
 module.exports = router;

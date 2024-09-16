@@ -123,6 +123,19 @@ class Course {
         return result.rows[0];
     }
 
+    static async getChauffeurAcceptes(courseId) {
+        const query = `
+            SELECT u.id, u.nom, u.prenom, u.telephone, v.marque, v.modele, v.immatriculation 
+            FROM utilisateur u
+            JOIN confirmation_course_chauffeur cc ON u.id = cc.chauffeur_id
+            LEFT JOIN chauffeur_voiture cv ON u.id = cv.chauffeur_id
+            LEFT JOIN voiture v on cv.voiture_id = v.id
+            WHERE cc.course_id = $1 AND cc.status = 'ACCEPTE'
+        `;
+        const result = await db.query(query, [courseId]);
+        return result.rows;
+    }
+
     toJSON() {
         return {
             id: this.id,
