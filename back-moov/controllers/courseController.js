@@ -95,6 +95,26 @@ class CourseController {
             });
         }
     }
+
+    static async getChauffeurAcceptes(req, res) {
+        try {
+            const { courseId } = req.params;
+            const chauffeurs = await Course.getChauffeurAcceptes(courseId);
+
+            res.json({
+                success: true,
+                data: chauffeurs
+            });
+
+        } catch(error) {
+            console.error('Erreur lors de la récupération des chauffeurs:', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Erreur serveur', 
+                error: error.message 
+            });
+        }
+    }
 }
 
 module.exports = CourseController;
