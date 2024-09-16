@@ -4,4 +4,6 @@ const historique_course_controller = require('../controllers/historique_course_c
 
 router.get('/historique/passager/:id', historique_course_controller.getCompletedCourses);
 router.get('/historique/chauffeur/:id', historique_course_controller.getCompletedCoursesByChauffeur);
+router.get('/details/:id', historique_course_controller.getCourseDetails);
+
 module.exports = router;

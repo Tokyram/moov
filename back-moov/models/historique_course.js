@@ -41,6 +41,18 @@ class Course {
             throw new Error('Erreur lors de la récupération des courses terminées pour le chauffeur : ' + error.message);
         }
     }
+
+    static async findCourseById(courseId) {
+        try {
+            const result = await db.query('SELECT * FROM course WHERE id = $1', [courseId]);
+            if (result.rows.length > 0) {
+                return new Course(...Object.values(result.rows[0]));
+            }
+            return null;
+        } catch (error) {
+            throw new Error('Erreur lors de la récupération des détails de la course : ' + error.message);
+        }
+    }
 }
 
 module.exports = Course;

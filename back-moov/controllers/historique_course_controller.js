@@ -22,7 +22,23 @@ const getCompletedCoursesByChauffeur = async (req, res) => {
     }
 };
 
+const getCourseDetails = async (req, res) => {
+    const courseId = req.params.id;
+
+    try {
+        const course = await courseService.getCourseDetailsById(courseId);
+        if (course) {
+            res.status(200).json({ success: true, data: course });
+        } else {
+            res.status(404).json({ success: false, message: 'Course not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     getCompletedCourses,
-    getCompletedCoursesByChauffeur
+    getCompletedCoursesByChauffeur,
+    getCourseDetails
 };
