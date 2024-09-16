@@ -1,3 +1,7 @@
+<<<<<<< Updated upstream
+=======
+// src/services/pushNotifications.ts
+>>>>>>> Stashed changes
 import { PushNotifications, PushNotificationSchema } from '@capacitor/push-notifications';
 import { FirebaseMessaging } from '@capacitor-firebase/messaging';
 import { LocalNotifications } from '@capacitor/local-notifications';
@@ -26,7 +30,11 @@ export const requestPushNotificationsPermission = async () => {
       console.log('Token FCM :', token.token);
 
       // Envoi du token au backend pour l'associer à l'utilisateur ou à l'appareil
+<<<<<<< Updated upstream
       await fetch('https://5b89-102-18-34-151.ngrok-free.app/api/save-token', {
+=======
+      await fetch('https://488f-102-18-34-151.ngrok-free.app/api/save-token', {
+>>>>>>> Stashed changes
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,6 +60,7 @@ export const requestPushNotificationsPermission = async () => {
   }
 };
 
+<<<<<<< Updated upstream
 // Écoute des notifications et affichage de la notification dans l'application
 export const setupNotificationListener = async (onNotificationReceived: (notification: PushNotificationSchema) => void) => {
   console.log('Le listener pour les notifications push a été initialisé.');
@@ -59,6 +68,24 @@ export const setupNotificationListener = async (onNotificationReceived: (notific
   // Listener pour la réception du token
   PushNotifications.addListener('registration', token => {
     console.info('Registration token: ', token.value);
+=======
+// Écoute des notifications
+// export const setupNotificationListener = () => {
+//   PushNotifications.addListener('pushNotificationReceived', (notification) => {
+//     console.log('Notification reçue :', notification);
+//     alert('Notification reçue : ' + JSON.stringify(notification));
+//   });
+
+//   PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+//     console.log('Action sur la notification :', notification);
+//     alert('Action sur la notification : ' + JSON.stringify(notification));
+//   });
+// };
+export const setupNotificationListener = (onNotificationReceived: (notification: PushNotificationSchema) => void) => {
+  PushNotifications.addListener('pushNotificationReceived', (notification) => {
+    console.log('Notification reçue :', notification);
+    onNotificationReceived(notification); // Appel de la fonction callback
+>>>>>>> Stashed changes
   });
 
   // Listener pour les erreurs d'enregistrement
@@ -93,7 +120,12 @@ export const setupNotificationListener = async (onNotificationReceived: (notific
 
   // Listener pour les actions effectuées sur une notification
   PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+<<<<<<< Updated upstream
     console.log('Action effectuée sur la notification :', JSON.stringify(notification));
+=======
+    console.log('Action sur la notification :', notification);
+    // Ici, vous pouvez gérer les actions effectuées par l'utilisateur
+>>>>>>> Stashed changes
   });
 };
 

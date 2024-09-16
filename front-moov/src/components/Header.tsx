@@ -70,7 +70,11 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu }) => {
         <div className="notification">
           <a href="/notification" onClick={handleNotificationClick}>
             <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i>
+<<<<<<< Updated upstream
             {notificationCount >= 0 && (
+=======
+            {notificationCount > 0 && (
+>>>>>>> Stashed changes
               <span className="badge">{notificationCount}</span> // Afficher le badge rouge avec le nombre de notifications
             )}
           </a>

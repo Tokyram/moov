@@ -33,8 +33,7 @@ import Mdp_code from './pages/Mdp_code';
 import Mot_de_passe_oublie from './pages/Mot_de_passe_oublie';
 import Reservation_chauffeur from './pages/Reservation_chauffeur';
 import Notification_chauffeur from './pages/Notification_chauffeur';
-// import NotificationComponent from './pages/NotificationComponent';
-import { requestPushNotificationsPermission, setupNotificationListener } from '../pushNotifications';
+
 setupIonicReact();
 
 const App: React.FC = () => {
@@ -51,11 +50,7 @@ const App: React.FC = () => {
     // Demande du token Firebase Cloud Messaging
     
   }, []);
-  useEffect(() => {
-    // Demander la permission et configurer les notifications lors du montage de l'application
-    requestPushNotificationsPermission();
-    setupNotificationListener();
-  }, []);
+ 
   
   return (
     <IonApp>

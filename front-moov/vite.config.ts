@@ -30,13 +30,13 @@ export default defineConfig({
     setupFiles: './src/setupTests.ts',
   },
 
-  server: {
-    proxy: {
-      '/api': {
-        target: 'https://192.168.1.140:3000',
-        changeOrigin: true,
-        secure: true, // Utilisé pour accepter les certificats auto-signés
-      },
-    },
-  },
+  // server: {
+  //   proxy: {
+  //     '/api': {
+  //       target: 'https://1ac8-41-74-208-240.ngrok-free.app',
+  //       changeOrigin: true,
+  //       secure: true, // Utilisé pour accepter les certificats auto-signés
+  //     },
+  //   },
+  // },
 })
