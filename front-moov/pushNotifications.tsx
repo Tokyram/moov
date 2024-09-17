@@ -1,6 +1,7 @@
 import { PushNotifications, PushNotificationSchema } from '@capacitor/push-notifications';
 import { FirebaseMessaging } from '@capacitor-firebase/messaging';
 import { useEffect } from 'react';
+import url_api from './src/constante';
 
 // Demander la permission pour les notifications push
 export const requestPushNotificationsPermission = async () => {
@@ -16,7 +17,7 @@ export const requestPushNotificationsPermission = async () => {
       console.log('Token FCM :', token.token);
 
       // Envoi du token au backend pour l'associer à l'utilisateur ou à l'appareil
-      await fetch('https://5b55-41-74-213-76.ngrok-free.app/api/save-token', {
+      await fetch(`${url_api}/save-token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

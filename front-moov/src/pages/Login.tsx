@@ -1,8 +1,35 @@
 import React, { useState } from 'react';
 import './Login.css'; 
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { Storage } from '@capacitor/storage';
+import { login } from '../services/api';
+import { useHistory } from 'react-router-dom';
+import { useIonRouter } from '@ionic/react';
+
 const Login: React.FC = () => {
- 
+
+    const router = useIonRouter();
+    
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleLogin = async (username: string, password: string) => {
+        try {
+          const response = await login(username, password);
+          if (response.data.token) {
+            await Storage.set({ key: 'token', value: response.data.token });
+            console.log("je suis la");
+            router.push('/map', 'root', 'replace');
+          }
+        } catch (error) {
+          console.error('Erreur de connexion', error);
+        }
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        handleLogin(username, password);
+      };
 
   return (
     <div className="home">
@@ -21,7 +48,7 @@ const Login: React.FC = () => {
 
             </div>
 
-            <form className="form" action='/map'>
+            <form className="form" onSubmit={handleSubmit}>
 
                 <div className="flex-column">
                     <label>TéléPhone </label>
@@ -29,7 +56,13 @@ const Login: React.FC = () => {
 
                 <div className="inputForm">
                     <i className="bi bi-phone"></i>
-                    <input placeholder="034 00 000 00" className="input" type="number"/>
+                    <input 
+                        value={username} 
+                        onChange={(e) => setUsername(e.target.value)} 
+                        placeholder="034 00 000 00" 
+                        className="input" 
+                        type="text"
+                    />
                 </div>
         
                 <div className="flex-column">
@@ -38,7 +71,13 @@ const Login: React.FC = () => {
 
                 <div className="inputForm">
                     <i className="bi bi-key"></i>
-                    <input placeholder="***************" className="input" type="password"/>
+                    <input 
+                        value={password} 
+                        onChange={(e) => setPassword(e.target.value)} 
+                        placeholder="***************" 
+                        className="input" 
+                        type="password"
+                    />
                     
                 </div>
         

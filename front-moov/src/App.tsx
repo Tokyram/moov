@@ -14,7 +14,7 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 import Start_page from './pages/Start_page';
 import { SplashScreen } from '@capacitor/splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './splash.css';
 import Inscription from './pages/Inscription';
 import Login_code from './pages/Login_code';
@@ -33,6 +33,7 @@ import Mdp_code from './pages/Mdp_code';
 import Mot_de_passe_oublie from './pages/Mot_de_passe_oublie';
 import Reservation_chauffeur from './pages/Reservation_chauffeur';
 import Notification_chauffeur from './pages/Notification_chauffeur';
+import { Storage } from '@capacitor/storage';
 
 setupIonicReact();
 
@@ -51,17 +52,37 @@ const App: React.FC = () => {
     
   }, []);
  
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const checkLoginStatus = async () => {
+    const token = await Storage.get({ key: 'token' });
+    if (token.value) {
+      setIsLoggedIn(true);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
   
+  if (isLoading) {
+    return <Start_page />;
+  }
+
   return (
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
           {/* <Route path="/notification_push" component={NotificationComponent} exact={true} /> */}
-          <Route path="/" component={Start_page} exact={true} />
+          <Route exact path="/">
+            {isLoggedIn ? <Redirect to="/map" /> : <Redirect to="/home" />}
+          </Route>
           <Route path="/home" component={Home} exact={true} />
           <Route path="/inscription" component={Inscription} exact={true} />
           <Route path="/login_code" component={Login_code} exact={true} />
-          <Route path="/map" component={MapComponent} exact={true} />
+          <Route path="/map" render={() => isLoggedIn ? <MapComponent /> : <Redirect to="/home" />} />
           <Route path="/avis" component={Avis} exact={true} />
           <Route path="/profil" component={Profil} exact={true} />
           <Route path="/paiement" component={Paiement} exact={true} />
