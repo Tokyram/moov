@@ -1,6 +1,6 @@
 const Course = require('../models/course');
 const { param } = require('../routes/courseRoute');
-
+const CourseService = require('../services/course_service');
 class CourseController {
     static async reserver(req, res) {
         try {
@@ -115,6 +115,24 @@ class CourseController {
             });
         }
     }
+
+    static async getCourseDetails(req, res) {
+        const courseId = req.params.courseId;
+        const userId = req.user.id; // ID de l'utilisateur connecté
+    
+        try {
+            const courseDetails = await CourseService.getCourseDetailsById(courseId, userId);
+            if (courseDetails) {
+                res.status(200).json(courseDetails);
+            } else {
+                res.status(404).json({ error: 'Détails de la course non trouvés' });
+            }
+        } catch (error) {
+            console.error('Controller Error:', error.message);
+            res.status(500).json({ error: error.message });
+        }
+    }
+    
 }
 
 module.exports = CourseController;

@@ -1,6 +1,6 @@
 // routes/avisRoutes.js
 const express = require('express');
-const AvisController = require('../controllers/avis_controller');
+const AvisController = require('../controllers/avis_controller.js');
 
 const router = express.Router();
 

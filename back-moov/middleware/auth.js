@@ -8,6 +8,7 @@ const authMiddleware = async (req, res, next) => {
     const user = await User.findByPhone(decoded.telephone);
 
     if (!user) {
+      res.status(200).json({ message: 'authentifier.' });
       throw new Error();
     }
 

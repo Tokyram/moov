@@ -90,3 +90,13 @@ CREATE TABLE facture (
   stripe_invoice_id VARCHAR(255) NOT NULL,
   stripe_invoice_url VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE avis (
+    id SERIAL PRIMARY KEY,
+    passager_id INT NOT NULL, 
+    chauffeur_id INT NOT NULL, 
+    etoiles INT NOT NULL CHECK (etoiles >= 1 AND etoiles <= 5), 
+    commentaire TEXT NOT NULL,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    auteur VARCHAR(10) NOT NULL, 
+);

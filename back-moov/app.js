@@ -23,25 +23,8 @@ const port = 3000;
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// app.use(cors({
-//   origin: 'https://1ac8-41-74-208-240.ngrok-free.app', // ou l'origine spécifique de votre application
-//   methods: ['GET', 'POST'],
-//   allowedHeaders: ['Content-Type']
-// }));
+
 app.use(cors());  
-// app.use(cors({
-//   origin: 'http://localhost:3000',
-// }));
-
-// const corsOptions = {
-//   origin: ['https://localhost', 'https://f48b-41-74-208-240.ngrok-free.app'], // Ajoute ici les origines autorisées
-//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//   credentials: true,
-//   optionsSuccessStatus: 204
-// };
-
-// app.use(cors(corsOptions));
-// app.use(cors({ origin: '*' }));
 
 // Middleware
 app.use(express.json());
@@ -59,7 +42,6 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/firebase', express.static(path.join(__dirname, 'public/firebase')));
 app.use('/api/courses', courseRouter);
 app.use('/api/paiement', paiementRouter);
-
 app.use('/api/historique_course', historique_course);
 app.use('/api/avis', avis);
 
@@ -70,9 +52,6 @@ app.post('/api/save-token', (req, res) => {
   if (token) {
     // Affiche le token dans la console
     console.log('Token reçu du client:', token);
-    
-    // Sauvegardez le token dans votre base de données ici si nécessaire
-    // Exemple: saveTokenToDatabase(token);
     
     // Réponse de succès
     res.status(200).send('Token reçu avec succès');

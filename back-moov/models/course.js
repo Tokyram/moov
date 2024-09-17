@@ -160,6 +160,40 @@ class Course {
         const result = await db.query(query, [chauffeurId, courseId]);
         return result.rows[0];
     }
+
+    // services/courseService.js
+
+    static async findCourseDetailsById(courseId, userId) {
+        try {
+            const result = await db.query(`
+                SELECT 
+                    course.id AS course_id,
+                    course.date_heure_depart,
+                    course.adresse_depart,
+                    course.adresse_arrivee,
+                    course.status AS status,  -- Ajout de la colonne status
+                    utilisateur_passager.id AS passager_id,
+                    utilisateur_passager.nom AS passager_nom,
+                    utilisateur_passager.mail AS passager_email,
+                    utilisateur_passager.telephone AS passager_telephone,
+                    utilisateur_chauffeur.id AS chauffeur_id,
+                    utilisateur_chauffeur.nom AS chauffeur_nom,
+                    utilisateur_chauffeur.mail AS chauffeur_email,
+                    utilisateur_chauffeur.telephone AS chauffeur_telephone
+                FROM course
+                JOIN utilisateur AS utilisateur_passager ON course.passager_id = utilisateur_passager.id
+                JOIN utilisateur AS utilisateur_chauffeur ON course.chauffeur_id = utilisateur_chauffeur.id
+                WHERE course.id = $1
+                AND (course.passager_id = $2 OR course.chauffeur_id = $2)
+            `, [courseId, userId]);
+    
+            return result.rows.map(row => new Course(...Object.values(row)));
+        } catch (error) {
+            console.error('Erreur lors de la récupération des détails de la course :', error.message);
+            throw new Error('Erreur lors de la récupération des détails de la course : ' + error.message);
+        }
+    }
+    
 }
 
 module.exports = Course;
