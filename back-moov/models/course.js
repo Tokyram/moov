@@ -303,7 +303,14 @@ class Course {
     }
     
     static async commencerCourse(courseId) {
-
+        const query = `
+            UPDATE course 
+            SET status = 'EN COURS' 
+            WHERE id = $1
+            RETURNING *
+        `;
+        const result = await db.query(query, [courseId]);
+        return result.rows[0];
     }
 }
 

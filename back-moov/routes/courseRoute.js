@@ -16,4 +16,6 @@ router.get('/chauffeur/total-distance', authMiddleware, CourseController.getTota
 router.get('/passager/total-distance', authMiddleware, CourseController.getTotalDistanceByPassager);
 router.get('/passager/total-reservations', authMiddleware, CourseController.getTotalReservationsByClient);
 router.get('/chauffeur/total-reservations', authMiddleware, CourseController.getTotalReservationsByChauffeur);
+router.get('/commencer/courseId', authMiddleware, CourseController.commencerCourse);
+
 module.exports = router;

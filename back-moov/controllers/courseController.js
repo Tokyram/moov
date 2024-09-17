@@ -202,6 +202,17 @@ class CourseController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    static async commencerCourse(req, res) {
+        const courseId = req.params.courseId;
+        try {
+            const commencerCourse = await Course.commencerCourse(courseId);
+            res.status(200).json({ success: true,  data: commencerCourse });
+        } catch(error) {
+            console.error('Controller Error:', error.message);
+            res.status(500).json({ error: error.message });
+        }
+    }
     
 }
 
