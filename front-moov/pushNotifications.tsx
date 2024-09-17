@@ -16,7 +16,7 @@ export const requestPushNotificationsPermission = async () => {
       console.log('Token FCM :', token.token);
 
       // Envoi du token au backend pour l'associer à l'utilisateur ou à l'appareil
-      await fetch('https://18f1-41-74-211-7.ngrok-free.app/api/save-token', {
+      await fetch('https://5b55-41-74-213-76.ngrok-free.app/api/save-token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
