@@ -193,7 +193,43 @@ class Course {
             throw new Error('Erreur lors de la récupération des détails de la course : ' + error.message);
         }
     }
+
+    static async listeReservationAttribuees(chauffeurId) {
+        const query = `
+            SELECT 
+                c.id AS course_id,
+                c.date_heure_depart,
+                c.adresse_depart,
+                c.adresse_arrivee,
+                c.status,
+                c.prix,
+                c.kilometre,
+                u_passager.id AS passager_id,
+                u_passager.nom AS passager_nom,
+                u_passager.prenom AS passager_prenom,
+                u_passager.telephone AS passager_telephone,
+                u_chauffeur.id AS chauffeur_id,
+                u_chauffeur.nom AS chauffeur_nom,
+                u_chauffeur.prenom AS chauffeur_prenom,
+                u_chauffeur.telephone AS chauffeur_telephone,
+                v.marque AS voiture_marque,
+                v.modele AS voiture_modele,
+                v.immatriculation AS voiture_immatriculation
+            FROM course c
+            JOIN utilisateur u_passager ON c.passager_id = u_passager.id
+            JOIN utilisateur u_chauffeur ON c.chauffeur_id = u_chauffeur.id
+            LEFT JOIN chauffeur_voiture cv ON u_chauffeur.id = cv.chauffeur_id
+            LEFT JOIN voiture v ON cv.voiture_id = v.id
+            WHERE c.chauffeur_id = $1 AND c.status = 'ATTRIBUE'
+            ORDER BY c.date_heure_depart DESC
+        `;
+        const result = await db.query(query, [chauffeurId]);
+        return result.rows;
+    }
     
+    static async commencerCourse(courseId) {
+
+    }
 }
 
 module.exports = Course;

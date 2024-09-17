@@ -132,6 +132,25 @@ class CourseController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    static async listeReservationAttribues(req, res) {
+        const chauffeurId = req.params.chauffeurId;
+
+        try {
+            const reservations = await Course.listeReservationAttribuees(chauffeurId);
+            res.json({
+                success: true,
+                data: reservations
+            })
+        } catch(error) {
+            console.error('Erreur lors de la récupération de la liste :', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Erreur serveur', 
+                error: error.message 
+            });
+        }
+    }
     
 }
 
