@@ -118,7 +118,10 @@ class CourseController {
 
     static async getCourseDetails(req, res) {
         const courseId = req.params.courseId;
-        const userId = req.user.id; // ID de l'utilisateur connecté
+        const userId = req.user.id;
+        
+        console.log('ID de la course:', courseId);
+        console.log('ID de l\'utilisateur connecté:', userId);
     
         try {
             const courseDetails = await CourseService.getCourseDetailsById(courseId, userId);

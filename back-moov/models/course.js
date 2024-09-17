@@ -165,13 +165,18 @@ class Course {
 
     static async findCourseDetailsById(courseId, userId) {
         try {
+            console.log('Requête SQL pour la course:', {
+                courseId,
+                userId
+            });
+    
             const result = await db.query(`
                 SELECT 
                     course.id AS course_id,
                     course.date_heure_depart,
                     course.adresse_depart,
                     course.adresse_arrivee,
-                    course.status AS status,  -- Ajout de la colonne status
+                    course.status AS status,
                     utilisateur_passager.id AS passager_id,
                     utilisateur_passager.nom AS passager_nom,
                     utilisateur_passager.mail AS passager_email,
@@ -186,6 +191,12 @@ class Course {
                 WHERE course.id = $1
                 AND (course.passager_id = $2 OR course.chauffeur_id = $2)
             `, [courseId, userId]);
+    
+            console.log('Résultats de la requête SQL:', result.rows);
+    
+            if (result.rows.length === 0) {
+                console.log('Aucune course trouvée pour les paramètres spécifiés.');
+            }
     
             return result.rows.map(row => new Course(...Object.values(row)));
         } catch (error) {
