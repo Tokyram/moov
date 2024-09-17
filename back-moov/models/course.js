@@ -241,6 +241,33 @@ class Course {
             }
         }
     
+        static async countReservationsByClient(clientId) {
+            try {
+                const result = await db.query(
+                    `SELECT COUNT(*) AS total_reservations
+                     FROM course
+                     WHERE passager_id = $1`,
+                    [clientId]
+                );
+                return result.rows[0].total_reservations;
+            } catch (error) {
+                throw new Error('Erreur lors de la récupération du nombre de réservations : ' + error.message);
+            }
+        }
+
+        static async countReservationsByChauffeur(chauffeurId) {
+            try {
+                const result = await db.query(
+                    `SELECT COUNT(*) AS total_reservations
+                     FROM course
+                     WHERE chauffeur_id = $1`,
+                    [chauffeurId]
+                );
+                return result.rows[0].total_reservations;
+            } catch (error) {
+                throw new Error('Erreur lors de la récupération du nombre de réservations : ' + error.message);
+            }
+        }
     
 }
 

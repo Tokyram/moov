@@ -159,6 +159,30 @@ class CourseController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    static async getTotalReservationsByClient(req, res) {
+        const clientId = req.user.id; // ID du client connecté
+
+        try {
+            const totalReservations = await CourseService.getTotalReservationsByClient(clientId);
+            res.status(200).json({ total_reservations: totalReservations });
+        } catch (error) {
+            console.error('Controller Error:', error.message);
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    static async getTotalReservationsByChauffeur(req, res) {
+        const chauffeurId = req.user.id; // ID du client connecté
+
+        try {
+            const totalReservations = await CourseService.getTotalReservationsByChauffeur(chauffeurId);
+            res.status(200).json({ total_reservations: totalReservations });
+        } catch (error) {
+            console.error('Controller Error:', error.message);
+            res.status(500).json({ error: error.message });
+        }
+    }
     
 }
 
