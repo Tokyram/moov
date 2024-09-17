@@ -213,6 +213,17 @@ class CourseController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    static async terminerCourse(req, res) {
+        const courseId = req.params.courseId;
+        try {
+            const terminerCourse = await Course.terminerCourse(courseId);
+            res.status(200).json({ success: true,  data: terminerCourse });
+        } catch(error) {
+            console.error('Controller Error:', error.message);
+            res.status(500).json({ error: error.message });
+        }
+    }
     
 }
 
