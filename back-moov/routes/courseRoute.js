@@ -12,4 +12,8 @@ router.get('/chauffeurs-acceptes/:courseId', authMiddleware, CourseController.ge
 router.get('/details_course/:courseId', authMiddleware, CourseController.getCourseDetails);
 router.get('/chauffeur-attribue/:chauffeurId', authMiddleware, CourseController.listeReservationAttribues);
 
+router.get('/chauffeur/total-distance', authMiddleware, CourseController.getTotalDistanceByChauffeur);
+router.get('/passager/total-distance', authMiddleware, CourseController.getTotalDistanceByPassager);
+router.get('/passager/total-reservations', authMiddleware, CourseController.getTotalReservationsByClient);
+router.get('/chauffeur/total-reservations', authMiddleware, CourseController.getTotalReservationsByChauffeur);
 module.exports = router;

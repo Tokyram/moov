@@ -118,7 +118,10 @@ class CourseController {
 
     static async getCourseDetails(req, res) {
         const courseId = req.params.courseId;
-        const userId = req.user.id; // ID de l'utilisateur connecté
+        const userId = req.user.id;
+
+        console.log('ID de la course:', courseId);
+        console.log('ID de l\'utilisateur connecté:', userId);
     
         try {
             const courseDetails = await CourseService.getCourseDetailsById(courseId, userId);
@@ -149,6 +152,54 @@ class CourseController {
                 message: 'Erreur serveur', 
                 error: error.message 
             });
+        }
+    }
+    
+    static async getTotalDistanceByChauffeur(req, res) {
+        const chauffeurId = req.user.id; // Vous pouvez adapter en fonction de votre logique
+
+        try {
+            const totalDistance = await Course.calculateTotalDistanceByChauffeur(chauffeurId);
+            res.status(200).json({ total_distance: totalDistance });
+        } catch (error) {
+            console.error('Controller Error:', error.message);
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    static async getTotalDistanceByPassager(req, res) {
+        const passagerId = req.user.id; // Vous pouvez adapter en fonction de votre logique
+
+        try {
+            const totalDistance = await Course.calculateTotalDistanceByPassager(passagerId);
+            res.status(200).json({ total_distance: totalDistance });
+        } catch (error) {
+            console.error('Controller Error:', error.message);
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    static async getTotalReservationsByClient(req, res) {
+        const clientId = req.user.id; // ID du client connecté
+
+        try {
+            const totalReservations = await CourseService.getTotalReservationsByClient(clientId);
+            res.status(200).json({ total_reservations: totalReservations });
+        } catch (error) {
+            console.error('Controller Error:', error.message);
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    static async getTotalReservationsByChauffeur(req, res) {
+        const chauffeurId = req.user.id; // ID du client connecté
+
+        try {
+            const totalReservations = await CourseService.getTotalReservationsByChauffeur(chauffeurId);
+            res.status(200).json({ total_reservations: totalReservations });
+        } catch (error) {
+            console.error('Controller Error:', error.message);
+            res.status(500).json({ error: error.message });
         }
     }
     

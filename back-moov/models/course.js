@@ -165,13 +165,18 @@ class Course {
 
     static async findCourseDetailsById(courseId, userId) {
         try {
+            console.log('Requête SQL pour la course:', {
+                courseId,
+                userId
+            });
+    
             const result = await db.query(`
                 SELECT 
                     course.id AS course_id,
                     course.date_heure_depart,
                     course.adresse_depart,
                     course.adresse_arrivee,
-                    course.status AS status,  -- Ajout de la colonne status
+                    course.status AS status,
                     utilisateur_passager.id AS passager_id,
                     utilisateur_passager.nom AS passager_nom,
                     utilisateur_passager.mail AS passager_email,
@@ -186,6 +191,12 @@ class Course {
                 WHERE course.id = $1
                 AND (course.passager_id = $2 OR course.chauffeur_id = $2)
             `, [courseId, userId]);
+    
+            console.log('Résultats de la requête SQL:', result.rows);
+    
+            if (result.rows.length === 0) {
+                console.log('Aucune course trouvée pour les paramètres spécifiés.');
+            }
     
             return result.rows.map(row => new Course(...Object.values(row)));
         } catch (error) {
@@ -225,6 +236,70 @@ class Course {
         `;
         const result = await db.query(query, [chauffeurId]);
         return result.rows;
+    }
+
+    static async calculateTotalDistanceByChauffeur(chauffeurId) {
+        try {
+            // Requête pour obtenir la somme des distances effectuées par le chauffeur
+            const result = await db.query(`
+                SELECT SUM(kilometre) AS total_distance
+                FROM course
+                WHERE chauffeur_id = $1 AND status = 'TERMINÉ'
+            `, [chauffeurId]);
+
+            // Si aucune course n'est trouvée, renvoyer une distance totale de 0
+            const totalDistance = result.rows[0].total_distance || 0;
+
+            return totalDistance;
+        } catch (error) {
+            throw new Error('Erreur lors du calcul de la distance totale : ' + error.message);
+        }
+    }
+
+    static async calculateTotalDistanceByPassager(passagerId) {
+        try {
+            // Requête pour obtenir la somme des distances effectuées par le chauffeur
+            const result = await db.query(`
+                SELECT SUM(kilometre) AS total_distance
+                FROM course
+                WHERE passager_id = $1 AND status = 'TERMINÉ'
+            `, [passagerId]);
+
+            // Si aucune course n'est trouvée, renvoyer une distance totale de 0
+            const totalDistance = result.rows[0].total_distance || 0;
+
+            return totalDistance;
+        } catch (error) {
+            throw new Error('Erreur lors du calcul de la distance totale : ' + error.message);
+        }
+    }
+    
+    static async countReservationsByClient(clientId) {
+        try {
+            const result = await db.query(
+                `SELECT COUNT(*) AS total_reservations
+                    FROM course
+                    WHERE passager_id = $1`,
+                [clientId]
+            );
+            return result.rows[0].total_reservations;
+        } catch (error) {
+            throw new Error('Erreur lors de la récupération du nombre de réservations : ' + error.message);
+        }
+    }
+
+    static async countReservationsByChauffeur(chauffeurId) {
+        try {
+            const result = await db.query(
+                `SELECT COUNT(*) AS total_reservations
+                    FROM course
+                    WHERE chauffeur_id = $1`,
+                [chauffeurId]
+            );
+            return result.rows[0].total_reservations;
+        } catch (error) {
+            throw new Error('Erreur lors de la récupération du nombre de réservations : ' + error.message);
+        }
     }
     
     static async commencerCourse(courseId) {
