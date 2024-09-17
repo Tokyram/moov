@@ -95,8 +95,8 @@ CREATE TABLE avis (
     id SERIAL PRIMARY KEY,
     passager_id INT NOT NULL, 
     chauffeur_id INT NOT NULL, 
-    etoiles INT NOT NULL CHECK (etoiles >= 1 AND etoiles <= 5), 
-    commentaire TEXT NOT NULL,
+    etoiles INT CHECK (etoiles >= 1 AND etoiles <= 5), 
+    commentaire TEXT,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     auteur VARCHAR(10) NOT NULL, 
 );
