@@ -10,6 +10,26 @@ const getCourseDetailsById = async (courseId, userId) => {
     }
 };
 
+const getTotalDistanceByChauffeur = async (chauffeurId) => {
+    try {
+        const totalDistance = await Course.calculateTotalDistanceByChauffeur(chauffeurId);
+        return totalDistance;
+    } catch (error) {
+        throw new Error('Erreur lors de la récupération de la distance totale : ' + error.message);
+    }
+};
+
+const getTotalDistanceByPassager = async (passagerId) => {
+    try {
+        const totalDistance = await Course.calculateTotalDistanceBPassager(passagerId);
+        return totalDistance;
+    } catch (error) {
+        throw new Error('Erreur lors de la récupération de la distance totale : ' + error.message);
+    }
+};
+
 module.exports = {
-    getCourseDetailsById
+    getCourseDetailsById,
+    getTotalDistanceByChauffeur,
+    getTotalDistanceByPassager
 };

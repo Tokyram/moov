@@ -204,6 +204,43 @@ class Course {
             throw new Error('Erreur lors de la récupération des détails de la course : ' + error.message);
         }
     }
+
+        static async calculateTotalDistanceByChauffeur(chauffeurId) {
+            try {
+                // Requête pour obtenir la somme des distances effectuées par le chauffeur
+                const result = await db.query(`
+                    SELECT SUM(kilometre) AS total_distance
+                    FROM course
+                    WHERE chauffeur_id = $1 AND status = 'TERMINÉ'
+                `, [chauffeurId]);
+    
+                // Si aucune course n'est trouvée, renvoyer une distance totale de 0
+                const totalDistance = result.rows[0].total_distance || 0;
+    
+                return totalDistance;
+            } catch (error) {
+                throw new Error('Erreur lors du calcul de la distance totale : ' + error.message);
+            }
+        }
+
+        static async calculateTotalDistanceByPassager(passagerId) {
+            try {
+                // Requête pour obtenir la somme des distances effectuées par le chauffeur
+                const result = await db.query(`
+                    SELECT SUM(kilometre) AS total_distance
+                    FROM course
+                    WHERE passager_id = $1 AND status = 'TERMINÉ'
+                `, [passagerId]);
+    
+                // Si aucune course n'est trouvée, renvoyer une distance totale de 0
+                const totalDistance = result.rows[0].total_distance || 0;
+    
+                return totalDistance;
+            } catch (error) {
+                throw new Error('Erreur lors du calcul de la distance totale : ' + error.message);
+            }
+        }
+    
     
 }
 

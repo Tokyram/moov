@@ -119,7 +119,7 @@ class CourseController {
     static async getCourseDetails(req, res) {
         const courseId = req.params.courseId;
         const userId = req.user.id;
-        
+
         console.log('ID de la course:', courseId);
         console.log('ID de l\'utilisateur connecté:', userId);
     
@@ -130,6 +130,30 @@ class CourseController {
             } else {
                 res.status(404).json({ error: 'Détails de la course non trouvés' });
             }
+        } catch (error) {
+            console.error('Controller Error:', error.message);
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    static async getTotalDistanceByChauffeur(req, res) {
+        const chauffeurId = req.user.id; // Vous pouvez adapter en fonction de votre logique
+
+        try {
+            const totalDistance = await Course.calculateTotalDistanceByChauffeur(chauffeurId);
+            res.status(200).json({ total_distance: totalDistance });
+        } catch (error) {
+            console.error('Controller Error:', error.message);
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    static async getTotalDistanceByPassager(req, res) {
+        const passagerId = req.user.id; // Vous pouvez adapter en fonction de votre logique
+
+        try {
+            const totalDistance = await Course.calculateTotalDistanceByPassager(passagerId);
+            res.status(200).json({ total_distance: totalDistance });
         } catch (error) {
             console.error('Controller Error:', error.message);
             res.status(500).json({ error: error.message });
