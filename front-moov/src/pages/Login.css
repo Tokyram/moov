@@ -111,6 +111,9 @@
   
   .form button {
     align-self: flex-end;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
   }
   
   .flex-column > label {

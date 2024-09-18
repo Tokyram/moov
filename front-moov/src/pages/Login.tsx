@@ -5,6 +5,7 @@ import { Storage } from '@capacitor/storage';
 import { login } from '../services/api';
 import { useHistory } from 'react-router-dom';
 import { useIonRouter } from '@ionic/react';
+import Loader from '../components/Loader';
 
 const Login: React.FC = () => {
 
@@ -103,7 +104,7 @@ const Login: React.FC = () => {
                     
                 </div>
                 
-                <button type='submit' className="confirmation-button2">se connecter</button>
+                <button type='submit' className="confirmation-button2">se connecter <Loader/> </button>
             </form>
 
 
