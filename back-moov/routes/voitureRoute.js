@@ -1,11 +1,15 @@
 const express = require('express');
 const VoitureController = require('../controllers/voitureController');
-const authMiddleware = require('../middleware/auth');
-const multer = require('multer');
-const path = require('path');
-
 const router = express.Router();
 
-router.get('/', authMiddleware, VoitureController.listCars);
+router.post('/creationVoiture', VoitureController.createVoiture);
+router.get('/getVoitureId/:id', VoitureController.getVoitureById);
+router.put('/modifierVoiture/:id', VoitureController.updateVoiture);
+router.delete('/SupprimerVoiture/:id', VoitureController.deleteVoiture);
+
+router.get('/getAllVoiture', VoitureController.getAllVoitures);
+
+router.delete('/SupprimerPhotosVoiture/:id', VoitureController.deletePhotosByVoitureId);
+router.post('/creationPhotoVoitures', VoitureController.addPhotoToVoiture);
 
 module.exports = router;
