@@ -21,8 +21,8 @@ const Login: React.FC = () => {
             console.log("je suis la");
             router.push('/map', 'root', 'replace');
           }
-        } catch (error) {
-          console.error('Erreur de connexion', error);
+        } catch (error: any) {
+          console.error('Erreur de connexion', error.message);
         }
     };
 

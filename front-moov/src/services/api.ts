@@ -9,8 +9,16 @@ export const login = async (username: string, password: string) => {
     try {
         const response = await api.post('/users/login', {username, password});
         return response;
-    } catch (error) {
-        console.error('Erreur de connexion', error);
+    } catch (error: any) {
+        console.error('Erreur de connexion', error.message);
+        throw error;
+    }
+}
+
+export const logout = async () => {
+    try {
+    } catch (error: any) {
+        console.error('Erreur de déconnexion', error.message);
         throw error;
     }
 }

@@ -1,3 +1,3 @@
-const url_api = "https://f860-41-74-213-76.ngrok-free.app/api";
+const url_api = " https://7311-141-95-252-125.ngrok-free.app/api";
 
 export default url_api;
