@@ -136,6 +136,25 @@ class CourseController {
         }
     }
 
+    static async listeReservationAttribues(req, res) {
+        const chauffeurId = req.params.chauffeurId;
+
+        try {
+            const reservations = await Course.listeReservationAttribuees(chauffeurId);
+            res.json({
+                success: true,
+                data: reservations
+            })
+        } catch(error) {
+            console.error('Erreur lors de la récupération de la liste :', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Erreur serveur', 
+                error: error.message 
+            });
+        }
+    }
+    
     static async getTotalDistanceByChauffeur(req, res) {
         const chauffeurId = req.user.id; // Vous pouvez adapter en fonction de votre logique
 
@@ -179,6 +198,28 @@ class CourseController {
             const totalReservations = await CourseService.getTotalReservationsByChauffeur(chauffeurId);
             res.status(200).json({ total_reservations: totalReservations });
         } catch (error) {
+            console.error('Controller Error:', error.message);
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    static async commencerCourse(req, res) {
+        const courseId = req.params.courseId;
+        try {
+            const commencerCourse = await Course.commencerCourse(courseId);
+            res.status(200).json({ success: true,  data: commencerCourse });
+        } catch(error) {
+            console.error('Controller Error:', error.message);
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    static async terminerCourse(req, res) {
+        const courseId = req.params.courseId;
+        try {
+            const terminerCourse = await Course.terminerCourse(courseId);
+            res.status(200).json({ success: true,  data: terminerCourse });
+        } catch(error) {
             console.error('Controller Error:', error.message);
             res.status(500).json({ error: error.message });
         }

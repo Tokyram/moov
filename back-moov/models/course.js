@@ -205,70 +205,124 @@ class Course {
         }
     }
 
-        static async calculateTotalDistanceByChauffeur(chauffeurId) {
-            try {
-                // Requête pour obtenir la somme des distances effectuées par le chauffeur
-                const result = await db.query(`
-                    SELECT SUM(kilometre) AS total_distance
-                    FROM course
-                    WHERE chauffeur_id = $1 AND status = 'TERMINÉ'
-                `, [chauffeurId]);
-    
-                // Si aucune course n'est trouvée, renvoyer une distance totale de 0
-                const totalDistance = result.rows[0].total_distance || 0;
-    
-                return totalDistance;
-            } catch (error) {
-                throw new Error('Erreur lors du calcul de la distance totale : ' + error.message);
-            }
-        }
+    static async listeReservationAttribuees(chauffeurId) {
+        const query = `
+            SELECT 
+                c.id AS course_id,
+                c.date_heure_depart,
+                c.adresse_depart,
+                c.adresse_arrivee,
+                c.status,
+                c.prix,
+                c.kilometre,
+                u_passager.id AS passager_id,
+                u_passager.nom AS passager_nom,
+                u_passager.prenom AS passager_prenom,
+                u_passager.telephone AS passager_telephone,
+                u_chauffeur.id AS chauffeur_id,
+                u_chauffeur.nom AS chauffeur_nom,
+                u_chauffeur.prenom AS chauffeur_prenom,
+                u_chauffeur.telephone AS chauffeur_telephone,
+                v.marque AS voiture_marque,
+                v.modele AS voiture_modele,
+                v.immatriculation AS voiture_immatriculation
+            FROM course c
+            JOIN utilisateur u_passager ON c.passager_id = u_passager.id
+            JOIN utilisateur u_chauffeur ON c.chauffeur_id = u_chauffeur.id
+            LEFT JOIN chauffeur_voiture cv ON u_chauffeur.id = cv.chauffeur_id
+            LEFT JOIN voiture v ON cv.voiture_id = v.id
+            WHERE c.chauffeur_id = $1 AND c.status = 'ATTRIBUE'
+            ORDER BY c.date_heure_depart DESC
+        `;
+        const result = await db.query(query, [chauffeurId]);
+        return result.rows;
+    }
 
-        static async calculateTotalDistanceByPassager(passagerId) {
-            try {
-                // Requête pour obtenir la somme des distances effectuées par le chauffeur
-                const result = await db.query(`
-                    SELECT SUM(kilometre) AS total_distance
-                    FROM course
-                    WHERE passager_id = $1 AND status = 'TERMINÉ'
-                `, [passagerId]);
-    
-                // Si aucune course n'est trouvée, renvoyer une distance totale de 0
-                const totalDistance = result.rows[0].total_distance || 0;
-    
-                return totalDistance;
-            } catch (error) {
-                throw new Error('Erreur lors du calcul de la distance totale : ' + error.message);
-            }
-        }
-    
-        static async countReservationsByClient(clientId) {
-            try {
-                const result = await db.query(
-                    `SELECT COUNT(*) AS total_reservations
-                     FROM course
-                     WHERE passager_id = $1`,
-                    [clientId]
-                );
-                return result.rows[0].total_reservations;
-            } catch (error) {
-                throw new Error('Erreur lors de la récupération du nombre de réservations : ' + error.message);
-            }
-        }
+    static async calculateTotalDistanceByChauffeur(chauffeurId) {
+        try {
+            // Requête pour obtenir la somme des distances effectuées par le chauffeur
+            const result = await db.query(`
+                SELECT SUM(kilometre) AS total_distance
+                FROM course
+                WHERE chauffeur_id = $1 AND status = 'TERMINÉ'
+            `, [chauffeurId]);
 
-        static async countReservationsByChauffeur(chauffeurId) {
-            try {
-                const result = await db.query(
-                    `SELECT COUNT(*) AS total_reservations
-                     FROM course
-                     WHERE chauffeur_id = $1`,
-                    [chauffeurId]
-                );
-                return result.rows[0].total_reservations;
-            } catch (error) {
-                throw new Error('Erreur lors de la récupération du nombre de réservations : ' + error.message);
-            }
+            // Si aucune course n'est trouvée, renvoyer une distance totale de 0
+            const totalDistance = result.rows[0].total_distance || 0;
+
+            return totalDistance;
+        } catch (error) {
+            throw new Error('Erreur lors du calcul de la distance totale : ' + error.message);
         }
+    }
+
+    static async calculateTotalDistanceByPassager(passagerId) {
+        try {
+            // Requête pour obtenir la somme des distances effectuées par le chauffeur
+            const result = await db.query(`
+                SELECT SUM(kilometre) AS total_distance
+                FROM course
+                WHERE passager_id = $1 AND status = 'TERMINÉ'
+            `, [passagerId]);
+
+            // Si aucune course n'est trouvée, renvoyer une distance totale de 0
+            const totalDistance = result.rows[0].total_distance || 0;
+
+            return totalDistance;
+        } catch (error) {
+            throw new Error('Erreur lors du calcul de la distance totale : ' + error.message);
+        }
+    }
     
+    static async countReservationsByClient(clientId) {
+        try {
+            const result = await db.query(
+                `SELECT COUNT(*) AS total_reservations
+                    FROM course
+                    WHERE passager_id = $1`,
+                [clientId]
+            );
+            return result.rows[0].total_reservations;
+        } catch (error) {
+            throw new Error('Erreur lors de la récupération du nombre de réservations : ' + error.message);
+        }
+    }
+
+    static async countReservationsByChauffeur(chauffeurId) {
+        try {
+            const result = await db.query(
+                `SELECT COUNT(*) AS total_reservations
+                    FROM course
+                    WHERE chauffeur_id = $1`,
+                [chauffeurId]
+            );
+            return result.rows[0].total_reservations;
+        } catch (error) {
+            throw new Error('Erreur lors de la récupération du nombre de réservations : ' + error.message);
+        }
+    }
+    
+    static async commencerCourse(courseId) {
+        const query = `
+            UPDATE course 
+            SET status = 'EN COURS' 
+            WHERE id = $1
+            RETURNING *
+        `;
+        const result = await db.query(query, [courseId]);
+        return result.rows[0];
+    }
+
+    static async terminerCourse(courseId) {
+        const query = `
+            UPDATE course 
+            SET status = 'TERMINEE' 
+            WHERE id = $1
+            RETURNING *
+        `;
+        const result = await db.query(query, [courseId]);
+        return result.rows[0];
+    }
 }
 
 module.exports = Course;
