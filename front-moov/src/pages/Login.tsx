@@ -13,16 +13,19 @@ const Login: React.FC = () => {
     
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async (username: string, password: string) => {
+        setIsLoading(true);
         try {
           const response = await login(username, password);
           if (response.data.token) {
+            setIsLoading(false);
             await Storage.set({ key: 'token', value: response.data.token });
-            console.log("je suis la");
             router.push('/map', 'root', 'replace');
           }
         } catch (error: any) {
+            setIsLoading(false);
           console.error('Erreur de connexion', error.message);
         }
     };
@@ -104,7 +107,7 @@ const Login: React.FC = () => {
                     
                 </div>
                 
-                <button type='submit' className="confirmation-button2">se connecter <Loader/> </button>
+                <button type='submit' className="confirmation-button2" disabled={isLoading}> {!isLoading ? "se connecter" :  <Loader/> }</button>
             </form>
 
 
