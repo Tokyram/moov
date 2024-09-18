@@ -83,6 +83,7 @@ class Utilisateur {
   }
 
   static async verifyRegistration(code) {
+    let role = '';
     try {
       console.log('Vérification du code:', code);
       const verificationCode = await VerificationCode.findValidCode(code);
@@ -90,10 +91,16 @@ class Utilisateur {
         console.log('Code de vérification trouvé:', verificationCode);
         const userData = verificationCode.user_data;
         console.log('Données utilisateur:', userData);
+
+        if(!userData.role) {
+          role = 'UTILISATEUR';
+        } else {
+          role = userData.role;
+        }
         
         const result = await db.query(
           'INSERT INTO utilisateur (nom, prenom, telephone, mail, mdp, adresse, photo, role, date_inscription, est_banni) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
-          [userData.nom, userData.prenom, userData.telephone, userData.mail, userData.mdp, userData.adresse, userData.photo ?? "", userData.role, userData.date_inscription, userData.est_banni]
+          [userData.nom, userData.prenom, userData.telephone, userData.mail, userData.mdp, userData.adresse, userData.photo ?? "", role, userData.date_inscription, userData.est_banni]
         );
         
         console.log('Utilisateur inséré:', result.rows[0]);

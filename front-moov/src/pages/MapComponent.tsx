@@ -6,7 +6,10 @@ import Menu from '../components/Menu';
 const LeafletMap = lazy(() => import('./LeafletMap'));
 import 'leaflet/dist/leaflet.css';
 import RechercheMap from '../components/RechercheMap';
-import NotificationComponent from './NotificationComponent';
+// import NotificationComponent from './NotificationComponent';
+import { CourseData, getDecodedToken, reserverCourse } from '../services/api';
+import Loader from '../components/Loader';
+
 interface Suggestion {
   display_name: string;
   lat: string;
@@ -32,6 +35,11 @@ const MapComponent: React.FC = () => {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
   
+  const [passagerId, setPassagerId] = useState<number | null>(null);
+  const [isBtnReservation, setIsBtnReservation] = useState(true);
+
+  const [isCourseLoading, setIsCourseLoading] = useState(false);
+
   const handleClose = () => {
     setIsVisible(false);
   };
@@ -48,9 +56,62 @@ const MapComponent: React.FC = () => {
     setShowDatePopup(false);
   };
 
-  const handleConfirmDate = () => {
-    setShowDatePopup(false);
-    setShowSuccessPopup(true);
+  useEffect(() => {
+    const initPassagerId = async () => {
+      const decodedToken = await getDecodedToken();
+      if (decodedToken) {
+        if(decodedToken.role == 'UTILISATEUR')
+          setPassagerId(decodedToken.id);
+      } else {
+        console.error('Token non valide ou non trouvé');
+        // Gérer le cas où le token n'est pas valide (redirection vers la page de connexion, par exemple)
+      }
+    };
+
+    initPassagerId();
+  }, []);
+
+  const handleConfirmDate = async () => {
+    if (!passagerId || !start || !end || !distance || !selectedDate || !startLocation || !endLocation) {
+      console.error('Données manquantes pour la réservation');
+      // Affichez un message d'erreur à l'utilisateur
+      return;
+    }
+
+    setIsCourseLoading(true);
+
+    const courseData: CourseData = {
+      passager_id: passagerId,
+      date_heure_depart: selectedDate,
+      adresse_depart: {
+        longitude: start[1],
+        latitude: start[0],
+        adresse: startLocation,
+      },
+      adresse_arrivee: {
+        longitude: end[1],
+        latitude: end[0],
+        adresse: endLocation,
+      },
+      prix: calculatePrice(distance),
+      kilometre: distance,
+    };
+
+    console.log(courseData);
+
+    try {
+      const result = await reserverCourse(courseData);
+      console.log('Réservation réussie:', result);
+      setShowDatePopup(false);
+      setShowSuccessPopup(true);
+      setIsBtnReservation(false);
+      setIsCourseLoading(false);
+      // Réinitialiser les états nécessaires après la réservation
+    } catch (error) {
+      setIsCourseLoading(false);
+      console.error('Erreur lors de la réservation:', error);
+      // Affichez un message d'erreur à l'utilisateur
+    }
   };
 
   const handleCloseSuccess = () => {
@@ -112,9 +173,18 @@ const MapComponent: React.FC = () => {
     }
   }, [start, end]);
 
+  const calculatePrice = (distance: number | null): number => {
+    if(!distance) distance = 0;
+    const prixBase = 1000; // en ariary
+    const tauxParKm = 500; // en ariary
+    return Math.round(prixBase + (distance * tauxParKm));
+  };
+
+
+
   return (
     <div className="homeMap">
-      <NotificationComponent />
+      {/* <NotificationComponent /> */}
 
       <Header toggleMenu={toggleMenu} />
       {isMenuOpen && <Menu />}
@@ -172,17 +242,26 @@ const MapComponent: React.FC = () => {
                 
               </div>
             )}
-            <button className="confirmation-button3" onClick={handleConfirmClick}>
-              Confirmer la destination
-              <i className="bi bi-check-circle-fill"></i>
-            </button>
+            {
+              isBtnReservation && (
+                <button className="confirmation-button3" onClick={handleConfirmClick}>
+                  Confirmer la destination
+                  <i className="bi bi-check-circle-fill"></i>
+                </button>
+              )
+            }
             
-            {/* <button className="confirmation-button3" style={{ backgroundColor: 'var(--text-color)', color: 'var(--background-color)' }} onClick={handleConfirmClick}>
-              En attente de chauffeur...
-              <i className="bi bi-check-circle-fill"></i>
-            </button>
+            {
+              !isBtnReservation && (
+                <button className="confirmation-button3" style={{ backgroundColor: 'var(--text-color)', color: 'var(--background-color)' }}>
+                  En attente de chauffeur <Loader/>
+                  <i className="bi bi-check-circle-fill"></i>
+                </button>
+              )
+            }
+            
 
-            <button className="confirmation-button3" style={{ backgroundColor: 'var(--text-color)', color: 'var(--background-color)' }} onClick={handleConfirmClick}>
+            {/*<button className="confirmation-button3" style={{ backgroundColor: 'var(--text-color)', color: 'var(--background-color)' }} onClick={handleConfirmClick}>
               En attente de validation...
               <i className="bi bi-check-circle-fill"></i>
             </button>
@@ -219,7 +298,7 @@ const MapComponent: React.FC = () => {
 
               <div className="popup-buttons">
                 <button className="cancel-button" onClick={handleCancelDate}>Annuler</button>
-                <button onClick={handleConfirmDate}>Confirmer</button>
+                <button onClick={handleConfirmDate} disabled={isCourseLoading}>{!isCourseLoading ? "Confirmer" :  <Loader/> }</button>
               </div>
 
             </div>
