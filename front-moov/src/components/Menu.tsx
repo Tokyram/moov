@@ -2,9 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import './Menu.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-
+import { useIonRouter } from '@ionic/react';
+import { Storage } from '@capacitor/storage';
 
 const Menu: React.FC = () => {
+
+  const router = useIonRouter();
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -12,6 +15,18 @@ const Menu: React.FC = () => {
     // Ajouter la classe 'show' après le montage du composant
     setIsVisible(true);
   }, []);
+
+  const logout = async () => {
+    try {
+        // Suppression du token du storage
+        await Storage.remove({ key: 'token' });
+        router.push('/home', 'root', 'replace');
+
+    } catch (error: any) {
+        console.error('Erreur lors de la déconnexion', error.message);
+        throw error;
+    }
+  };
 
   return (
     
@@ -112,9 +127,12 @@ const Menu: React.FC = () => {
             </div>
 
             <div className="iocn-link">
-                <a href="/home">
-                <i className="bi bi-door-open-fill"></i>
-                <span className="link_name">Déconnexion</span>
+                <a href="#" onClick={(e) => {
+                    e.preventDefault();
+                    logout();
+                }}>
+                  <i className="bi bi-door-open-fill"></i>
+                  <span className="link_name">Déconnexion</span>
                 </a>
             </div>
           </div>
