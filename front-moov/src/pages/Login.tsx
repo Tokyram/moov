@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Login.css'; 
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import Loader from '../components/Loader';
 const Login: React.FC = () => {
  
 
@@ -64,7 +65,7 @@ const Login: React.FC = () => {
                     
                 </div>
                 
-                <button type='submit' className="confirmation-button2">se connecter</button>
+                <button type='submit' className="confirmation-button2">se connecter <Loader/> </button>
             </form>
 
 
