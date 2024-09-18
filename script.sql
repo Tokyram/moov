@@ -106,3 +106,18 @@ CREATE TABLE avis (
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     auteur VARCHAR(10) NOT NULL, 
 );
+
+
+CREATE TABLE type_panne (
+    id SERIAL PRIMARY KEY,
+    type VARCHAR(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE panne (
+    id SERIAL PRIMARY KEY,
+    utilisateur_id INT NOT NULL, 
+    type_panne_id INT NOT NULL,  
+    commentaire TEXT,
+    date_signalement TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (type_panne_id) REFERENCES type_panne(id)
+);
