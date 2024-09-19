@@ -116,7 +116,7 @@ const Reservation_chauffeur: React.FC = () => {
                                 
                             </div>
                             
-                            <p>2 min</p>
+                            {/*<p>2 min</p>*/}
                            
                         </div>
                         <div className="fond-reservation" onClick={() => handleConfirmClickDetail(reservation.id)}>

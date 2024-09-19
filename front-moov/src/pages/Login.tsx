@@ -22,7 +22,7 @@ const Login: React.FC = () => {
           if (response.data.token) {
             setIsLoading(false);
             await Storage.set({ key: 'token', value: response.data.token });
-            router.push('/map', 'root', 'replace');
+            router.push('map', 'root', 'replace');
           }
         } catch (error: any) {
             setIsLoading(false);

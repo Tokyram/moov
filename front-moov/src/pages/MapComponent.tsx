@@ -9,6 +9,7 @@ import RechercheMap from '../components/RechercheMap';
 // import NotificationComponent from './NotificationComponent';
 import { CourseData, getDecodedToken, reserverCourse } from '../services/api';
 import Loader from '../components/Loader';
+import { useIonRouter } from '@ionic/react';
 
 interface Suggestion {
   display_name: string;
@@ -17,6 +18,9 @@ interface Suggestion {
 }
 
 const MapComponent: React.FC = () => {
+
+  const router = useIonRouter();
+  
   const [searchText, setSearchText] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
 
@@ -65,6 +69,7 @@ const MapComponent: React.FC = () => {
       } else {
         console.error('Token non valide ou non trouvé');
         // Gérer le cas où le token n'est pas valide (redirection vers la page de connexion, par exemple)
+        router.push('home', 'root', 'replace');
       }
     };
 

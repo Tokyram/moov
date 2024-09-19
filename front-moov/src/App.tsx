@@ -53,7 +53,7 @@ const App: React.FC = () => {
   }, []);
  
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const checkLoginStatus = async () => {
     const token = await Storage.get({ key: 'token' });

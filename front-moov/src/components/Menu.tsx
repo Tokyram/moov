@@ -4,16 +4,32 @@ import './Menu.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useIonRouter } from '@ionic/react';
 import { Storage } from '@capacitor/storage';
+import { getDecodedToken } from '../services/api';
 
 const Menu: React.FC = () => {
 
   const router = useIonRouter();
 
   const [isVisible, setIsVisible] = useState(false);
+  const [userRole, setUserRole] = useState('');
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
     // Ajouter la classe 'show' après le montage du composant
     setIsVisible(true);
+    const initUser = async () => {
+      const decodedToken = await getDecodedToken();
+      if (decodedToken) {
+        setUserRole(decodedToken.role);
+        setUsername(decodedToken.nom + " " + decodedToken.prenom);
+      } else {
+        console.error('Token non valide ou non trouvé');
+        // Gérer le cas où le token n'est pas valide (redirection vers la page de connexion, par exemple)
+        router.push('home', 'root', 'replace');
+      }
+    }
+
+    initUser();
   }, []);
 
   const logout = async () => {
@@ -41,7 +57,7 @@ const Menu: React.FC = () => {
               <img src="assets/user.png" alt="profileImg" />
             </div>
             <div className="name-job">
-              <div className="profile_name">Nom de l'utilisateur*</div>
+              <div className="profile_name">{username}</div>
               <div className="job">voir votre profil</div>
             </div>
             </a>
@@ -57,6 +73,7 @@ const Menu: React.FC = () => {
           </a>
          
         </li>
+        
         <li>
           <a href="/paiement">
             <i className="bi bi-currency-exchange"></i>
@@ -64,47 +81,70 @@ const Menu: React.FC = () => {
           </a>
          
         </li>
-        <li>
-          <a href="/reservation">
-            <i className="bi bi-arrow-down-right-square-fill"></i>
-            <span className="link_name">Réservation*</span>
-          </a>
-         
-        </li>
-        <li>
-          <a href="/reservation_chauffeur">
-            <i className="bi bi-arrow-down-right-square-fill"></i>
-            <span className="link_name">Réservation chauffeur*</span>
-          </a>
-         
-        </li>
-        <li>
-          <div className="iocn-link">
-            <a href="/notification">
-                <i className="bi bi-bell-fill"></i>
-              <span className="link_name">Notification*</span>
-            </a>
-          </div>
-         
-        </li>
-        <li>
-          <div className="iocn-link">
-            <a href="/notification_chauffeur">
-                <i className="bi bi-bell-fill"></i>
-              <span className="link_name">Notification chauffeur*</span>
-            </a>
-          </div>
-         
-        </li>
-        <li>
-          <div className="iocn-link">
-            <a href="/facture">
-            <i className="bi bi-wallet-fill"></i>
-              <span className="link_name">Facture*</span>
-            </a>
-          </div>
-          
-        </li>
+        {
+          userRole === "UTILISATEUR" && (
+            <li>
+              <a href="/reservation">
+                <i className="bi bi-arrow-down-right-square-fill"></i>
+                <span className="link_name">Réservation*</span>
+              </a>
+            </li>
+          )
+        }
+
+        {
+          userRole === "CHAUFFEUR" && (
+            <li>
+              <a href="/reservation_chauffeur">
+                <i className="bi bi-arrow-down-right-square-fill"></i>
+                <span className="link_name">Réservation chauffeur*</span>
+              </a>
+            </li>
+          )
+        }
+       
+        {
+          userRole === "UTILISATEUR" && (
+            <li>
+              <div className="iocn-link">
+                <a href="/notification">
+                    <i className="bi bi-bell-fill"></i>
+                  <span className="link_name">Notification*</span>
+                </a>
+              </div>
+            
+            </li>
+          )
+        }
+
+        {
+          userRole === "CHAUFFEUR" && (
+            <li>
+              <div className="iocn-link">
+                <a href="/notification_chauffeur">
+                    <i className="bi bi-bell-fill"></i>
+                  <span className="link_name">Notification chauffeur*</span>
+                </a>
+              </div>
+            </li>
+          )
+        }
+
+        {
+          userRole === "UTILISATEUR" && (
+            <li>
+              <div className="iocn-link">
+                <a href="/facture">
+                <i className="bi bi-wallet-fill"></i>
+                  <span className="link_name">Facture*</span>
+                </a>
+              </div>
+              
+            </li>
+          )
+        }
+        
+        
         <li>
           <div className="iocn-link">
             <a href="/avis">
@@ -112,7 +152,6 @@ const Menu: React.FC = () => {
               <span className="link_name">Avis*</span>
             </a>
           </div>
-          
         </li>
        
        
