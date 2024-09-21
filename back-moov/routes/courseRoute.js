@@ -19,4 +19,7 @@ router.get('/chauffeur/total-reservations', authMiddleware, CourseController.get
 router.get('/commencer/:courseId', authMiddleware, CourseController.commencerCourse);
 router.get('/terminer/:courseId', authMiddleware, CourseController.terminerCourse);
 
+router.get('/chauffeurTotalCourse/:chauffeur_id/:period',authMiddleware, CourseController.getCoursesByChauffeur);
+router.get('/totalCourses',authMiddleware, CourseController.getTotalCourses); // Total global
+router.get('/totalCoursesPeriode/:period',authMiddleware, CourseController.getCoursesByPeriod);
 module.exports = router;

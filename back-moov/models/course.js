@@ -244,7 +244,7 @@ class Course {
             const result = await db.query(`
                 SELECT SUM(kilometre) AS total_distance
                 FROM course
-                WHERE chauffeur_id = $1 AND status = 'TERMINÉ'
+                WHERE chauffeur_id = $1 AND status = 'TERMINE'
             `, [chauffeurId]);
 
             // Si aucune course n'est trouvée, renvoyer une distance totale de 0
@@ -262,7 +262,7 @@ class Course {
             const result = await db.query(`
                 SELECT SUM(kilometre) AS total_distance
                 FROM course
-                WHERE passager_id = $1 AND status = 'TERMINÉ'
+                WHERE passager_id = $1 AND status = 'TERMINE'
             `, [passagerId]);
 
             // Si aucune course n'est trouvée, renvoyer une distance totale de 0
@@ -316,12 +316,55 @@ class Course {
     static async terminerCourse(courseId) {
         const query = `
             UPDATE course 
-            SET status = 'TERMINEE' 
+            SET status = 'TERMINE' 
             WHERE id = $1
             RETURNING *
         `;
         const result = await db.query(query, [courseId]);
         return result.rows[0];
+    }
+
+    static async getCourseCountByChauffeur(chauffeur_id, interval) {
+        try {
+            const result = await db.query(
+                `SELECT COUNT(*) as total_courses 
+                 FROM course 
+                 WHERE chauffeur_id = $1 
+                 AND status = 'TERMINE'
+                 AND created_at >= NOW() - INTERVAL '${interval}'`,
+                [chauffeur_id]
+            );
+            return result.rows[0].total_courses;
+        } catch (error) {
+            throw new Error('Erreur lors de la récupération des courses : ' + error.message);
+        }
+    }
+
+    static async getTotalCourses() {
+        try {
+            const result = await db.query(
+                `SELECT COUNT(*) AS total_courses 
+                 FROM course 
+                 WHERE status = 'TERMINE'`
+            );
+            return result.rows[0].total_courses;
+        } catch (error) {
+            throw new Error('Erreur lors de la récupération des courses : ' + error.message);
+        }
+    }
+
+    static async getTotalCoursesByPeriod(interval) {
+        try {
+            const result = await db.query(
+                `SELECT COUNT(*) AS total_courses 
+                 FROM course 
+                 WHERE status = 'TERMINE' 
+                 AND created_at >= NOW() - INTERVAL '${interval}'`
+            );
+            return result.rows[0].total_courses;
+        } catch (error) {
+            throw new Error('Erreur lors de la récupération des courses : ' + error.message);
+        }
     }
 }
 

@@ -224,6 +224,37 @@ class CourseController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    static async getCoursesByChauffeur(req, res) {
+        const { chauffeur_id, period } = req.params;
+
+        try {
+            const totalCourses = await CourseService.getCoursesByChauffeurAndPeriod(chauffeur_id, period);
+            res.status(200).json({ total_courses: totalCourses });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    static async getTotalCourses(req, res) {
+        try {
+            const totalCourses = await CourseService.getTotalCourses();
+            res.status(200).json({ total_courses: totalCourses });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    static async getCoursesByPeriod(req, res) {
+        const { period } = req.params;
+
+        try {
+            const totalCourses = await CourseService.getTotalCoursesByPeriod(period);
+            res.status(200).json({ total_courses: totalCourses });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
     
 }
 
