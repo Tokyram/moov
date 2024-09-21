@@ -1,8 +1,8 @@
 const Course = require('../models/course'); 
 
-const getCourseDetailsById = async (courseId, userId) => {
+const getCourseDetailsById = async (courseId) => {
     try {
-        const courseDetails = await Course.findCourseDetailsById(courseId, userId);
+        const courseDetails = await Course.findCourseDetailsById(courseId);
         return courseDetails;
     } catch (error) {
         console.error('Erreur lors de la récupération des détails de la course dans le service :', error.message);

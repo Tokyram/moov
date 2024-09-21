@@ -4,8 +4,10 @@ import './Profil.css';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 import { Route, useHistory } from 'react-router-dom';
+import { listeCourseEnAttente } from '../services/api';
 
 const Reservation_chauffeur: React.FC = () => {
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [showAnnulationPopup, setShowAnnulationPopup] = useState(false);
@@ -13,31 +15,34 @@ const Reservation_chauffeur: React.FC = () => {
     const [currentReservationId, setCurrentReservationId] = useState<number | null>(null);
     const [showDetailPopup, setShowDetailPopup] = useState(false);
     const [showConfirmeCoursePopup, setShowConfirmeCoursePopup] = useState(false);
+
+    const [reservations, setReservations] = useState<any[]>([]);
+
     const history = useHistory();
-    const reservations = [
-        {
-            id: 1,
-            price: "25 000Ar",
-            carImg: "assets/v1.png",
-            taxiNumber: "458203 TBA",
-            reservationNumber: "N°02",
-            date: "04 juillet",
-            time: "10h 00",
-            distance: 10,
-            destination: "Ampitatafika à Ivandry"
-        },
-        {
-            id: 2,
-            price: "30 000Ar",
-            carImg: "assets/v1.png",
-            taxiNumber: "458204 TBA",
-            reservationNumber: "N°03",
-            date: "05 juillet",
-            time: "11h 00",
-            distance: 10,
-            destination: "Ankadimbahoaka à Analakely"
-        }
-    ];
+    // const reservations = [
+    //     {
+    //         id: 1,
+    //         price: "25 000Ar",
+    //         carImg: "assets/v1.png",
+    //         taxiNumber: "458203 TBA",
+    //         reservationNumber: "N°02",
+    //         date: "04 juillet",
+    //         time: "10h 00",
+    //         distance: 10,
+    //         destination: "Ampitatafika à Ivandry"
+    //     },
+    //     {
+    //         id: 2,
+    //         price: "30 000Ar",
+    //         carImg: "assets/v1.png",
+    //         taxiNumber: "458204 TBA",
+    //         reservationNumber: "N°03",
+    //         date: "05 juillet",
+    //         time: "11h 00",
+    //         distance: 10,
+    //         destination: "Ankadimbahoaka à Analakely"
+    //     }
+    // ];
 
     useEffect(() => {
         setIsVisible(true);
@@ -85,6 +90,38 @@ const Reservation_chauffeur: React.FC = () => {
         history.push('/map');
     }
 
+    useEffect(() => {
+        const listeCourse = async () => {
+            const response = await listeCourseEnAttente();
+            setReservations(Array.isArray(response.data.data) ? response.data.data : []);
+        }
+
+        listeCourse();
+    }, []);
+
+    function splitDateTime(dateTimeString: string) {
+        // Parse the input string into a Date object
+        const dateObj = new Date(dateTimeString);
+      
+        // Format the date (YYYY-MM-DD)
+        const date = dateObj.toISOString().split('T')[0];
+      
+        // Format the time (HH:MM)
+        const hours = String(dateObj.getUTCHours()).padStart(2, '0');
+        const minutes = String(dateObj.getUTCMinutes()).padStart(2, '0');
+        const time = `${hours}:${minutes}`;
+      
+        return { date, time };
+    }
+
+    function splitPlace(place: string) {
+
+        const responsePlace = place.split(',')[0];
+      
+        return responsePlace;
+    }
+
+
     return (
         <div className="homeMap">
             <Header toggleMenu={toggleMenu} />
@@ -104,15 +141,15 @@ const Reservation_chauffeur: React.FC = () => {
                     </div>
                 </div>
 
-                {reservations.map(reservation => (
+                {reservations.map((reservation: any) => (
                     <div className="reservations" key={reservation.id} >
                         <div className="statut-reservation">
                             <div className="ico-stat">
                                 <i className="bi bi-car-front-fill"></i>
-                                <p>Réservation</p>
+                                <p>{reservation.status}</p>
                             </div>
                             <div className="ico-stat2">
-                                <p>{reservation.price}</p>
+                                <p>{reservation.prix}Ar</p>
                                 
                             </div>
                             
@@ -120,7 +157,7 @@ const Reservation_chauffeur: React.FC = () => {
                            
                         </div>
                         <div className="fond-reservation" onClick={() => handleConfirmClickDetail(reservation.id)}>
-                            <img src={reservation.carImg} alt="car" />
+                            <img src="assets/v1.png" alt="car" />
                         </div>
                         <div className="info-reservation">
                             {/* <div className="taxi">
@@ -128,9 +165,9 @@ const Reservation_chauffeur: React.FC = () => {
                                 <h1>{reservation.reservationNumber}</h1>
                             </div> */}
                             <div className="info-course">
-                                <p>Date : <span>{reservation.date}</span> à <span>{reservation.time}</span></p>
-                                <p>Destination : <span>{reservation.destination}</span></p>
-                                <p>Distance : <span>{reservation.distance}</span> km</p>
+                                <p>Date : <span>{splitDateTime(reservation.date_heure_depart).date}</span> à <span>{splitDateTime(reservation.date_heure_depart).time}</span></p>
+                                <p>Destination : <span>{splitPlace(reservation.adresse_depart.adresse)}</span> à <span>{splitPlace(reservation.adresse_arrivee.adresse)}</span></p>
+                                <p>Distance : <span>{reservation.kilometre}</span> km</p>
                             </div>
                             <div className="annuler-course">
                                 <button style={{animation:'pulse 2s infinite', transform:'scale(1)'}}  onClick={() => handleConfirmCourse(reservation.id)}>

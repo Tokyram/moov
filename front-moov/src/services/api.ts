@@ -17,14 +17,6 @@ export const login = async (username: string, password: string) => {
     }
 }
 
-export const logout = async () => {
-    try {
-    } catch (error: any) {
-        console.error('Erreur de déconnexion', error.message);
-        throw error;
-    }
-}
-
 export const getDecodedToken = async (): Promise<any | null> => {
     try {
       const { value: token } = await Storage.get({ key: 'token' });
@@ -63,7 +55,8 @@ export const reserverCourse = async (courseData: CourseData) => {
         // Configurez les en-têtes avec le token
         const headers = {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
         };
 
         const response = await api.post('/courses/reserver', courseData, { headers });
@@ -73,3 +66,41 @@ export const reserverCourse = async (courseData: CourseData) => {
         throw error;
     }
 };
+
+export const listeCourseEnAttente = async () => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+
+        // Configurez les en-têtes avec le token
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.get('/courses/attente', { headers });
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors de la récupération de la liste des courses en attente :', error.message);
+        throw error;
+    }
+}
+
+export const detailCourse = async (courseId: any) => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+
+        // Configurez les en-têtes avec le token
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.get(`/courses/details_course/${courseId}`, { headers });
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors de la récupération du détail de la course :', error.message);
+        throw error;
+    }
+}

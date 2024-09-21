@@ -118,15 +118,13 @@ class CourseController {
 
     static async getCourseDetails(req, res) {
         const courseId = req.params.courseId;
-        const userId = req.user.id;
 
         console.log('ID de la course:', courseId);
-        console.log('ID de l\'utilisateur connecté:', userId);
     
         try {
-            const courseDetails = await CourseService.getCourseDetailsById(courseId, userId);
+            const courseDetails = await CourseService.getCourseDetailsById(courseId);
             if (courseDetails) {
-                res.status(200).json(courseDetails);
+                res.status(200).json({course: courseDetails});
             } else {
                 res.status(404).json({ error: 'Détails de la course non trouvés' });
             }
