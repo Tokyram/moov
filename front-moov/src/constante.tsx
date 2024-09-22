@@ -1,3 +1,3 @@
-const url_api = "https://1f9f-41-74-209-182.ngrok-free.app/api";
+const url_api = "http://localhost:3000/api";
 
 export default url_api;
