@@ -221,6 +221,7 @@
     flex-direction: column;
     align-items:center;
     z-index: 1000; /* Assure que le popup est au-dessus des autres éléments */
+    transition: 1s;
   }
   
   /* Style pour le contenu du popup */
@@ -249,7 +250,7 @@
 
   .popup-overlay3 .popup-content3.show{
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY();
   }
 
   .close-button3{
@@ -372,3 +373,30 @@
          }
     }
   }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    background-color: var(--text-color);
+    padding: 5px;
+    border-radius: 50px;
+}
+
+.toggle-button {
+    padding: 10px 20px;
+    margin: 0 1px;
+    border: none;
+    background-color: var(--text-color);
+    cursor: pointer;
+    color: var(--background-color);
+    border-radius: 50px;
+    font-weight: bold;
+    animation-duration: 1s;
+    transition: 1s;
+}
+
+.toggle-button.active {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}

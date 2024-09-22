@@ -14,6 +14,8 @@ const Reservation_chauffeur: React.FC = () => {
     const [showDetailPopup, setShowDetailPopup] = useState(false);
     const [showConfirmeCoursePopup, setShowConfirmeCoursePopup] = useState(false);
     const history = useHistory();
+
+    const [activeView, setActiveView] = useState<'reservations' | 'historique'>('reservations');
     const reservations = [
         {
             id: 1,
@@ -36,6 +38,19 @@ const Reservation_chauffeur: React.FC = () => {
             time: "11h 00",
             distance: 10,
             destination: "Ankadimbahoaka à Analakely"
+        }
+    ];
+
+    const historique = [
+        {
+            id: 1,
+            price: "20 000Ar",
+            carImg: "assets/v1.png",
+            taxiNumber: "458203 TBA",
+            reservationNumber: "N°01",
+            date: "02 juillet",
+            time: "9h 00",
+            destination: "Ambohijatovo à Antanimena"
         }
     ];
 
@@ -104,7 +119,23 @@ const Reservation_chauffeur: React.FC = () => {
                     </div>
                 </div>
 
-                {reservations.map(reservation => (
+                <div className="button-container">
+                        <button
+                            className={`toggle-button ${activeView === 'reservations' ? 'active' : ''}`}
+                            onClick={() => setActiveView('reservations')}
+                        >
+                            Réservations
+                        </button>
+                        <button
+                            className={`toggle-button ${activeView === 'historique' ? 'active' : ''}`}
+                            onClick={() => setActiveView('historique')}
+                        >
+                            Historiques
+                        </button>
+                </div>
+
+                {activeView === 'reservations' && (
+                reservations.map(reservation => (
                     <div className="reservations" key={reservation.id} >
                         <div className="statut-reservation">
                             <div className="ico-stat">
@@ -142,9 +173,39 @@ const Reservation_chauffeur: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                ))}
+                    ))
+                )}
 
 
+                {activeView === 'historique' && (
+                    historique.map(historique => (
+                        <div className="reservations" key={historique.id}>
+                            <div className="statut-reservation">
+                                <div className="ico-stat">
+                                    <i className="bi bi-clock-history"></i>
+                                    <p>Historique</p>
+                                </div>
+                                <div className="ico-stat2">
+                                    <p>{historique.price}</p>
+                                </div>
+                            </div>
+                            <div className="fond-reservation" onClick={() => handleConfirmClickDetail(historique.id)}>
+                                <img src={historique.carImg} alt="car" />
+                            </div>
+                            <div className="info-reservation">
+                                <div className="taxi">
+                                    <h4>{historique.taxiNumber}</h4>
+                                    <h1>{historique.reservationNumber}</h1>
+                                </div>
+                                <div className="info-course">
+                                    <p>Date : <span>{historique.date}</span> à <span>{historique.time}</span></p>
+                                    <p>Destination : <span>{historique.destination}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
+                
                 {showDetailPopup && (
                   
                     <div className="popup-overlay3" onClick={handleCloseDetail}>
