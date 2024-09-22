@@ -4,6 +4,7 @@ import './Profil.css';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 import { Route, useHistory } from 'react-router-dom';
+import { detailCourse, listeCourseEnAttente } from '../services/api';
 
 const Reservation_chauffeur: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,30 +16,9 @@ const Reservation_chauffeur: React.FC = () => {
     const [showConfirmeCoursePopup, setShowConfirmeCoursePopup] = useState(false);
     const history = useHistory();
     const [activeView, setActiveView] = useState<'reservations' | 'historique'>('reservations');
-    const reservations = [
-        {
-            id: 1,
-            price: "25 000Ar",
-            carImg: "assets/v1.png",
-            taxiNumber: "458203 TBA",
-            reservationNumber: "N°02",
-            date: "04 juillet",
-            time: "10h 00",
-            distance: 10,
-            destination: "Ampitatafika à Ivandry"
-        },
-        {
-            id: 2,
-            price: "30 000Ar",
-            carImg: "assets/v1.png",
-            taxiNumber: "458204 TBA",
-            reservationNumber: "N°03",
-            date: "05 juillet",
-            time: "11h 00",
-            distance: 10,
-            destination: "Ankadimbahoaka à Analakely"
-        }
-    ];
+    const [reservations, setReservations] = useState<any[]>([]);
+    const [reservation, setReservation] = useState<any>(null);
+
 
     const historique = [
         {
@@ -57,6 +37,38 @@ const Reservation_chauffeur: React.FC = () => {
         setIsVisible(true);
     }, []);
 
+    useEffect(() => {
+        const listeCourse = async () => {
+            if(activeView === "reservations") {
+                const response = await listeCourseEnAttente();
+                setReservations(Array.isArray(response.data.data) ? response.data.data : []);
+            }
+        }
+        listeCourse();
+    }, []);
+
+    function splitDateTime(dateTimeString: string) {
+        // Parse the input string into a Date object
+        const dateObj = new Date(dateTimeString);
+      
+        // Format the date (YYYY-MM-DD)
+        const date = dateObj.toISOString().split('T')[0];
+      
+        // Format the time (HH:MM)
+        const hours = String(dateObj.getUTCHours()).padStart(2, '0');
+        const minutes = String(dateObj.getUTCMinutes()).padStart(2, '0');
+        const time = `${hours}:${minutes}`;
+      
+        return { date, time };
+    }
+
+    function splitPlace(place: string) {
+
+        const responsePlace = place.split(',')[0];
+      
+        return responsePlace;
+    }
+
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
@@ -66,10 +78,19 @@ const Reservation_chauffeur: React.FC = () => {
         setShowAnnulationPopup(true);
     };
 
-    const handleConfirmClickDetail = (reservationId: number) => {
-      setCurrentReservationId(reservationId);
-      setShowDetailPopup(true);
-  };
+    const handleConfirmClickDetail = async (reservationId: number) => {
+        setCurrentReservationId(reservationId);
+        try {
+          const response = await detailCourse(reservationId);
+          console.log("object", response.data);
+          if (response.data.course) {
+            setReservation(response.data.course);
+            setShowDetailPopup(true);
+          }
+        } catch (error) {
+          console.error("Erreur lors de la récupération des détails de la réservation:", error);
+        }
+    };
 
     const handleCloseDetail = () => {
       setShowDetailPopup(false);
@@ -134,15 +155,15 @@ const Reservation_chauffeur: React.FC = () => {
                 </div>
 
                 {activeView === 'reservations' && (
-                reservations.map(reservation => (
+                reservations.map((reservation: any) => (
                     <div className="reservations" key={reservation.id} >
                         <div className="statut-reservation">
                             <div className="ico-stat">
-                                <i className="bi bi-car-front-fill"></i>
-                                <p>Réservation</p>
+                                <i className="bi bi-clock-history"></i>
+                                <p>{reservation.status}</p>
                             </div>
                             <div className="ico-stat2">
-                                <p>{reservation.price}</p>
+                                <p>{reservation.prix}Ar</p>
                                 
                             </div>
                             
@@ -150,7 +171,7 @@ const Reservation_chauffeur: React.FC = () => {
                            
                         </div>
                         <div className="fond-reservation" onClick={() => handleConfirmClickDetail(reservation.id)}>
-                            <img src={reservation.carImg} alt="car" />
+                            <img src="assets/v1.png"alt="car" />
                         </div>
                         <div className="info-reservation">
                             {/* <div className="taxi">
@@ -158,9 +179,9 @@ const Reservation_chauffeur: React.FC = () => {
                                 <h1>{reservation.reservationNumber}</h1>
                             </div> */}
                             <div className="info-course">
-                                <p>Date : <span>{reservation.date}</span> à <span>{reservation.time}</span></p>
-                                <p>Destination : <span>{reservation.destination}</span></p>
-                                <p>Distance : <span>{reservation.distance}</span> km</p>
+                                <p>Date : <span>{splitDateTime(reservation.date_heure_depart).date}</span> à <span>{splitDateTime(reservation.date_heure_depart).time}</span></p>
+                                <p>Destination : <span>{splitPlace(reservation.adresse_depart.adresse)}</span> à <span>{splitPlace(reservation.adresse_arrivee.adresse)}</span></p>
+                                <p>Distance : <span>{reservation.kilometre}</span> km</p>
                             </div>
                             <div className="annuler-course">
                                 <button style={{animation:'pulse 2s infinite', transform:'scale(1)'}}  onClick={() => handleConfirmCourse(reservation.id)}>
@@ -181,7 +202,7 @@ const Reservation_chauffeur: React.FC = () => {
                         <div className="reservations" key={historique.id}>
                             <div className="statut-reservation">
                                 <div className="ico-stat">
-                                    <i className="bi bi-clock-history"></i>
+                                    <i className="bi bi-car-front-fill"></i>
                                     <p>Historique</p>
                                 </div>
                                 <div className="ico-stat2">
@@ -204,7 +225,7 @@ const Reservation_chauffeur: React.FC = () => {
                         </div>
                     ))
                 )}
-                {showDetailPopup && (
+                {showDetailPopup && reservation && (
                   
                     <div className="popup-overlay3" onClick={handleCloseDetail}>
                         <button className="close-button3" onClick={handleCloseDetail}>
@@ -218,16 +239,16 @@ const Reservation_chauffeur: React.FC = () => {
                                     <h4>Détail de la réservation</h4>
                                   </div>
                                   <div className="numero">
-                                    <h4>N°01</h4>
+                                    <h4>N°{reservation?.course_id}</h4>
                                   </div>
                               </div>
                               <div className="info-detail">
                                 
                                 {/* <p>Chauffeur : <span>RAKOTO Jean</span></p> */}
                                 {/* <p>Immatriculation : <span>458204 TBA</span></p> */}
-                                <p>Date : <span>04 juillet</span> à <span>10h 00</span></p>
-                                <p>Destination : <span>Analakely</span> à <span>Ivandry</span></p>
-                                <p>Distance : <span>10km</span></p>
+                                <p>Date : <span>{splitDateTime(reservation?.date_heure_depart).date}</span> à <span>{splitDateTime(reservation?.date_heure_depart).time}</span></p>
+                                <p>Destination : <span>{splitPlace(reservation?.adresse_depart)}</span> à <span>{splitPlace(reservation?.adresse_arrivee)}</span></p>
+                                <p>Distance : <span>{reservation?.kilometre}</span> km</p>
 
                               </div>
                               <a href="/map" className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center'}}>
@@ -251,7 +272,7 @@ const Reservation_chauffeur: React.FC = () => {
                                 <img src="assets/logo.png" alt="logo" />
                                 <h4>Refuser la course !</h4>
                             </div>
-                            <p>Voulez-vous vraiment refisé la course ?</p>
+                            <p>Voulez-vous vraiment refuser la course ?</p>
                             <div className="popup-buttons">
                                 <button className="cancel-button" onClick={handleConfirmAnnulation}>Retour</button>
                                 <button onClick={handleConfirmAnnulation}>Confirmer</button>
@@ -267,7 +288,7 @@ const Reservation_chauffeur: React.FC = () => {
                                 <img src="assets/logo.png" alt="logo" />
                                 <h4>Confirmation de la demande</h4>
                             </div>
-                            <p>Augmanter votre statistique , pour plus de bénéfice?</p>
+                            <p>Augmenter votre statistique , pour plus de bénéfices?</p>
                             <div className="popup-buttons">
                                 <button className="cancel-button" onClick={handleCancelAnnulation}>Retour</button>
                                 <button onClick={handleConfirmCourseRedirect}>Confirmer</button>
