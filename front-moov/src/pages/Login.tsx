@@ -37,8 +37,6 @@ const Login: React.FC = () => {
 
   return (
     <div className="home">
-      
-
         
         <div className="confirmation-bar2">
             <div className="login">

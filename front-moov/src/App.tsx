@@ -93,7 +93,7 @@ const App: React.FC = () => {
           <Route path="/notification" component={Notification} exact={true} />
           <Route path="/notification_chauffeur" component={Notification_chauffeur} exact={true} />
           <Route path="/facture" component={Facture} exact={true} />
-          <Route path="/mdpcode" component={Mdp_code} exact={true} />
+          <Route path="/mdpcode/:type" component={Mdp_code} exact={true} />
           <Route path="/mdpo" component={Mot_de_passe_oublie} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>

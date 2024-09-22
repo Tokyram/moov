@@ -104,3 +104,32 @@ export const detailCourse = async (courseId: any) => {
         throw error;
     }
 }
+
+export interface inscriptionData {
+    nom: string;
+    prenom: string;
+    telephone: string;
+    mail: string;
+    mdp: string;
+    adresse: string;
+}
+
+export const inscription = async (inscriptionData: inscriptionData) => {
+    try {
+        const response = await api.post('users/register', inscriptionData);
+        return response;
+    } catch(error: any) {
+        console.error('Erreur de l\'inscription ', error.message);
+        throw error;
+    }
+}
+
+export const verifyRegistration = async (code: number) => {
+    try {
+        const response = await api.post('users/verify-registration', { code });
+        return response;
+    } catch(error: any) {
+        console.error('Erreur vérification de l\'inscription ', error.message);
+        throw error;
+    }
+}
