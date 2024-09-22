@@ -14,7 +14,6 @@ const Reservation_chauffeur: React.FC = () => {
     const [showDetailPopup, setShowDetailPopup] = useState(false);
     const [showConfirmeCoursePopup, setShowConfirmeCoursePopup] = useState(false);
     const history = useHistory();
-
     const [activeView, setActiveView] = useState<'reservations' | 'historique'>('reservations');
     const reservations = [
         {
@@ -205,7 +204,6 @@ const Reservation_chauffeur: React.FC = () => {
                         </div>
                     ))
                 )}
-                
                 {showDetailPopup && (
                   
                     <div className="popup-overlay3" onClick={handleCloseDetail}>
@@ -232,6 +230,10 @@ const Reservation_chauffeur: React.FC = () => {
                                 <p>Distance : <span>10km</span></p>
 
                               </div>
+                              <a href="/notification" className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center'}}>
+                                    {/* <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i> */}
+                                    Voir sur map <i className="bi bi-arrow-right-short" style={{ fontSize: '1.5rem', display:'flex', alignItems:'center', justifyContent:'center' }}></i>
+                                </a>
                             </div>
                             <div className="titrepopupMerci">
                                 <img src="assets/logo.png" alt="logo" />
