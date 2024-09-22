@@ -159,7 +159,7 @@ const Reservation_chauffeur: React.FC = () => {
                     <div className="reservations" key={reservation.id} >
                         <div className="statut-reservation">
                             <div className="ico-stat">
-                                <i className="bi bi-car-front-fill"></i>
+                                <i className="bi bi-clock-history"></i>
                                 <p>{reservation.status}</p>
                             </div>
                             <div className="ico-stat2">
@@ -202,7 +202,7 @@ const Reservation_chauffeur: React.FC = () => {
                         <div className="reservations" key={historique.id}>
                             <div className="statut-reservation">
                                 <div className="ico-stat">
-                                    <i className="bi bi-clock-history"></i>
+                                    <i className="bi bi-car-front-fill"></i>
                                     <p>Historique</p>
                                 </div>
                                 <div className="ico-stat2">

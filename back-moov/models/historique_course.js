@@ -60,7 +60,7 @@ class Course {
                 FROM course
                 JOIN utilisateur AS utilisateur_passager ON course.passager_id = utilisateur_passager.id
                 JOIN utilisateur AS utilisateur_chauffeur ON course.chauffeur_id = utilisateur_chauffeur.id
-                WHERE course.passager_id = $1 AND course.status = 'TERMINÉ'
+                WHERE course.passager_id = $1 AND course.status = 'TERMINE'
             `, [passagerId]);
 
             return result.rows.map(row => new Course(
@@ -115,7 +115,7 @@ class Course {
                 FROM course
                 JOIN utilisateur AS utilisateur_passager ON course.passager_id = utilisateur_passager.id
                 JOIN utilisateur AS utilisateur_chauffeur ON course.chauffeur_id = utilisateur_chauffeur.id
-                WHERE course.chauffeur_id = $1 AND course.status = 'TERMINÉ'
+                WHERE course.chauffeur_id = $1 AND course.status = 'TERMINE'
             `, [chauffeurId]);
 
             return result.rows.map(row => new Course(

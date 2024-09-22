@@ -173,7 +173,11 @@ class Course {
                 SELECT 
                     c.id AS course_id,
                     c.date_heure_depart,
+                    c.adresse_depart_longitude,
+                    c.adresse_depart_latitude,
                     c.adresse_depart,
+                    c.adresse_arrivee_longitude,
+                    c.adresse_arrivee_latitude,
                     c.adresse_arrivee,
                     c.status AS course_status,
                     c.prix,
