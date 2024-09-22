@@ -1,14 +1,63 @@
 import React, { useState } from 'react';
 import './Login.css'; 
+import { inscription, inscriptionData } from '../services/api';
+import Loader from '../components/Loader';
+import { useIonRouter } from '@ionic/react';
 
 const Inscription: React.FC = () => {
- 
+    
+    const router = useIonRouter();
 
+    const [nom, setNom] = useState('');
+    const [prenom, setPrenom] = useState('');
+    const [telephone, setTelephone] = useState('');
+    const [mail, setMail] = useState('');
+    const [mdp, setMdp] = useState('');
+    const [confirmationMdp, setConfirmationMdp] = useState('');
+    const [adresse, setAdresse] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleRegister = async (inscriptionData: inscriptionData) => {
+        try {
+            const response = await inscription(inscriptionData);
+            setIsLoading(false);
+            router.push('mdpcode/inscription', 'root', 'replace');
+        } catch(error: any) {
+            setIsLoading(false);
+            console.error('Erreur inscription', error.message);
+            router.push('mdpcode/inscription', 'root', 'replace');
+        }
+    }
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if(nom == '' || prenom == '' || telephone == '' || mail == '' || mdp == '' || confirmationMdp == '' || adresse == '') {
+            console.log("Données manquantes pour l'inscription");
+            return;
+        }
+
+        if(mdp !== confirmationMdp) {
+            console.log("Bien confirmer le mot de passe");
+            return;
+        }
+
+        setIsLoading(true);
+
+        const inscriptionData: inscriptionData = {
+            nom: nom,
+            prenom: prenom,
+            mail: mail,
+            telephone: telephone,
+            mdp: mdp,
+            adresse: adresse
+        }
+
+        handleRegister(inscriptionData);
+    }
+    
   return (
     <div className="home">
-      
 
-        
         <div className="confirmation-bar2">
             <div className="login">
                 <div className="logo-login">
@@ -21,7 +70,7 @@ const Inscription: React.FC = () => {
 
             </div>
 
-            <form className="form" >
+            <form className="form" onSubmit={handleSubmit}>
 
                 <div className="flex-column">
                     <label>Nom </label>
@@ -29,7 +78,13 @@ const Inscription: React.FC = () => {
 
                 <div className="inputForm">
                     <i className="bi bi-person"></i>
-                    <input placeholder="votre nom" className="input" type="text"/>
+                    <input 
+                        placeholder="votre nom" 
+                        className="input" 
+                        type="text"
+                        value={nom}
+                        onChange={(e) => setNom(e.target.value)}
+                    />
                 </div>
 
                 <div className="flex-column">
@@ -38,7 +93,13 @@ const Inscription: React.FC = () => {
 
                 <div className="inputForm">
                     <i className="bi bi-person"></i>
-                    <input placeholder="votre prénom" className="input" type="text"/>
+                    <input 
+                        placeholder="votre prénom" 
+                        className="input" 
+                        type="text"
+                        value={prenom}
+                        onChange={(e) => setPrenom(e.target.value)}
+                    />
                 </div>
 
                 <div className="flex-column">
@@ -47,16 +108,43 @@ const Inscription: React.FC = () => {
 
                 <div className="inputForm">
                     <i className="bi bi-at"></i>
-                    <input placeholder="votre-email@gmail.com" className="input" type="mail"/>
+                    <input 
+                        placeholder="votre-email@gmail.com" 
+                        className="input" 
+                        type="mail"
+                        value={mail}
+                        onChange={(e) => setMail(e.target.value)}
+                    />
                 </div>
 
                 <div className="flex-column">
-                    <label>TéléPhone </label>
+                    <label>Téléphone </label>
                 </div>
 
                 <div className="inputForm">
                     <i className="bi bi-phone"></i>
-                    <input placeholder="034 00 000 00" className="input" type="number"/>
+                    <input 
+                        placeholder="+261*********"
+                        className="input" 
+                        type="number"
+                        value={telephone}
+                        onChange={(e) => setTelephone(e.target.value)}
+                    />
+                </div>
+
+                <div className="flex-column">
+                    <label>Adresse </label>
+                </div>
+
+                <div className="inputForm">
+                    <i className="bi bi-phone"></i>
+                    <input 
+                        placeholder="LOT example 50 AII example " 
+                        className="input" 
+                        type="text"
+                        value={adresse}
+                        onChange={(e) => setAdresse(e.target.value)}
+                    />
                 </div>
         
                 <div className="flex-column">
@@ -65,7 +153,13 @@ const Inscription: React.FC = () => {
 
                 <div className="inputForm">
                     <i className="bi bi-key"></i>
-                    <input placeholder="***************" className="input" type="password"/>
+                    <input 
+                        placeholder="***************" 
+                        className="input" 
+                        type="password"
+                        value={mdp}
+                        onChange={(e) => setMdp(e.target.value)}
+                    />
                 </div>
 
                 <div className="flex-column">
@@ -74,32 +168,20 @@ const Inscription: React.FC = () => {
 
                 <div className="inputForm">
                     <i className="bi bi-key"></i>
-                    <input placeholder="***************" className="input" type="password"/>
-                </div>
-        
-                <div className="flex-row1">
-                    <div>
-                    <label className="container">
-                        <input type="checkbox" />
-                        <div className="checkmark"></div>
-                        <svg width="50" height="50" xmlns="http://www.w3.org/2000/svg" className="celebrate">
-                            <polygon points="0,0 10,10"></polygon>
-                            <polygon points="0,25 10,25"></polygon>
-                            <polygon points="0,50 10,40"></polygon>
-                            <polygon points="50,0 40,10"></polygon>
-                            <polygon points="50,25 40,25"></polygon>
-                            <polygon points="50,50 40,40"></polygon>
-                            </svg>
-                        </label>
-                        <label>Se souvenir de moi </label>
-                    </div>
+                    <input 
+                        placeholder="***************" 
+                        className="input" 
+                        type="password"
+                        value={confirmationMdp}
+                        onChange={(e) => setConfirmationMdp(e.target.value)}
+                    />
                 </div>
                 
-                <button type='submit' className="confirmation-button2">S'inscrire</button>
+                <button type='submit' className="confirmation-button2" disabled={isLoading}>{!isLoading ? "S'inscrire" :  <Loader/> }</button>
             </form>
 
 
-            <p className="p">Vouz n'avez pas de compte? <span className="span"><a className="span" href="/home">Se connecter</a></span></p>
+            <p className="p">Vous avez déjà un compte? <span className="span"><a className="span" href="/home">Se connecter</a></span></p>
 
         </div>
       

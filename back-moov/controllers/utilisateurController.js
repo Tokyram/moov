@@ -29,25 +29,26 @@ class UtilisateurController {
 
       if(userInvalide) {
         res.status(400).json({ message: 'Numero de téléphone déjà utilisé' });
-      }
-  
-      console.log('Final UserData:', userData);
-      
-      const jsonUserData = JSON.stringify(userData);
-      console.log('JSON UserData:', jsonUserData);
-      
-      const verifCode = await VerificationCode.create(jsonUserData);
-      const smsSent = await SMSService.sendVerificationCode(telephone, verifCode.code);
-  
-      if (smsSent) {
-        res.status(201).json({ 
-          message: 'Code de vérification envoyé', 
-          verificationId: verifCode.id, 
-          code: verifCode.code // Ne pas inclure dans une vraie application
-        });
       } else {
-        // await verifCode.delete(); // Supprimer le code si l'envoi du SMS échoue
-        res.status(500).json({ message: 'Erreur lors de l\'envoi du SMS',  code: verifCode.code });
+
+        console.log('Final UserData:', userData);
+        
+        const jsonUserData = JSON.stringify(userData);
+        console.log('JSON UserData:', jsonUserData);
+        
+        const verifCode = await VerificationCode.create(jsonUserData);
+        const smsSent = await SMSService.sendVerificationCode(telephone, verifCode.code);
+        console.log('CODE:', verifCode.code);
+        if (smsSent) {
+          res.status(201).json({ 
+            message: 'Code de vérification envoyé', 
+            verificationId: verifCode.id, 
+            code: verifCode.code // Ne pas inclure dans une vraie application
+          });
+        } else {
+          // await verifCode.delete(); // Supprimer le code si l'envoi du SMS échoue
+          res.status(500).json({ message: 'Erreur lors de l\'envoi du SMS',  code: verifCode.code });
+        }
       }
     } catch (error) {
       console.error('Erreur lors de l\'inscription:', error);

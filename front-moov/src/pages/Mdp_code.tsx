@@ -1,11 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import './Login.css'; 
+import { useParams } from 'react-router-dom';
+import { verifyRegistration } from '../services/api';
+import { Storage } from '@capacitor/storage';
+import { useIonRouter } from '@ionic/react';
 
 const Mdp_code: React.FC = () => {
+
+    const { type } = useParams<any>();
+    const router = useIonRouter();
+
     const [isVisible, setIsVisible] = useState(false);
+    const [code, setCode] = useState(['', '', '', '', '', '']);
+
     useEffect(() => {
         setIsVisible(true);
     }, []);
+
+    const handleChange = (index: number, value: string) => {
+        const newCode = [...code];
+        newCode[index] = value;
+        setCode(newCode);
+    
+        // Déplacer le focus vers l'input suivant
+        if (value !== '' && index < 5) {
+          const nextInput = document.getElementsByName(`number${index + 2}`)[0] as HTMLInputElement;
+          if (nextInput) nextInput.focus();
+        }
+    };
+    
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const confirmationCode = code.join('');
+        console.log('Code de confirmation:', confirmationCode);
+        // Ici, vous pouvez ajouter la logique pour envoyer le code au serveur
+        if(confirmationCode.length < 6) {
+            console.log('Code de confirmation inconmplète !');
+            return;
+        }
+
+        if(type === 'inscription') {
+            try {
+                const response = await verifyRegistration(Number(confirmationCode));
+                await Storage.set({ key: 'token', value: response.data.token });
+                router.push('/map', 'root', 'replace');
+            } catch(error: any) {
+                console.error('Erreur récupération code', error.message);
+            }
+        }
+    };
 
   return (
     <div className="home">
@@ -24,18 +67,28 @@ const Mdp_code: React.FC = () => {
 
             </div>
 
-            <form className="form" action='/mdpo'>
+            <form className="form" onSubmit={handleSubmit}>
 
                
         
                 <div className="flex-column">
-                <label>Code de confirmation </label>
+                    <label>Code de confirmation </label>
                 </div>
                 <div className="codeForm">
-                    <input maxLength={1} minLength={0} type="text" name="text" className="code" placeholder='0'/>
-                    <input maxLength={1} minLength={0} type="text" name="text" className="code" placeholder='0'/>
-                    <input maxLength={1} minLength={0} type="text" name="text" className="code" placeholder='0'/>
-                    <input maxLength={1} minLength={0} type="text" name="text" className="code" placeholder='0'/>
+                    {[1, 2, 3, 4, 5, 6].map((num, index) => (
+                    <input
+                        key={num}
+                        maxLength={1}
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        name={`number${num}`}
+                        className="code"
+                        placeholder="0"
+                        value={code[index]}
+                        onChange={(e) => handleChange(index, e.target.value)}
+                    />
+                    ))}
                 </div>
                 {/* <div className="inputForm">
                     <i className="bi bi-key"></i>
@@ -60,7 +113,7 @@ const Mdp_code: React.FC = () => {
                     </div>
                 </div>
 
-            <p className="p">Vouz n'avez pas de compte? <span className="span"><a className="span" href="/inscription">S'inscrire</a></span></p>
+                <p className="p">Vous avez déjà un compte? <span className="span"><a className="span" href="/home">Se connecter</a></span></p>
 
         </div>
       

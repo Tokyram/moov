@@ -163,42 +163,63 @@ class Course {
 
     // services/courseService.js
 
-    static async findCourseDetailsById(courseId, userId) {
+    static async findCourseDetailsById(courseId) {
         try {
             console.log('Requête SQL pour la course:', {
-                courseId,
-                userId
+                courseId
             });
     
             const result = await db.query(`
                 SELECT 
-                    course.id AS course_id,
-                    course.date_heure_depart,
-                    course.adresse_depart,
-                    course.adresse_arrivee,
-                    course.status AS status,
-                    utilisateur_passager.id AS passager_id,
-                    utilisateur_passager.nom AS passager_nom,
-                    utilisateur_passager.mail AS passager_email,
-                    utilisateur_passager.telephone AS passager_telephone,
-                    utilisateur_chauffeur.id AS chauffeur_id,
-                    utilisateur_chauffeur.nom AS chauffeur_nom,
-                    utilisateur_chauffeur.mail AS chauffeur_email,
-                    utilisateur_chauffeur.telephone AS chauffeur_telephone
-                FROM course
-                JOIN utilisateur AS utilisateur_passager ON course.passager_id = utilisateur_passager.id
-                JOIN utilisateur AS utilisateur_chauffeur ON course.chauffeur_id = utilisateur_chauffeur.id
-                WHERE course.id = $1
-                AND (course.passager_id = $2 OR course.chauffeur_id = $2)
-            `, [courseId, userId]);
-    
-            console.log('Résultats de la requête SQL:', result.rows);
+                    c.id AS course_id,
+                    c.date_heure_depart,
+                    c.adresse_depart,
+                    c.adresse_arrivee,
+                    c.status AS course_status,
+                    c.prix,
+                    c.kilometre,
+                    
+                    -- Passager details
+                    up.id AS passager_id,
+                    up.nom AS passager_nom,
+                    up.prenom AS passager_prenom,
+                    up.telephone AS passager_telephone,
+                    
+                    -- Chauffeur details
+                    uc.id AS chauffeur_id,
+                    uc.nom AS chauffeur_nom,
+                    uc.prenom AS chauffeur_prenom,
+                    uc.telephone AS chauffeur_telephone,
+                    
+                    -- Voiture details
+                    v.id AS voiture_id,
+                    v.marque,
+                    v.modele,
+                    v.immatriculation,
+                    
+                    -- Photo voiture
+                    pv.photo_url AS voiture_photo
+                FROM 
+                    course c
+                LEFT JOIN 
+                    utilisateur up ON c.passager_id = up.id
+                LEFT JOIN 
+                    utilisateur uc ON c.chauffeur_id = uc.id
+                LEFT JOIN 
+                    chauffeur_voiture cv ON uc.id = cv.chauffeur_id
+                LEFT JOIN 
+                    voiture v ON cv.voiture_id = v.id
+                LEFT JOIN 
+                    photo_voiture pv ON v.id = pv.voiture_id
+                WHERE 
+                    c.id = $1
+            `, [courseId]);
     
             if (result.rows.length === 0) {
                 console.log('Aucune course trouvée pour les paramètres spécifiés.');
             }
     
-            return result.rows.map(row => new Course(...Object.values(row)));
+            return result.rows[0];
         } catch (error) {
             console.error('Erreur lors de la récupération des détails de la course :', error.message);
             throw new Error('Erreur lors de la récupération des détails de la course : ' + error.message);
