@@ -4,7 +4,7 @@ import './Profil.css';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 import { Route, useHistory } from 'react-router-dom';
-import { listeCourseEnAttente } from '../services/api';
+import { detailCourse, listeCourseEnAttente } from '../services/api';
 
 const Reservation_chauffeur: React.FC = () => {
 
@@ -17,6 +17,7 @@ const Reservation_chauffeur: React.FC = () => {
     const [showConfirmeCoursePopup, setShowConfirmeCoursePopup] = useState(false);
 
     const [reservations, setReservations] = useState<any[]>([]);
+    const [reservation, setReservation] = useState<any>(null);
 
     const history = useHistory();
     // const reservations = [
@@ -57,10 +58,19 @@ const Reservation_chauffeur: React.FC = () => {
         setShowAnnulationPopup(true);
     };
 
-    const handleConfirmClickDetail = (reservationId: number) => {
-      setCurrentReservationId(reservationId);
-      setShowDetailPopup(true);
-  };
+    const handleConfirmClickDetail = async (reservationId: number) => {
+        setCurrentReservationId(reservationId);
+        try {
+          const response = await detailCourse(reservationId);
+          console.log("object", response.data);
+          if (response.data.course) {
+            setReservation(response.data.course);
+            setShowDetailPopup(true);
+          }
+        } catch (error) {
+          console.error("Erreur lors de la récupération des détails de la réservation:", error);
+        }
+    };
 
     const handleCloseDetail = () => {
       setShowDetailPopup(false);
@@ -182,7 +192,7 @@ const Reservation_chauffeur: React.FC = () => {
                 ))}
 
 
-                {showDetailPopup && (
+                {showDetailPopup && reservation && (
                   
                     <div className="popup-overlay3" onClick={handleCloseDetail}>
                         <button className="close-button3" onClick={handleCloseDetail}>
@@ -196,16 +206,16 @@ const Reservation_chauffeur: React.FC = () => {
                                     <h4>Détail de la réservation</h4>
                                   </div>
                                   <div className="numero">
-                                    <h4>N°01</h4>
+                                    <h4>N°{reservation?.course_id}</h4>
                                   </div>
                               </div>
                               <div className="info-detail">
                                 
                                 {/* <p>Chauffeur : <span>RAKOTO Jean</span></p> */}
                                 {/* <p>Immatriculation : <span>458204 TBA</span></p> */}
-                                <p>Date : <span>04 juillet</span> à <span>10h 00</span></p>
-                                <p>Destination : <span>Analakely</span> à <span>Ivandry</span></p>
-                                <p>Distance : <span>10km</span></p>
+                                <p>Date : <span>{splitDateTime(reservation?.date_heure_depart).date}</span> à <span>{splitDateTime(reservation?.date_heure_depart).time}</span></p>
+                                <p>Destination : <span>{splitPlace(reservation?.adresse_depart)}</span> à <span>{splitPlace(reservation?.adresse_arrivee)}</span></p>
+                                <p>Distance : <span>{reservation?.kilometre}</span> km</p>
 
                               </div>
                             </div>
@@ -225,7 +235,7 @@ const Reservation_chauffeur: React.FC = () => {
                                 <img src="assets/logo.png" alt="logo" />
                                 <h4>Refuser la course !</h4>
                             </div>
-                            <p>Voulez-vous vraiment refisé la course ?</p>
+                            <p>Voulez-vous vraiment refuser la course ?</p>
                             <div className="popup-buttons">
                                 <button className="cancel-button" onClick={handleConfirmAnnulation}>Retour</button>
                                 <button onClick={handleConfirmAnnulation}>Confirmer</button>
@@ -241,7 +251,7 @@ const Reservation_chauffeur: React.FC = () => {
                                 <img src="assets/logo.png" alt="logo" />
                                 <h4>Confirmation de la demande</h4>
                             </div>
-                            <p>Augmanter votre statistique , pour plus de bénéfice?</p>
+                            <p>Augmenter votre statistique , pour plus de bénéfices?</p>
                             <div className="popup-buttons">
                                 <button className="cancel-button" onClick={handleCancelAnnulation}>Retour</button>
                                 <button onClick={handleConfirmCourseRedirect}>Confirmer</button>
