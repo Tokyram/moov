@@ -133,3 +133,41 @@ export const verifyRegistration = async (code: number) => {
         throw error;
     }
 }
+
+export const accepterCourse = async (courseId: number) => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const decodedToken = await getDecodedToken();
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.post('/courses/accepter', {courseId, chauffeurId: decodedToken.id}, { headers });
+        return response;
+    }catch(error: any) {
+        console.error('Erreur lors de la confirmation d\'une réservation ', error.message);
+        throw error;
+    }
+}
+
+export const refuserCourse = async (courseId: number) => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const decodedToken = await getDecodedToken();
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.post('/courses/refuser', {courseId, chauffeurId: decodedToken.id}, { headers });
+        return response;
+    }catch(error: any) {
+        console.error('Erreur lors du refus d\'une réservation ', error.message);
+        throw error;
+    }
+}

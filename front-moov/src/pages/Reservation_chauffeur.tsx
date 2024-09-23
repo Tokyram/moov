@@ -4,7 +4,8 @@ import './Profil.css';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 import { Route, useHistory } from 'react-router-dom';
-import { detailCourse, listeCourseEnAttente } from '../services/api';
+import { accepterCourse, detailCourse, listeCourseEnAttente, refuserCourse } from '../services/api';
+import Loader from '../components/Loader';
 
 const Reservation_chauffeur: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,10 +16,10 @@ const Reservation_chauffeur: React.FC = () => {
     const [showDetailPopup, setShowDetailPopup] = useState(false);
     const [showConfirmeCoursePopup, setShowConfirmeCoursePopup] = useState(false);
     const history = useHistory();
-    const [activeView, setActiveView] = useState<'reservations' | 'historique'>('reservations');
+    const [activeView, setActiveView] = useState<'reservations' | 'attribues' | 'historique'>('reservations');
     const [reservations, setReservations] = useState<any[]>([]);
     const [reservation, setReservation] = useState<any>(null);
-
+    const [confirmationLoading, setConfirmationLoading] = useState(false);
 
     const historique = [
         {
@@ -115,9 +116,47 @@ const Reservation_chauffeur: React.FC = () => {
        
     };
 
-    const handleConfirmCourseRedirect = () =>{
-        setShowConfirmeCoursePopup(false);
-        history.push('/map');
+    const handleConfirmRefus = async () => {
+        setConfirmationLoading(true);
+        try {
+            if(currentReservationId) {
+                const response = await refuserCourse(currentReservationId);
+                if(response.status === 200) {
+                    setConfirmationLoading(false);
+                    setShowAnnulationPopup(false);
+                    history.push('/map');
+                }
+            }
+            setConfirmationLoading(false);
+            setShowAnnulationPopup(false);
+            console.log('Veuillez choisir une réservation !');
+        } catch(error: any) {
+            setConfirmationLoading(false);
+            setShowAnnulationPopup(false);
+            console.log('Erreur lors de la confirmation d\'une réservation ', error.message);
+        }
+       
+    };
+
+    const handleConfirmCourseRedirect = async () => {
+        setConfirmationLoading(true);
+        try {
+            if(currentReservationId) {
+                const response = await accepterCourse(currentReservationId);
+                if(response.status === 200) {
+                    setConfirmationLoading(false);
+                    setShowConfirmeCoursePopup(false);
+                    history.push('/map');
+                }
+            }
+            setConfirmationLoading(false);
+            setShowConfirmeCoursePopup(false);
+            console.log('Veuillez choisir une réservation !');
+        } catch(error: any) {
+            setConfirmationLoading(false);
+            setShowConfirmeCoursePopup(false);
+            console.log('Erreur lors de la confirmation d\'une réservation ', error.message);
+        }
     }
 
     return (
@@ -144,13 +183,19 @@ const Reservation_chauffeur: React.FC = () => {
                             className={`toggle-button ${activeView === 'reservations' ? 'active' : ''}`}
                             onClick={() => setActiveView('reservations')}
                         >
-                            Réservations
+                            Réservations en attente
+                        </button>
+                        <button
+                            className={`toggle-button ${activeView === 'attribues' ? 'active' : ''}`}
+                            onClick={() => setActiveView('attribues')}
+                        >
+                            Réservations attribuées
                         </button>
                         <button
                             className={`toggle-button ${activeView === 'historique' ? 'active' : ''}`}
                             onClick={() => setActiveView('historique')}
                         >
-                            Historiques
+                            Historiques des réservations
                         </button>
                 </div>
 
@@ -196,6 +241,34 @@ const Reservation_chauffeur: React.FC = () => {
                     ))
                 )}
 
+                {activeView === 'attribues' && (
+                    historique.map(historique => (
+                        <div className="reservations" key={historique.id}>
+                            <div className="statut-reservation">
+                                <div className="ico-stat">
+                                    <i className="bi bi-car-front-fill"></i>
+                                    <p>ATTRIBUE</p>
+                                </div>
+                                <div className="ico-stat2">
+                                    <p>{historique.price}</p>
+                                </div>
+                            </div>
+                            <div className="fond-reservation" onClick={() => handleConfirmClickDetail(historique.id)}>
+                                <img src={historique.carImg} alt="car" />
+                            </div>
+                            <div className="info-reservation">
+                                <div className="taxi">
+                                    <h4>{historique.taxiNumber}</h4>
+                                    <h1>{historique.reservationNumber}</h1>
+                                </div>
+                                <div className="info-course">
+                                    <p>Date : <span>{historique.date}</span> à <span>{historique.time}</span></p>
+                                    <p>Destination : <span>{historique.destination}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
 
                 {activeView === 'historique' && (
                     historique.map(historique => (
@@ -225,6 +298,7 @@ const Reservation_chauffeur: React.FC = () => {
                         </div>
                     ))
                 )}
+
                 {showDetailPopup && reservation && (
                   
                     <div className="popup-overlay3" onClick={handleCloseDetail}>
@@ -251,10 +325,14 @@ const Reservation_chauffeur: React.FC = () => {
                                 <p>Distance : <span>{reservation?.kilometre}</span> km</p>
 
                               </div>
-                              <a href="/map" className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center'}}>
-                                    {/* <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i> */}
-                                    Voir sur map <i className="bi bi-arrow-right-short" style={{ fontSize: '1.5rem', display:'flex', alignItems:'center', justifyContent:'center' }}></i>
-                                </a>
+                              {
+                                activeView === "attribues" && (
+                                    <a href="/map" className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center'}}>
+                                        {/* <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i> */}
+                                        Voir sur map <i className="bi bi-arrow-right-short" style={{ fontSize: '1.5rem', display:'flex', alignItems:'center', justifyContent:'center' }}></i>
+                                    </a>
+                                )
+                              }
                             </div>
                             <div className="titrepopupMerci">
                                 <img src="assets/logo.png" alt="logo" />
@@ -275,7 +353,7 @@ const Reservation_chauffeur: React.FC = () => {
                             <p>Voulez-vous vraiment refuser la course ?</p>
                             <div className="popup-buttons">
                                 <button className="cancel-button" onClick={handleConfirmAnnulation}>Retour</button>
-                                <button onClick={handleConfirmAnnulation}>Confirmer</button>
+                                <button onClick={handleConfirmRefus}>Confirmer</button>
                             </div>
                         </div>
                     </div>
@@ -291,7 +369,7 @@ const Reservation_chauffeur: React.FC = () => {
                             <p>Augmenter votre statistique , pour plus de bénéfices?</p>
                             <div className="popup-buttons">
                                 <button className="cancel-button" onClick={handleCancelAnnulation}>Retour</button>
-                                <button onClick={handleConfirmCourseRedirect}>Confirmer</button>
+                                <button onClick={handleConfirmCourseRedirect} disabled={confirmationLoading}>{ confirmationLoading ? <Loader/> :  "Confirmer"}</button>
                             </div>
                         </div>
                     </div>
