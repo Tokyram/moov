@@ -48,6 +48,19 @@ class Chauffeur {
             throw new Error('Erreur lors de l\'insertion du chauffeur : ' + error.message);
         }
     }
+
+    static async upsert(chauffeurId, latitude, longitude) {
+        const query = 'SELECT upsert_position_chauffeur($1, $2, $3)';
+        await db.query(query, [chauffeurId, latitude, longitude]);
+    }
+
+    static validateCoordinates(latitude, longitude) {
+        if (isNaN(latitude) || isNaN(longitude) || 
+            latitude < -90 || latitude > 90 || 
+            longitude < -180 || longitude > 180) {
+          throw new Error("Coordonnées invalides");
+        }
+    }
 }
 
 module.exports = Chauffeur;

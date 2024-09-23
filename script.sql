@@ -121,3 +121,33 @@ CREATE TABLE panne (
     date_signalement TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (type_panne_id) REFERENCES type_panne(id)
 );
+
+CREATE TABLE position_chauffeur (
+  id SERIAL PRIMARY KEY,
+  chauffeur_id INT NOT NULL REFERENCES utilisateur(id),
+  latitude DECIMAL(8,6) NOT NULL,
+  longitude DECIMAL(9,6) NOT NULL,
+  timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT unique_chauffeur_position UNIQUE (chauffeur_id)
+);
+
+-- Ajout d'un index GiST pour les requêtes géospatiales
+CREATE INDEX idx_position_chauffeur ON position_chauffeur USING gist (
+  ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)
+);
+
+CREATE OR REPLACE FUNCTION upsert_position_chauffeur(
+  p_chauffeur_id INT,
+  p_latitude DECIMAL(8,6),
+  p_longitude DECIMAL(9,6)
+) RETURNS VOID AS $$
+BEGIN
+  INSERT INTO position_chauffeur (chauffeur_id, latitude, longitude)
+  VALUES (p_chauffeur_id, p_latitude, p_longitude)
+  ON CONFLICT (chauffeur_id) 
+  DO UPDATE SET 
+    latitude = EXCLUDED.latitude,
+    longitude = EXCLUDED.longitude,
+    timestamp = CURRENT_TIMESTAMP;
+END;
+$$ LANGUAGE plpgsql;

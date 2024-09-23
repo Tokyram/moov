@@ -5,6 +5,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useIonRouter } from '@ionic/react';
 import { Storage } from '@capacitor/storage';
 import { getDecodedToken } from '../services/api';
+import ChauffeurLocationTracker from './ChauffeurLocalisation';
 
 const Menu: React.FC = () => {
 
@@ -45,10 +46,12 @@ const Menu: React.FC = () => {
   };
 
   return (
-    
-    
-
       <div className='sidebar'>
+        {
+          userRole === "CHAUFFEUR" && (
+            <ChauffeurLocationTracker/>
+          )
+        }
         <ul className="nav-links">
         <li>
           <div className="profile-details">
