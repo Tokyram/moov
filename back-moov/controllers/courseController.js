@@ -26,9 +26,10 @@ class CourseController {
         try {
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10; 
+            const chauffeurId = req.user.id;
 
-            const courses = await Course.findReservationAttente({ skip: (page - 1) * limit, limit });
-            const total = await Course.countReservationAttente();
+            const courses = await Course.findReservationAttente({ skip: (page - 1) * limit, limit, chauffeurId });
+            const total = await Course.countReservationAttente(chauffeurId);
 
             res.json({
                 success: true,

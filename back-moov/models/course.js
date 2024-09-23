@@ -61,13 +61,16 @@ class Course {
         );
     }
 
-    static async findReservationAttente({skip = 0, limit = 10}) {
+    static async findReservationAttente({skip = 0, limit = 10, chauffeurId}) {
         let courses = [];
 
-        const params = [skip, limit];
+        const params = [chauffeurId, skip, limit];
 
         const result = await db.query(
-            `SELECT * FROM course WHERE status = 'EN ATTENTE' OFFSET $1 LIMIT $2`,
+            `SELECT c.* FROM course c
+             LEFT JOIN confirmation_course_chauffeur ccc ON c.id = ccc.course_id AND ccc.chauffeur_id = $1
+             WHERE c.status = 'EN ATTENTE' AND ccc.id IS NULL
+             OFFSET $2 LIMIT $3`,
             params
         );
 
@@ -98,10 +101,14 @@ class Course {
         return courses;
     }
 
-    static async countReservationAttente() {
-        
+    static async countReservationAttente(chauffeurId) {
+        const params = [chauffeurId];
+
         const result = await db.query(
-          `SELECT COUNT(*) FROM course WHERE status = 'EN ATTENTE'`
+            `SELECT COUNT(*) FROM course c
+            LEFT JOIN confirmation_course_chauffeur ccc ON c.id = ccc.course_id AND ccc.chauffeur_id = $1
+            WHERE c.status = 'EN ATTENTE' AND ccc.id IS NULL`,
+            params
         );
       
         return parseInt(result.rows[0].count);
