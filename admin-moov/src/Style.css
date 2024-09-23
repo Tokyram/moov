@@ -1,0 +1,32 @@
+:root {
+    --primary-color: #ee3324;
+    --secondary-color: #F47A20;
+    --background-color: #E8E5DE;
+    --white-color: #ffffff;
+    --text-color: #181818;
+    --win-color: #00FC0A;
+    --grey-color: #b9b9b9;
+
+    --text16: 16px;
+    --titre32: 32px;
+    --titre21: 21px;
+    --titre18: 18px;
+    --text12: 12px;
+    --titre42 : 42px;
+  }
+
+  *{
+    font-family: 'Karla', sans-serif;
+  }
+  
+  @font-face {
+    font-family: 'Karla';
+    /* src: url('/assets/fonts/Karla-VariableFont_wght.ttf') format('truetype'); */
+    /* src: url('/assets/fonts/Karla-Italic-VariableFont_wght.ttf') format('truetype'); */
+    /* font-weight: normal; */
+    font-style: normal;
+  }
+
+
+  
+

@@ -1,0 +1,131 @@
+@import '../Style.css';
+
+.table{
+    background-color: var(--white-color);
+    padding: 30px;
+    border-radius: 20px;
+}
+.liste-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--white-color);
+
+  }
+  
+  .liste-table th, .liste-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .liste-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .image-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .profile-image {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .status {
+    padding: 5px;
+    border-radius: 5px;
+  }
+  
+  .status.active {
+    background-color: #d4edda; /* Vert clair pour 'Actif' */
+    color: #155724;
+  }
+  
+  .status.inactive {
+    background-color: #f8d7da; /* Rouge clair pour 'Inactif' */
+    color: #721c24;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 50px;
+    width: 100%;
+    justify-content: center;
+    border-radius: 25px;
+
+    button {
+        background-color: transparent;
+        border: none;
+        gap: 10px;
+
+        
+        
+    
+    }
+
+    button:hover {
+        cursor: pointer;
+        color: var(--background-color);
+    }
+  }
+  
+  .btn {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .btn:hover {
+    opacity: 0.9;
+  }
+  
+  .containerClient{
+    margin-top: 20px;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .pagination button {
+    padding: 10px 15px;
+    margin: 0 5px;
+    border: none;
+    background-color: var(--text-color);
+    color: white;
+    cursor: pointer;
+    border-radius: 50px;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .pagination button.active {
+    background-color: var(--primary-color);
+  }
+  
+  .pagination button:disabled {
+    background-color: var(--grey-color);
+    cursor: not-allowed;
+  }
+  

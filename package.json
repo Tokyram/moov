@@ -1,0 +1,15 @@
+{
+  "name": "moov",
+  "version": "1.0.0",
+  "description": "Lien Mémoire Stage Mendrika : \r https://docs.google.com/document/d/1OsDNQrZbfKxz0GSgxpTlaFXNydfAdZTy/edit?usp=sharing&ouid=106965500956527089278&rtpof=true&sd=true",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "moov": "file:"
+  }
+}
