@@ -87,17 +87,19 @@ const MapComponent: React.FC = () => {
 
   useEffect(() => {
     const getCourseEnCours = async () => {
-      try {
-        const response = await detailCourse(courseId);
-        console.log("object", response.data);
-        if (response.data.course) {
-          setCourseEnCours(response.data.course);
-          setIsCoursePlanned(true);
-          setCourseStart([response.data.course.adresse_depart_latitude, response.data.course.adresse_depart_longitude]);
-          setCourseEnd([response.data.course.adresse_arrivee_latitude, response.data.course.adresse_arrivee_longitude]);
+      if(courseId) {
+        try {
+          const response = await detailCourse(courseId);
+          console.log("object", response.data);
+          if (response.data.course) {
+            setCourseEnCours(response.data.course);
+            setIsCoursePlanned(true);
+            setCourseStart([response.data.course.adresse_depart_latitude, response.data.course.adresse_depart_longitude]);
+            setCourseEnd([response.data.course.adresse_arrivee_latitude, response.data.course.adresse_arrivee_longitude]);
+          }
+        } catch (error) {
+          console.error("Erreur lors de la récupération des détails de la réservation:", error);
         }
-      } catch (error) {
-        console.error("Erreur lors de la récupération des détails de la réservation:", error);
       }
     }
 
@@ -157,53 +159,56 @@ const MapComponent: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const geoOptions = {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0
-    };
+    if(!isCoursePlanned) {
 
-    const updatePosition = (position: GeolocationPosition) => {
-      const userPosition: [number, number] = [position.coords.latitude, position.coords.longitude];
-      setPosition(userPosition);
-    };
+      const geoOptions = {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      };
 
-    const handleError = (error: GeolocationPositionError) => {
-      console.error('Error obtaining location:', error);
-      const defaultPosition: [number, number] = [0, 0];
-      setStart(defaultPosition);
-    };
+      const updatePosition = (position: GeolocationPosition) => {
+        const userPosition: [number, number] = [position.coords.latitude, position.coords.longitude];
+        setPosition(userPosition);
+      };
 
-    navigator.geolocation.getCurrentPosition(updatePosition, handleError, geoOptions);
-    const positionWatcher = navigator.geolocation.watchPosition(updatePosition, handleError, geoOptions);
+      const handleError = (error: GeolocationPositionError) => {
+        console.error('Error obtaining location:', error);
+        const defaultPosition: [number, number] = [0, 0];
+        setStart(defaultPosition);
+      };
 
-    return () => {
-      navigator.geolocation.clearWatch(positionWatcher);
-    };
-  }, []);
+      navigator.geolocation.getCurrentPosition(updatePosition, handleError, geoOptions);
+      const positionWatcher = navigator.geolocation.watchPosition(updatePosition, handleError, geoOptions);
 
-  const reverseGeocode = (lat: number, lon: number, setLocation: React.Dispatch<React.SetStateAction<string | null>>) => {
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data && data.display_name) {
-          setLocation(data.display_name);
-        } else {
-          setLocation('Unknown location');
-        }
-      })
-      .catch(error => {
-        console.error('Error during reverse geocoding:', error);
-        setLocation('Error fetching location');
-      });
+      return () => {
+        navigator.geolocation.clearWatch(positionWatcher);
+      };
+    }
+    }, [isCoursePlanned]);
+
+    const reverseGeocode = (lat: number, lon: number, setLocation: React.Dispatch<React.SetStateAction<string | null>>) => {
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.display_name) {
+            setLocation(data.display_name);
+          } else {
+            setLocation('Unknown location');
+          }
+        })
+        .catch(error => {
+          console.error('Error during reverse geocoding:', error);
+          setLocation('Error fetching location');
+        });
   };
 
   useEffect(() => {
-    if (start) {
-      reverseGeocode(start[0], start[1], setStartLocation);
+    if (start || courseStart) {
+      reverseGeocode(start ? start[0] : courseStart ? courseStart[0] : 0, start ? start[1] : courseStart ? courseStart[1] : 0, setStartLocation);
     }
-    if (end) {
-      reverseGeocode(end[0], end[1], setEndLocation);
+    if (end || courseEnd) {
+      reverseGeocode(end ? end[0] : courseEnd ? courseEnd[0] : 0, end ? end[1] : courseEnd ? courseEnd[1] : 0, setEndLocation);
     }
   }, [start, end]);
 
@@ -267,7 +272,7 @@ const MapComponent: React.FC = () => {
 
         <div className="confirmation-bar3">
           <div className="confirmation-item3">
-            {isVisible && (
+            {isVisible && !isCoursePlanned && (
               <div className={`confirmation-label3 ${isVisiblee ? 'show' : ''}`}>
 
                 <div className="notice">

@@ -34,6 +34,7 @@ import Mot_de_passe_oublie from './pages/Mot_de_passe_oublie';
 import Reservation_chauffeur from './pages/Reservation_chauffeur';
 import Notification_chauffeur from './pages/Notification_chauffeur';
 import { Storage } from '@capacitor/storage';
+import { checkTraitementCourse, getDecodedToken } from './services/api';
 
 setupIonicReact();
 
@@ -54,11 +55,32 @@ const App: React.FC = () => {
  
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [userRole, setUserRole] = useState('');
+  const [course, setCourse] = useState(null);
+
 
   const checkLoginStatus = async () => {
     const token = await Storage.get({ key: 'token' });
     if (token.value) {
+      const decodedToken = await getDecodedToken();
       setIsLoggedIn(true);
+      setUserRole(decodedToken.role);
+      if(decodedToken.role === "UTILISATEUR") {
+        try {
+          const traite = await checkTraitementCourse(decodedToken.id);
+          if(traite.data.enregistrement) {
+              await Storage.set({ key: 'course', value: traite.data.enregistrement.course_id });
+              setIsLoading(false);
+              setCourse(traite.data.enregistrement.course_id);
+          } else {
+              setIsLoading(false);
+              setCourse(traite.data.enregistrement.course_id);
+          }
+      } catch(error: any) {
+          setIsLoading(false);
+          console.error('Erreur de check', error.message);
+      }
+      }
     }
     setIsLoading(false);
   };
@@ -77,7 +99,10 @@ const App: React.FC = () => {
         <IonRouterOutlet>
           {/* <Route path="/notification_push" component={NotificationComponent} exact={true} /> */}
           <Route exact path="/">
-            {isLoggedIn ? <Redirect to="/map" /> : <Redirect to="/home" />}
+            {isLoggedIn && userRole === "UTILISATEUR" ? (
+              course ? <Redirect to={`/map/${course}`} /> : <Redirect to="/map" /> 
+            )
+              : isLoggedIn && userRole === "CHAUFFEUR" ?  <Redirect to="/reservation_chauffeur" /> : <Redirect to="/home" />}
           </Route>
           <Route path="/home" component={Home} exact={true} />
           <Route path="/inscription" component={Inscription} exact={true} />

@@ -185,3 +185,20 @@ export const checkTraitementCourse = async (utilisateurId: number) => {
         throw error;
     }
 }
+
+export const getListeChauffeursAcceptes = async (courseId: number) => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.get(`/courses/chauffeurs-acceptes/${courseId}`, { headers });
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors de la récupération la liste des chauffeurs ayant accepté :', error.message);
+        throw error;
+    }
+}

@@ -124,7 +124,7 @@ const Reservation_chauffeur: React.FC = () => {
                 if(response.status === 200) {
                     setConfirmationLoading(false);
                     setShowAnnulationPopup(false);
-                    history.push('/map');
+                    history.push('/reservation_chauffeur');
                 }
             }
             setConfirmationLoading(false);

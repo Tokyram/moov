@@ -74,23 +74,24 @@ const Menu: React.FC = () => {
 
         <hr style={{ backgroundColor: '#b4b4b4', width: '90%' }} />
 
-        <li>
-          {
-            course != 0 ? (
-              <a href={`/map/${course}`}>
-                <i className="bi bi-globe-americas"></i>
-                <span className="link_name">Accueil*</span>
-              </a>
-            ) : (
-              <a href="/map">
-                <i className="bi bi-globe-americas"></i>
-                <span className="link_name">Accueil*</span>
-              </a>
-            )
-          }
-          
-         
-        </li>
+        {
+          userRole === "UTILISATEUR" && (
+          <li>
+            {
+              course != 0 ? (
+                <a href={`/map/${course}`}>
+                  <i className="bi bi-globe-americas"></i>
+                  <span className="link_name">Accueil*</span>
+                </a>
+              ) : (
+                <a href="/map">
+                  <i className="bi bi-globe-americas"></i>
+                  <span className="link_name">Accueil*</span>
+                </a>
+              )
+            }
+          </li>
+        )}
         
         <li>
           <a href="/paiement">

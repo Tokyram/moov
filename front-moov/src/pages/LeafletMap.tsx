@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L, { LatLngExpression } from 'leaflet';
 import 'leaflet-routing-machine';
 import './MapComponent.css';
+import { getListeChauffeursAcceptes } from '../services/api';
 
 const locationIcon = new L.Icon({
   iconUrl: 'assets/l.png', // Utilisez le chemin correct vers votre icône
@@ -43,34 +44,35 @@ interface LeafletMapProps {
 const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistance, setStart, setEnd, course, isCoursePlanned }) => {
   const [initialCenter, setInitialCenter] = useState(false); // État pour suivre si l'utilisateur a été centré initialement
   
-  const [chauffeurs, setChauffeurs] = useState<Chauffeur[]>([
-    { id: 1, name: 'Chauffeur 1',immatriculation: 'ABC123',temps:'15', position: [-18.8792, 47.5079] }, // Near Independence Avenue
-    { id: 2, name: 'Chauffeur 2',immatriculation: 'DEF456',temps:'15', position: [-18.9149, 47.5210] }, // Near Analakely Market
-    { id: 3, name: 'Chauffeur 3',immatriculation: 'GHI789',temps:'15', position: [-18.8746, 47.5180] }, // Near Antananarivo University
-    { id: 4, name: 'Chauffeur 4',immatriculation: 'JKL012',temps:'15', position: [-18.9235, 47.5316] }, // Near Andohalo Cathedral
-    { id: 5, name: 'Chauffeur 5',immatriculation: 'MNO345',temps:'15', position: [-18.9061, 47.5044] },
-    // Ajoutez autant de chauffeurs que nécessaire
-  ]);
+  const [chauffeurs, setChauffeurs] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const [selectedChauffeur, setSelectedChauffeur] = useState<Chauffeur | null>(null);
+  const [selectedChauffeur, setSelectedChauffeur] = useState<any | null>(null);
+
   const [routingControl, setRoutingControl] = useState<L.Routing.Control | null>(null);
-  const [realTimeChauffeur, setRealTimeChauffeur] = useState<Chauffeur | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
+  const routingControlRef = useRef<L.Routing.Control | null>(null);
+
+  const [realTimeChauffeur, setRealTimeChauffeur] = useState<any | null>(null);
 
   console.log("course", course);
 
-  const handleButtonClick = (chauffeur: Chauffeur) => {
+  const handleButtonClick = (chauffeur: any) => {
     console.log('Chauffeur ID:', chauffeur.id);
-    console.log('Position du Chauffeur:', chauffeur.position);
 
     setSelectedChauffeur(chauffeur);
     setChauffeurs([chauffeur]); // Affiche seulement le chauffeur sélectionné
     // setEnd(chauffeur.position);
-    setStart(chauffeur.position);
-    setEnd(position as [number, number]);
+    setStart([parseFloat(chauffeur.latitude), parseFloat(chauffeur.longitude)]);
     setRealTimeChauffeur(chauffeur);
   };
   
   const MapClickHandler = () => {
+    const map = mapRef.current;
+
+    if (!map) return null;
+
     useMapEvents({
       click(e) {
         if(!isCoursePlanned) {
@@ -92,57 +94,92 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
     return null;
   };
 
+  
   const MapUpdater = () => {
-    const map = useMap();
+    const map = mapRef.current;
 
     useEffect(() => {
-      if (position && !initialCenter) {
-        // Vérifiez si position est une paire de coordonnées et centrer uniquement si l'utilisateur n'a pas encore été centré
-        if (Array.isArray(position)) {
+      if (!map) return; // Ensure map is initialized
+
+      // Vérifier si position est une paire de coordonnées valide
+      if (position && Array.isArray(position) && position.length === 2) {
+        // Centrer uniquement si l'utilisateur n'a pas encore été centré
+        if (!initialCenter) {
           map.setView(position, 15);
-          setInitialCenter(true); // Marquer comme centré initialement
+          setInitialCenter(true);
         }
       }
     }, [position, initialCenter, map]);
 
     useEffect(() => {
-      let routingControl: L.Control | undefined;
+      if (!start || !end) return; // Ne pas continuer si start ou end est null
 
-      if (start && end) {
-        routingControl = L.Routing.control({
-          waypoints: [
-            L.latLng(start[0], start[1]),
-            L.latLng(end[0], end[1])
-          ],
-          routeWhileDragging: !isCoursePlanned,
-          addWaypoints: !isCoursePlanned
-        })
-          .on('routesfound', function (e) {
-            const routes = e.routes;
-            const summary = routes[0].summary;
-            setDistance(parseFloat((summary.totalDistance / 1000).toFixed(2))); // Convert meters to kilometers
-          })
-          .addTo(map);
+      // Vérifier que la carte est bien disponible avant de continuer
+      if (!map) return;
 
-        return () => {
-          if (routingControl) {
-            map.removeControl(routingControl);
-          }
-        };
+      let routingControl: L.Routing.Control | null = null;
+
+      if (routingControlRef.current) {
+        routingControlRef.current.remove(); // Remove existing routing control
       }
 
-      return () => {};
-    }, [start, end, map, setDistance]);
+      routingControl = L.Routing.control({
+        waypoints: [
+          L.latLng(start[0], start[1]),
+          L.latLng(end[0], end[1]),
+        ],
+        routeWhileDragging: !isCoursePlanned,
+        addWaypoints: !isCoursePlanned,
+      })
+        .on('routesfound', function (e) {
+          const routes = e.routes;
+          const summary = routes[0].summary;
+          setDistance(parseFloat((summary.totalDistance / 1000).toFixed(2))); // Convertir en kilomètres
+        });
+
+      if (routingControl && map) {
+        routingControl.addTo(map); // Ajouter seulement si la carte est prête
+      }
+
+      routingControlRef.current = routingControl;
+
+      return () => {
+        if (routingControlRef.current) {
+          routingControlRef.current.remove(); // Ensure remove is called
+          routingControlRef.current = null; // Set to null to avoid future errors
+        }
+      };
+    }, [start, end, map, setDistance, isCoursePlanned]);
 
     return null;
   };
+
+  useEffect(() => {
+    const getListeChauffeurs = async () => {
+      if (course) {
+        setIsLoading(true);
+        setError(null);
+        try {
+          const response = await getListeChauffeursAcceptes(course.course_id);
+          setChauffeurs(response.data.data);
+        } catch (error) {
+          console.error("Erreur lors de la récupération de la liste :", error);
+          setError("Impossible de charger la liste des chauffeurs");
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    getListeChauffeurs();
+  }, [course]);
 
   useEffect(() => {
     // Simuler le déplacement du chauffeur en temps réel
     const interval = setInterval(() => {
       if (realTimeChauffeur) {
         // Mettez à jour la position du chauffeur en ajoutant une petite variation
-        setRealTimeChauffeur(prevChauffeur => {
+        setRealTimeChauffeur((prevChauffeur: any) => {
           if (prevChauffeur) {
             const newPosition: [number, number] = [
               prevChauffeur.position[0] + (Math.random() - 0.5) * 0.001, // Variation aléatoire pour la simulation
@@ -172,13 +209,17 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
 
   return (
     <>
+
+        {isLoading && <p>Chargement des chauffeurs...</p>}
+        {error && <p>Erreur : {error}</p>}
+
           {!isCoursePlanned && (
             <button className="cancel-button1" onClick={handleCancelPoints}>
               <i className="bi bi-arrow-clockwise"></i>
             </button>
           )}
       {position && (
-        <MapContainer style={{ height: '100%', border: 'none', position: 'relative' }}>
+        <MapContainer ref={mapRef} style={{ height: '100%', border: 'none', position: 'relative' }}>
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
@@ -195,14 +236,15 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
             </Marker>
           )}
 
-          {chauffeurs.map((chauffeur) => (
-            <Marker key={chauffeur.id} position={chauffeur.position} icon={chauffeurIcon}>
+          {isCoursePlanned && chauffeurs.map((chauffeur: any) => (
+            <Marker key={chauffeur.id} position={[parseFloat(chauffeur.latitude), parseFloat(chauffeur.longitude)]} icon={chauffeurIcon}>
               <Popup className='leaflet-popup-content'>
                 <div>
-                  <strong>{chauffeur.name}</strong>
+                  <strong>Chauffeur n°{chauffeur.id}</strong>
+                  <br></br>
+                  <strong>{`${chauffeur.prenom} ${chauffeur.nom}`}</strong>
                   <p>{chauffeur.immatriculation}</p>
-                  <p>{chauffeur.temps}</p>
-                  <button  onClick={() => handleButtonClick(chauffeur)}>
+                  <button onClick={() => handleButtonClick(chauffeur)}>
                     Choisir
                     <i className="bi bi-check-circle-fill"></i>
                   </button>
