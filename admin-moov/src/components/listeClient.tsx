@@ -54,7 +54,7 @@ const ItemList: React.FC = () => {
         icon: 'bi bi-people-fill',
         imageUrl: 'https://via.placeholder.com/50',
         telephone: '+ 261 34 00 000 00',
-        status: 'ADMIN',
+        status: 'Moyen',
       },
       {
           id:2,
@@ -63,7 +63,7 @@ const ItemList: React.FC = () => {
         icon: 'bi bi-people-fill',
         imageUrl: 'https://via.placeholder.com/50',
         telephone: '+ 261 34 00 000 00',
-        status: 'CHAUFFEUR',
+        status: 'Bon',
       },
       {
           id:3,
@@ -72,7 +72,7 @@ const ItemList: React.FC = () => {
         icon: 'bi bi-people-fill',
         imageUrl: 'https://via.placeholder.com/50',
         telephone: '+ 261 34 00 000 00',
-        status: 'CHAUFFEUR',
+        status: 'Bon',
       },
       {
           id:4,
@@ -81,7 +81,7 @@ const ItemList: React.FC = () => {
           icon: 'bi bi-people-fill',
           imageUrl: 'https://via.placeholder.com/50',
           telephone: '+ 261 34 00 000 00',
-          status: 'ADMIN',
+          status: 'Moyen',
         },
         {
           id:5,
@@ -90,7 +90,7 @@ const ItemList: React.FC = () => {
           icon: 'bi bi-people-fill',
           imageUrl: 'https://via.placeholder.com/50',
           telephone: '+ 261 34 00 000 00',
-          status: 'CHAUFFEUR',
+          status: 'Bon',
         },
         {
           id:6,
@@ -99,7 +99,7 @@ const ItemList: React.FC = () => {
           icon: 'bi bi-people-fill',
           imageUrl: 'https://via.placeholder.com/50',
           telephone: '+ 261 34 00 000 00',
-          status: 'CHAUFFEUR',
+          status: 'Mauvaise',
         },
         {
           id:7,
@@ -108,7 +108,7 @@ const ItemList: React.FC = () => {
           icon: 'bi bi-people-fill',
           imageUrl: 'https://via.placeholder.com/50',
           telephone: '+ 261 34 00 000 00',
-          status: 'ADMIN',
+          status: 'Moyen',
         },
         {
           id:8,
@@ -117,7 +117,7 @@ const ItemList: React.FC = () => {
           icon: 'bi bi-people-fill',
           imageUrl: 'https://via.placeholder.com/50',
           telephone: '+ 261 34 00 000 00',
-          status: 'CHAUFFEUR',
+          status: 'Mauvaise',
         },
         {
           id:9,
@@ -126,7 +126,7 @@ const ItemList: React.FC = () => {
           icon: 'bi bi-people-fill',
           imageUrl: 'https://via.placeholder.com/50',
           telephone: '+ 261 34 00 000 00',
-          status: 'CHAUFFEUR',
+          status: 'Mauvaise',
         },
         {
           id:10,
@@ -135,7 +135,7 @@ const ItemList: React.FC = () => {
           icon: 'bi bi-people-fill',
           imageUrl: 'https://via.placeholder.com/50',
           telephone: '+ 261 34 00 000 00',
-          status: 'ADMIN',
+          status: 'Moyen',
         },
         {
           id:11,
@@ -144,7 +144,7 @@ const ItemList: React.FC = () => {
           icon: 'bi bi-people-fill',
           imageUrl: 'https://via.placeholder.com/50',
           telephone: '+ 261 34 00 000 00',
-          status: 'CHAUFFEUR',
+          status: 'Mauvaise',
         },
         {
           id:12,
@@ -153,7 +153,7 @@ const ItemList: React.FC = () => {
           icon: 'bi bi-people-fill',
           imageUrl: 'https://via.placeholder.com/50',
           telephone: '+ 261 34 00 000 00',
-          status: 'CHAUFFEUR',
+          status: 'Bon',
         },
     ]);
   
