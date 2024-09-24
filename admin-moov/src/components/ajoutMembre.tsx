@@ -3,14 +3,16 @@ import '../pages/login.css';
 import './ajout.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 interface ItemProps {
+    id:number;
     nom: string;
     description: string;
     icon: string; // Classe d'icône FontAwesome
     imageUrl: string; // URL de l'image de la personne
     telephone: string; // Nom de la personne
     status: string; // Statut de la personne
+    onDelete: () => void;
   }
-  const Item: React.FC<ItemProps> = ({ nom, description, icon, imageUrl, telephone, status }) => {
+  const Item: React.FC<ItemProps> = ({id, nom, description, icon, imageUrl, telephone, status,onDelete }) => {
     return (
       <tr>
         <td>
@@ -30,7 +32,7 @@ interface ItemProps {
           <div className="actions">
             {/* <button className="btn btn-primary">Voir plus</button> */}
             {/* <button className='edit' ><i className="bi bi-pencil-square"></i></button> */}
-            <button className='supp' ><i className="bi bi-trash3-fill" style={{ color: 'var(--primary-color)' }}></i></button>
+            <button className='supp' onClick={onDelete}><i className="bi bi-trash3-fill" style={{ color: 'var(--primary-color)' }}></i></button>
           </div>
         </td>
       </tr>
@@ -42,8 +44,9 @@ const AjoutMembre: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(1); // Page actuelle
     const itemsPerPage = 8; // Nombre d'éléments par page
 
-  const items = [
+  const [items, setItems] = useState([
     {
+        id:1,
       nom: 'Rakoto',
       description: 'Description du projet de développement',
       icon: 'bi bi-people-fill',
@@ -52,6 +55,7 @@ const AjoutMembre: React.FC = () => {
       status: 'ADMIN',
     },
     {
+        id:2,
       nom: 'Randria',
       description: 'Description de la réunion d\'équipe',
       icon: 'bi bi-people-fill',
@@ -60,6 +64,7 @@ const AjoutMembre: React.FC = () => {
       status: 'CHAUFFEUR',
     },
     {
+        id:3,
       nom: 'Razafy',
       description: 'Description du rapport financier',
       icon: 'bi bi-people-fill',
@@ -68,6 +73,7 @@ const AjoutMembre: React.FC = () => {
       status: 'CHAUFFEUR',
     },
     {
+        id:4,
         nom: 'Rakoto',
         description: 'Description du projet de développement',
         icon: 'bi bi-people-fill',
@@ -76,6 +82,7 @@ const AjoutMembre: React.FC = () => {
         status: 'ADMIN',
       },
       {
+        id:5,
         nom: 'Randria',
         description: 'Description de la réunion d\'équipe',
         icon: 'bi bi-people-fill',
@@ -84,6 +91,7 @@ const AjoutMembre: React.FC = () => {
         status: 'CHAUFFEUR',
       },
       {
+        id:6,
         nom: 'Razafy',
         description: 'Description du rapport financier',
         icon: 'bi bi-people-fill',
@@ -92,6 +100,7 @@ const AjoutMembre: React.FC = () => {
         status: 'CHAUFFEUR',
       },
       {
+        id:7,
         nom: 'Rakoto',
         description: 'Description du projet de développement',
         icon: 'bi bi-people-fill',
@@ -100,6 +109,7 @@ const AjoutMembre: React.FC = () => {
         status: 'ADMIN',
       },
       {
+        id:8,
         nom: 'Randria',
         description: 'Description de la réunion d\'équipe',
         icon: 'bi bi-people-fill',
@@ -108,6 +118,7 @@ const AjoutMembre: React.FC = () => {
         status: 'CHAUFFEUR',
       },
       {
+        id:9,
         nom: 'Razafy',
         description: 'Description du rapport financier',
         icon: 'bi bi-people-fill',
@@ -116,6 +127,7 @@ const AjoutMembre: React.FC = () => {
         status: 'CHAUFFEUR',
       },
       {
+        id:10,
         nom: 'Rakoto',
         description: 'Description du projet de développement',
         icon: 'bi bi-people-fill',
@@ -124,6 +136,7 @@ const AjoutMembre: React.FC = () => {
         status: 'ADMIN',
       },
       {
+        id:11,
         nom: 'Randria',
         description: 'Description de la réunion d\'équipe',
         icon: 'bi bi-people-fill',
@@ -132,6 +145,7 @@ const AjoutMembre: React.FC = () => {
         status: 'CHAUFFEUR',
       },
       {
+        id:12,
         nom: 'Razafy',
         description: 'Description du rapport financier',
         icon: 'bi bi-people-fill',
@@ -139,7 +153,24 @@ const AjoutMembre: React.FC = () => {
         telephone: '+ 261 34 00 000 00',
         status: 'CHAUFFEUR',
       },
-  ];
+  ]);
+
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<number | null>(null); // Pour stocker l'item à supprimer
+
+  const handleDeleteClick = (id: number) => {
+      setSelectedItem(id);
+      setShowModal(true);
+  };
+
+  const confirmDelete = () => {
+      setItems(items.filter(item => item.id !== selectedItem));
+      setShowModal(false);
+  };
+
+const closeModal = () => {
+  setShowModal(false);
+};
 
   // Filtrer les items en fonction du statut sélectionné
   const filteredItems = filterStatus
@@ -298,16 +329,40 @@ const AjoutMembre: React.FC = () => {
             {currentItems.map((item, index) => (
               <Item
                 key={index}
+                id={item.id}
                 nom={item.nom}
                 description={item.description}
                 icon={item.icon}
                 imageUrl={item.imageUrl}
                 telephone={item.telephone}
                 status={item.status}
+                onDelete={() => handleDeleteClick(item.id)}
               />
             ))}
           </tbody>
         </table>
+
+        {/* Modal de confirmation de suppression */}
+        {showModal && (
+            <div className="modal show fade" tabIndex={-1} style={{ display: "block" }}>
+            <div className="modal-dialog">
+                <div className="modal-content">
+                <div className="modal-header">
+                    <h5 className="modal-title">Confirmation de suppression</h5>
+                    <button type="button" className="btn-close" onClick={closeModal}></button>
+                </div>
+                <div className="modal-body">
+                    <p>Êtes-vous sûr de vouloir supprimer cette voiture ?</p>
+                </div>
+                <div className="modal-footer">
+                    <button style={{ borderRadius: '25px', backgroundColor: 'var(--text-color)' }} type="button" className="btn btn-secondary" onClick={closeModal}>Annuler</button>
+                    <button style={{ borderRadius: '25px', backgroundColor: 'var(--primary-color)' }} type="button" className="btn btn-danger" onClick={confirmDelete}>Supprimer</button>
+                </div>
+                </div>
+            </div>
+            </div>
+        )}
+
         {/* Pagination */}
         <div className="pagination">
                 <button 

@@ -8,8 +8,9 @@ interface ItemProps {
     icon: string; 
     imageUrl: string; 
     immatriculation: string; 
+    onDelete: () => void;
   }
-  const Item: React.FC<ItemProps> = ({ modele, marque, immatriculation , icon, imageUrl  }) => {
+  const Item: React.FC<ItemProps> = ({ modele, marque, immatriculation , icon, imageUrl ,onDelete  }) => {
     return (
       <tr>
         <td>
@@ -27,9 +28,12 @@ interface ItemProps {
         </td> */}
         <td>
           <div className="actions">
-            {/* <button className="btn btn-primary">Voir plus</button> */}
-            <button className='edit' ><i className="bi bi-pencil-square"></i></button>
-            <button className='supp' ><i className="bi bi-trash3-fill" style={{ color: 'var(--primary-color)' }}></i></button>
+            <button className='supp' ><i className="bi bi-pencil-square"></i></button>
+          </div>
+        </td>
+        <td>
+          <div className="actions">
+            <button className='supp' onClick={onDelete}><i className="bi bi-trash3-fill" style={{ color: 'var(--primary-color)' }}></i></button>
           </div>
         </td>
       </tr>
@@ -40,7 +44,9 @@ const AjoutVoiture: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>(''); 
     const [currentPage, setCurrentPage] = useState<number>(1); // Page actuelle
     const itemsPerPage = 8; // Nombre d'éléments par page
-  const items = [
+
+    
+  const [items, setItems] = useState([
     {
       modele: 'Raptor',
       marque: 'FORD',
@@ -49,7 +55,24 @@ const AjoutVoiture: React.FC = () => {
       immatriculation: '508687 WWT',
     },
     
-  ];
+  ]);
+
+  const [showModal, setShowModal] = useState<boolean>(false);
+    const [selectedItem, setSelectedItem] = useState<string | null>(null); // Pour stocker l'item à supprimer
+
+    const handleDeleteClick = (immatriculation: string) => {
+        setSelectedItem(immatriculation);
+        setShowModal(true);
+    };
+
+    const confirmDelete = () => {
+        setItems(items.filter(item => item.immatriculation !== selectedItem));
+        setShowModal(false);
+    };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   const filteredItems = searchTerm
   ? items.filter(item =>
@@ -161,7 +184,8 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
               <th>Modèle</th>
               <th>Marque</th>
               <th>Immatriculation</th>
-              <th>Action</th>
+              <th>Modifier</th>
+              <th>Supprimer</th>
             </tr>
           </thead>
           <tbody>
@@ -173,10 +197,32 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
                 icon={item.icon}
                 imageUrl={item.imageUrl}
                 immatriculation={item.immatriculation}
+                onDelete={() => handleDeleteClick(item.immatriculation)}
               />
             ))}
           </tbody>
         </table>
+
+        {/* Modal de confirmation de suppression */}
+        {showModal && (
+            <div className="modal show fade" tabIndex={-1} style={{ display: "block" }}>
+            <div className="modal-dialog">
+                <div className="modal-content">
+                <div className="modal-header">
+                    <h5 className="modal-title">Confirmation de suppression</h5>
+                    <button type="button" className="btn-close" onClick={closeModal}></button>
+                </div>
+                <div className="modal-body">
+                    <p>Êtes-vous sûr de vouloir supprimer cette voiture ?</p>
+                </div>
+                <div className="modal-footer">
+                    <button style={{ borderRadius: '25px', backgroundColor: 'var(--text-color)' }} type="button" className="btn btn-secondary" onClick={closeModal}>Annuler</button>
+                    <button style={{ borderRadius: '25px', backgroundColor: 'var(--primary-color)' }} type="button" className="btn btn-danger" onClick={confirmDelete}>Supprimer</button>
+                </div>
+                </div>
+            </div>
+            </div>
+        )}
         {/* Pagination */}
         <div className="pagination">
                 <button 
