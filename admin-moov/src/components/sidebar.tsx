@@ -52,7 +52,7 @@ const Sidebar: React.FC = () => {
         </h4>
         <li>
           <a href="#">
-            <span className="material-symbols-outlined"><i className="bi bi-person-fill-add"></i></span>Ajout chauffeur
+            <span className="material-symbols-outlined"><i className="bi bi-person-fill-add"></i></span>Ajout membre
           </a>
         </li>
         <li>
