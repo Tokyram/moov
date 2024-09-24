@@ -4,7 +4,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 const LoginForm: React.FC = () => {
   return (
-    
+    <div className="login">
     <form className="form" action="/home">
       <div className="img">
           <img src="../logo.png" alt="" />
@@ -64,9 +64,9 @@ const LoginForm: React.FC = () => {
         <span className="span"><a href="/mdp">Forgot password?</a></span>
       </div>
       <button className="button-submit">Se connecter</button>
-      <p className="p">
+      {/* <p className="p">
         Vous n'avez pas de compte? <span className="span"><a href="/inscription">S'inscrire</a></span>
-      </p>
+      </p> */}
       {/* <p className="p line">Or With</p> */}
 
       {/* <div className="flex-row">
@@ -128,6 +128,7 @@ const LoginForm: React.FC = () => {
         </button>
       </div> */}
     </form>
+    </div>
   );
 };
 

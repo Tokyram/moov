@@ -36,7 +36,7 @@ const Sidebar: React.FC = () => {
           </a>
         </li>
         <li>
-          <a href="#">
+          <a href="/home/notification-list">
             <span className="material-symbols-outlined"><i className="bi bi-bell-fill"></i></span>Notification
           </a>
         </li>
