@@ -82,7 +82,7 @@ const App: React.FC = () => {
           <Route path="/home" component={Home} exact={true} />
           <Route path="/inscription" component={Inscription} exact={true} />
           <Route path="/login_code" component={Login_code} exact={true} />
-          <Route path="/map" render={() => isLoggedIn ? <MapComponent /> : <Redirect to="/home" />} />
+          <Route path="/map/:courseId?" render={() => isLoggedIn ? <MapComponent /> : <Redirect to="/home" />} />
           <Route path="/avis" component={Avis} exact={true} />
           <Route path="/profil" component={Profil} exact={true} />
           <Route path="/paiement" component={Paiement} exact={true} />

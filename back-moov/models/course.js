@@ -1,4 +1,5 @@
 const db = require('../db');
+const TraitementCourseUtilisateur = require('./traitementCourseUtilisateur');
 
 class Course {
     constructor(id, passager_id, chauffeur_id, date_heure_depart, adresse_depart, adresse_arrivee, status, prix, kilometre) {
@@ -40,6 +41,9 @@ class Course {
         ];
 
         const result = await db.query(query, values);
+
+        const addTraitement = await TraitementCourseUtilisateur.enregistrementTraitementCourse(result.rows[0].id, result.rows[0].passager_id);
+
         return new Course(
             result.rows[0].id,
             result.rows[0].passager_id,

@@ -3,6 +3,7 @@ const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const Course = require('../models/course');
 const Paiement = require('../models/paiement');
 const Facture = require('../models/facture');
+const TraitementCourseUtilisateur = require('../models/traitementCourseUtilisateur');
 
 const TAUX_CHANGE_EUR_MGA = 5000; // 1 EUR = 5000 MGA
 
@@ -63,7 +64,8 @@ class PaiementController {
 
                 // Attribuer la course au chauffeur
                 await Course.attribuerChauffeur(courseId, chauffeurId);
-
+                const suppressionTraitement = TraitementCourseUtilisateur.suppressionTraitementCourse(courseId);
+                
                 res.status(200).json({
                     success: true,
                     message: 'Paiement confirmé et course attribuée',

@@ -7,9 +7,11 @@ const LeafletMap = lazy(() => import('./LeafletMap'));
 import 'leaflet/dist/leaflet.css';
 import RechercheMap from '../components/RechercheMap';
 // import NotificationComponent from './NotificationComponent';
-import { CourseData, getDecodedToken, reserverCourse } from '../services/api';
+import { CourseData, detailCourse, getDecodedToken, reserverCourse } from '../services/api';
 import Loader from '../components/Loader';
 import { useIonRouter } from '@ionic/react';
+import { Storage } from '@capacitor/storage';
+import { useParams } from 'react-router-dom';
 
 interface Suggestion {
   display_name: string;
@@ -20,6 +22,8 @@ interface Suggestion {
 const MapComponent: React.FC = () => {
 
   const router = useIonRouter();
+
+  const { courseId } = useParams<any>();
   
   const [searchText, setSearchText] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -43,6 +47,11 @@ const MapComponent: React.FC = () => {
   const [isBtnReservation, setIsBtnReservation] = useState(true);
 
   const [isCourseLoading, setIsCourseLoading] = useState(false);
+
+  const [courseEnCours, setCourseEnCours] = useState<any>(null);
+  const [isCoursePlanned, setIsCoursePlanned] = useState(false);
+  const [courseStart, setCourseStart] = useState<[number, number] | null>(null);
+  const [courseEnd, setCourseEnd] = useState<[number, number] | null>(null);
 
   const handleClose = () => {
     setIsVisible(false);
@@ -75,6 +84,25 @@ const MapComponent: React.FC = () => {
 
     initPassagerId();
   }, []);
+
+  useEffect(() => {
+    const getCourseEnCours = async () => {
+      try {
+        const response = await detailCourse(courseId);
+        console.log("object", response.data);
+        if (response.data.course) {
+          setCourseEnCours(response.data.course);
+          setIsCoursePlanned(true);
+          setCourseStart([response.data.course.adresse_depart_latitude, response.data.course.adresse_depart_longitude]);
+          setCourseEnd([response.data.course.adresse_arrivee_latitude, response.data.course.adresse_arrivee_longitude]);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des détails de la réservation:", error);
+      }
+    }
+
+    getCourseEnCours();
+  }, [courseId]);
 
   const handleConfirmDate = async () => {
     if (!passagerId || !start || !end || !distance || !selectedDate || !startLocation || !endLocation) {
@@ -111,6 +139,7 @@ const MapComponent: React.FC = () => {
       setShowSuccessPopup(true);
       setIsBtnReservation(false);
       setIsCourseLoading(false);
+      await Storage.set({ key: 'course', value: result.data.data.id });
       // Réinitialiser les états nécessaires après la réservation
     } catch (error) {
       setIsCourseLoading(false);
@@ -195,15 +224,20 @@ const MapComponent: React.FC = () => {
       {isMenuOpen && <Menu />}
       
       <div className="content">
-        <div className="search-bar">
-          <RechercheMap
-            searchText={searchText}
-            suggestions={suggestions}
-            position={position}
-            setPosition={setPosition}
-            setEnd={setEnd}
-          /> 
-        </div>
+        {
+          !isCoursePlanned && (
+            <div className="search-bar">
+              <RechercheMap
+                searchText={searchText}
+                suggestions={suggestions}
+                position={position}
+                setPosition={setPosition}
+                setEnd={setEnd}
+              /> 
+            </div>
+          )
+        }
+        
 
         <div className="distance-labels">
           <div className="label-item">
@@ -218,15 +252,16 @@ const MapComponent: React.FC = () => {
 
         <div className="map">
           <Suspense fallback={<div>Loading...</div>}>
-            <LeafletMap 
-              position={position} 
-              start={start} 
-              end={end} 
-              setDistance={setDistance}
-              setStart={setStart}
-              setEnd={setEnd}
-              
-            />
+          <LeafletMap 
+            position={position} 
+            start={isCoursePlanned ? courseStart : start}
+            end={isCoursePlanned ? courseEnd : end}
+            setDistance={setDistance}
+            setStart={setStart}
+            setEnd={setEnd}
+            course={courseEnCours}
+            isCoursePlanned={isCoursePlanned}
+          />
           </Suspense>
         </div>
 
@@ -248,7 +283,7 @@ const MapComponent: React.FC = () => {
               </div>
             )}
             {
-              isBtnReservation && (
+              isBtnReservation && !courseId && !isCoursePlanned && (
                 <button className="confirmation-button3" onClick={handleConfirmClick}>
                   Confirmer la destination
                   <i className="bi bi-check-circle-fill"></i>
@@ -257,7 +292,7 @@ const MapComponent: React.FC = () => {
             }
             
             {
-              !isBtnReservation && (
+              (!isBtnReservation || courseId) && (
                 <button className="confirmation-button3" style={{ backgroundColor: 'var(--text-color)', color: 'var(--background-color)' }}>
                   En attente de chauffeur <Loader/>
                   <i className="bi bi-check-circle-fill"></i>

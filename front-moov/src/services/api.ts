@@ -171,3 +171,17 @@ export const refuserCourse = async (courseId: number) => {
         throw error;
     }
 }
+
+export const checkTraitementCourse = async (utilisateurId: number) => {
+    try {
+        const headers = {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+        const response = await api.get(`/traitementCourse/enCours/${utilisateurId}`, { headers });
+        return response;
+    } catch (error: any) {
+        console.error('Erreur check course en cours ', error.message);
+        throw error;
+    }
+}

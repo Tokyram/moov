@@ -15,6 +15,7 @@ const avis = require('./routes/avis_route');
 const chauffeurRoutes = require('./routes/chauffeurRoute');
 const voitureRoutes = require('./routes/voitureRoute');
 const panneRoutes = require('./routes/panneRoute');
+const traitementCourseRoute = require('./routes/traitementCourseRoute');
 
 const cors = require('cors');
 const app = express();
@@ -58,6 +59,7 @@ app.use('/api/avis', avis);
 app.use('/api/chauffeur', chauffeurRoutes);
 app.use('/api/voiture', voitureRoutes);
 app.use('/api/panne', panneRoutes);
+app.use('/api/traitementCourse', traitementCourseRoute);
 
 // Endpoint pour recevoir et enregistrer le token FCM
 app.post('/api/save-token', (req, res) => {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Login.css'; 
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Storage } from '@capacitor/storage';
-import { login } from '../services/api';
+import { checkTraitementCourse, login } from '../services/api';
 import { useHistory } from 'react-router-dom';
 import { useIonRouter } from '@ionic/react';
 import Loader from '../components/Loader';
@@ -20,13 +20,25 @@ const Login: React.FC = () => {
         try {
           const response = await login(username, password);
           if (response.data.token) {
-            setIsLoading(false);
             await Storage.set({ key: 'token', value: response.data.token });
-            router.push('map', 'root', 'replace');
+            try {
+                const traite = await checkTraitementCourse(response.data.user.id);
+                if(traite.data.enregistrement) {
+                    await Storage.set({ key: 'course', value: traite.data.enregistrement.course_id });
+                    setIsLoading(false);
+                    router.push(`map/${traite.data.enregistrement.course_id}`, 'root', 'replace');
+                } else {
+                    setIsLoading(false);
+                    router.push('map', 'root', 'replace');
+                }
+            } catch(error: any) {
+                setIsLoading(false);
+                console.error('Erreur de check', error.message);
+            }
           }
         } catch (error: any) {
             setIsLoading(false);
-          console.error('Erreur de connexion', error.message);
+            console.error('Erreur de connexion', error.message);
         }
     };
 

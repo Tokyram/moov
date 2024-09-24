@@ -14,12 +14,17 @@ const Menu: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [userRole, setUserRole] = useState('');
   const [username, setUsername] = useState('');
+  const [course, setCourse] = useState(0);
 
   useEffect(() => {
     // Ajouter la classe 'show' après le montage du composant
     setIsVisible(true);
     const initUser = async () => {
       const decodedToken = await getDecodedToken();
+      const course = await Storage.get({key: 'course'});
+      if(course) {
+        setCourse(Number(course.value));
+      }
       if (decodedToken) {
         setUserRole(decodedToken.role);
         setUsername(decodedToken.nom + " " + decodedToken.prenom);
@@ -70,10 +75,20 @@ const Menu: React.FC = () => {
         <hr style={{ backgroundColor: '#b4b4b4', width: '90%' }} />
 
         <li>
-          <a href="/map">
-            <i className="bi bi-globe-americas"></i>
-            <span className="link_name">Accueil*</span>
-          </a>
+          {
+            course != 0 ? (
+              <a href={`/map/${course}`}>
+                <i className="bi bi-globe-americas"></i>
+                <span className="link_name">Accueil*</span>
+              </a>
+            ) : (
+              <a href="/map">
+                <i className="bi bi-globe-americas"></i>
+                <span className="link_name">Accueil*</span>
+              </a>
+            )
+          }
+          
          
         </li>
         

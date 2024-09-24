@@ -36,9 +36,11 @@ interface LeafletMapProps {
   setDistance: (distance: number | null) => void;
   setStart: React.Dispatch<React.SetStateAction<[number, number] | null>>;
   setEnd: React.Dispatch<React.SetStateAction<[number, number] | null>>;
+  course?: any;
+  isCoursePlanned: boolean;
 }
 
-const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistance, setStart, setEnd }) => {
+const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistance, setStart, setEnd, course, isCoursePlanned }) => {
   const [initialCenter, setInitialCenter] = useState(false); // État pour suivre si l'utilisateur a été centré initialement
   
   const [chauffeurs, setChauffeurs] = useState<Chauffeur[]>([
@@ -53,6 +55,9 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
   const [selectedChauffeur, setSelectedChauffeur] = useState<Chauffeur | null>(null);
   const [routingControl, setRoutingControl] = useState<L.Routing.Control | null>(null);
   const [realTimeChauffeur, setRealTimeChauffeur] = useState<Chauffeur | null>(null);
+
+  console.log("course", course);
+
   const handleButtonClick = (chauffeur: Chauffeur) => {
     console.log('Chauffeur ID:', chauffeur.id);
     console.log('Position du Chauffeur:', chauffeur.position);
@@ -68,17 +73,19 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
   const MapClickHandler = () => {
     useMapEvents({
       click(e) {
-        const clickedPosition: [number, number] = [e.latlng.lat, e.latlng.lng];
-        if (!start) {
-          // Définir la position de départ
-          setStart(clickedPosition);
-        } else if (start && !end) {
-          // Définir la position de fin
-          setEnd(clickedPosition);
-        } else if (start && end) {
-          // Réinitialiser les positions de départ et de fin si elles sont déjà définies
-          setStart(clickedPosition);
-          setEnd(null);
+        if(!isCoursePlanned) {
+          const clickedPosition: [number, number] = [e.latlng.lat, e.latlng.lng];
+          if (!start) {
+            // Définir la position de départ
+            setStart(clickedPosition);
+          } else if (start && !end) {
+            // Définir la position de fin
+            setEnd(clickedPosition);
+          } else if (start && end) {
+            // Réinitialiser les positions de départ et de fin si elles sont déjà définies
+            setStart(clickedPosition);
+            setEnd(null);
+          }
         }
       }
     });
@@ -107,7 +114,8 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
             L.latLng(start[0], start[1]),
             L.latLng(end[0], end[1])
           ],
-          routeWhileDragging: true
+          routeWhileDragging: !isCoursePlanned,
+          addWaypoints: !isCoursePlanned
         })
           .on('routesfound', function (e) {
             const routes = e.routes;
@@ -151,26 +159,30 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
   }, [realTimeChauffeur]);
 
   const handleCancelPoints = () => {
-    setStart(null);
-    setEnd(null);
-    setDistance(null);
-    setSelectedChauffeur(null);
-    setChauffeurs(chauffeurs);
-    setRealTimeChauffeur(null); // Réinitialiser le suivi du chauffeur en temps réel
+    if(!isCoursePlanned) {
+      setStart(null);
+      setEnd(null);
+      setDistance(null);
+      setSelectedChauffeur(null);
+      setChauffeurs(chauffeurs);
+      setRealTimeChauffeur(null); // Réinitialiser le suivi du chauffeur en temps réel
+    }
   };
   console.log(position);
 
   return (
     <>
-          <button className="cancel-button1" onClick={handleCancelPoints}>
-            <i className="bi bi-arrow-clockwise"></i>
-          </button>
+          {!isCoursePlanned && (
+            <button className="cancel-button1" onClick={handleCancelPoints}>
+              <i className="bi bi-arrow-clockwise"></i>
+            </button>
+          )}
       {position && (
         <MapContainer style={{ height: '100%', border: 'none', position: 'relative' }}>
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
-          {position && Array.isArray(position) && (
+          {position && Array.isArray(position) && !isCoursePlanned && (
             <Marker position={position} icon={locationIcon}>
               <Popup className='leaflet-popup-content'>
                 <div>
