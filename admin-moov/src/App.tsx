@@ -7,6 +7,7 @@ import Dashboard from './components/dashboard';
 import ItemList from './components/listeClient';
 import ItemListConducteur from './components/listeConducteur';
 import NotificationPage from './components/NotificationPage';
+import HistoriqueReservation from './components/historiqueReservation';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="item-list" element={<ItemList />} />
           <Route path="item-list-conducteur" element={<ItemListConducteur />} />
           <Route path="notification-list" element={<NotificationPage />} />
+          <Route path="historiquqe-list" element={<HistoriqueReservation />} />
         </Route>
       </Routes>
     </Router>
