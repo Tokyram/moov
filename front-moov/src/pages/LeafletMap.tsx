@@ -69,7 +69,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
   };
   
   const MapClickHandler = () => {
-    const map = mapRef.current;
+    const map = useMap();
 
     if (!map) return null;
 
@@ -96,7 +96,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
 
   
   const MapUpdater = () => {
-    const map = mapRef.current;
+    const map = useMap();
 
     useEffect(() => {
       if (!map) return; // Ensure map is initialized

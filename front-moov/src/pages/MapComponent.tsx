@@ -210,7 +210,7 @@ const MapComponent: React.FC = () => {
     if (end || courseEnd) {
       reverseGeocode(end ? end[0] : courseEnd ? courseEnd[0] : 0, end ? end[1] : courseEnd ? courseEnd[1] : 0, setEndLocation);
     }
-  }, [start, end]);
+  }, [start, end, courseStart, courseEnd]);
 
   const calculatePrice = (distance: number | null): number => {
     if(!distance) distance = 0;
