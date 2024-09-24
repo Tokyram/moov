@@ -7,6 +7,40 @@
   font-family: "Poppins", sans-serif;
 }
 
+.notification-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.notification-item.unread {
+  background-color: #e4e4e4; /* Couleur de fond pour les notifications non lues */
+  font-weight: bold; /* Mettre le texte en gras pour les non lues */
+}
+
+.notification-item.read {
+  background-color: var(--white-color); /* Couleur de fond pour les notifications lues */
+  font-weight: normal;
+}
+
+.notification-badge {
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 10px;
+  padding: 5px;
+  height: 20px;
+  width: 20px;
+  font-size: 12px;
+  /* top: -1; */
+  margin-top: -35px;
+  margin-left: 10px;
+  /* position: fixed; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 /* navbar */
 .navbar {

@@ -1,4 +1,9 @@
 /* From Uiverse.io by mahiatlinux */ 
+body .login-form{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .form {
     display: flex;
     flex-direction: column;
@@ -16,6 +21,15 @@
         width: 100%;
         height: auto;
       }
+  }
+
+  .login{
+    margin-top: 10%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
   ::placeholder {

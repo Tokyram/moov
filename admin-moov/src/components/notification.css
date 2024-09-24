@@ -1,0 +1,191 @@
+
+
+@import '../Style.css';
+
+.attribution {
+  margin: 50px auto 5px;
+}
+
+.notifs{
+    margin-top: 20px;
+}
+.app {
+  width: 100%;
+  margin: 50px auto;
+  border-radius: 20px;
+  padding: 15px 25px;
+  background: var(--white-color);
+
+}
+
+.app .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+}
+
+.header h2 {
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.header h2 .title {
+  font-size: 20px;
+}
+
+.header h2 .unread-notification-number {
+  text-align: center;
+  background: var(--primary-color);
+  color: var(--white-color);
+  width: 25px;
+  height: 25px;
+  font-size: 14px;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header p {
+  color: var(--background-color);
+  cursor: pointer;
+  background-color:  var(--primary-color);
+  padding: 10px;
+  border-radius: 25px;
+}
+
+.header p:hover {
+  color: var(--primary-blue);
+}
+
+.app .body {
+  margin-top: 15px;
+}
+
+.body .notifications {
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .3s ease-in-out;
+  margin: 10px 0px;
+}
+
+.body .notifications:hover {
+  background: var(--neutral-light-grayish-blue-1);
+}
+
+.notifications-click {
+  animation: notifications-click .5s ease-in-out forwards;
+}
+
+@keyframes notifications-click {
+  0% {
+    background: var(--neutral-light-grayish-blue-1);
+  }
+
+  50% {
+    background: var(--neutral-light-grayish-blue-2);
+  }
+
+  100% {
+    background: none;
+  }
+}
+
+.notifications .avatar {
+  width: 4%;
+}
+
+.notifications .avatar img {
+  width: 100%;
+}
+
+.notifications .text {
+  width: 92%;
+}
+
+.text .text-top p {
+  color: var(--neutral-dark-grayish-blue);
+}
+
+.text .text-top p .profil-name {
+  font-weight: 800;
+}
+
+.text .text-top p b {
+  color: var(--neutral-dark-grayish-blue);
+  display: inline-block;
+}
+
+.text .text-top p .unread-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0px 0px 1px 7px;
+  border-radius: 50%;
+  background: var(--primary-color);
+}
+
+.text .text-bottom {
+  color: rgba(94, 103, 120, .5);
+}
+
+.text .text-top p .b-blue {
+  color: var(--primary-blue);
+}
+
+.notifications.readed {
+  /* background: none; */
+  /* background:  var(); */
+
+}
+.notifications.unreaded {
+    /* background: none; */
+    background:  #e4e4e4;
+  
+  }
+.notifications.private-message .avatar {
+  align-self: start;
+}
+
+.notifications.private-message .avatar {
+  align-self: start;
+}
+
+.notifications.readed .text-bottom p {
+  color: var(--text-color);
+  padding: 20px;
+  border: 1px solid var(--grey-color);
+  margin-top: 10px;
+}
+
+.notifications.readed .text p b {
+  display: inline;
+}
+
+.notifications.picture .avatar {
+  width: 8%;
+}
+
+.notifications.picture .text {
+  width: 84%;
+}
+
+.notifications.picture .commented-picture {
+  width: 8%;
+}
+
+.notifications.picture .commented-picture img {
+  width: 100%;
+}
+
+/* responsive */

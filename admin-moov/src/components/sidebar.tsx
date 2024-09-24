@@ -31,17 +31,17 @@ const Sidebar: React.FC = () => {
           </a>
         </li>
         <li>
-          <a href="/home/item-list-contucteur">
+          <a href="/home/item-list-conducteur">
             <span className="material-symbols-outlined"><i className="bi bi-taxi-front-fill"></i></span>Conducteurs
           </a>
         </li>
         <li>
-          <a href="#">
+          <a href="/home/notification-list">
             <span className="material-symbols-outlined"><i className="bi bi-bell-fill"></i></span>Notification
           </a>
         </li>
         <li>
-          <a href="#">
+          <a href="/home/historiquqe-list">
             <span className="material-symbols-outlined"><i className="bi bi-list-check"></i></span>Historiques
           </a>
         </li>
@@ -52,7 +52,7 @@ const Sidebar: React.FC = () => {
         </h4>
         <li>
           <a href="#">
-            <span className="material-symbols-outlined"><i className="bi bi-person-fill-add"></i></span>Ajout chauffeur
+            <span className="material-symbols-outlined"><i className="bi bi-person-fill-add"></i></span>Ajout membre
           </a>
         </li>
         <li>
