@@ -168,3 +168,16 @@
   .dropdown_menu li:hover {
     background-color: #f0f0f0; /* Couleur de fond au survol */
   }
+
+  .notif{
+    
+    i:hover{
+      background-color: var(--text-color);
+      transition: 0.5s;
+      padding: 10px;
+      border-radius: 50px;
+      color: var(--background-color);
+      
+    }
+    
+  }

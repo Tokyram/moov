@@ -39,7 +39,7 @@ const Card: React.FC<CardProps> = ({ imageUrl, thumbUrl, title, status, destinat
           <div className="infoh">
             <p className="carde__description"><i className="bi bi-person-fill-check"></i>{client}</p>
             <p className="carde__description"><i className="bi bi-telephone-fill"></i>{telephone}</p>
-            <p className="carde__description"><i className="bi bi-currency-exchange"></i>{prix}</p>
+            <p className="carde__description"><i className="bi bi-currency-exchange"></i>{prix} Ar</p>
             <hr style={{ color: 'var(--background-color)' }} />
             <p className="carde__description"><i className="bi bi-person-fill-check"></i>{chauffeur}</p>
             <p className="carde__description"><i className="bi bi-telephone-fill"></i>{telephoneChauffeur}</p>
@@ -337,14 +337,14 @@ const HistoriqueReservation: React.FC = () => {
 
   return (
     <div className="listhisto">
-      
+      <div className="titregraph">
+        <h3 >Historiques de réservation</h3>
+        <p>Vous pouvez voir l'historique de toutes vos réservations avec les détails nécessaires</p>
+      </div>
 
       {/* Filtres de date et recherche */}
       <div className="filters">
-      <div className="titregraph">
-        <h3 style={{ color: 'var(--primary-color)' }}>Historiques de réservation</h3>
-        <p>Vous pouvez voir l'historique de toutes vos réservations avec les détails nécessaires</p>
-      </div>
+      
         <div className="filtredate">
             <label className="filtrehisto">
                 Date de début:
