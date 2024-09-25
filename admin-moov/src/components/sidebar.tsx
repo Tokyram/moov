@@ -51,12 +51,12 @@ const Sidebar: React.FC = () => {
           <div className="menu-separator"></div>
         </h4>
         <li>
-          <a href="#">
+          <a href="/home/ajout-membre">
             <span className="material-symbols-outlined"><i className="bi bi-person-fill-add"></i></span>Ajout membre
           </a>
         </li>
         <li>
-          <a href="#">
+          <a href="/home/ajout-voiture">
             <span className="material-symbols-outlined"><i className="bi bi-node-plus-fill"></i></span>Ajout voiture
           </a>
         </li>
@@ -64,6 +64,11 @@ const Sidebar: React.FC = () => {
           <span>Autre</span>
           <div className="menu-separator"></div>
         </h4>
+        <li>
+          <a href="/home/loader">
+            <span className="material-symbols-outlined"><i className="bi bi-gear-fill"></i></span>Loader
+          </a>
+        </li>
         <li>
           <a href="#">
             <span className="material-symbols-outlined"><i className="bi bi-gear-fill"></i></span>Paramètre

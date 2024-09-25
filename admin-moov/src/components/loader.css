@@ -1,0 +1,58 @@
+@import '../Style.css';
+
+@keyframes grow {
+    0% {
+      stroke-dashoffset: 1px;
+      stroke-dasharray: 0 350px;
+      opacity: 0;
+      stroke: var(--primary-color);
+    }
+    10% {
+      opacity: 1;
+      stroke: var(--primary-color);
+
+    }
+    40% {
+      stroke-dasharray: 350px 0;
+      stroke: var(--secondary-color);
+    }
+    /* Moving back */
+    85% {
+      stroke-dasharray: 350px 0;
+    stroke: var(--primary-color);
+
+    }
+    95%,
+    to {
+      stroke-dasharray: 0 350px;
+    }
+  }
+  
+  .logo-login path {
+    /* stroke-dashoffset: 1px; */
+    /* stroke-dasharray: 350px 0; */
+    animation: grow 5s ease forwards infinite;
+    transform-origin: center;
+    stroke: var(--primary-color);
+    stroke-width: 3px;
+    animation-delay: 0s; /* Animation du stroke commence immédiatement */
+  }
+
+.loader{
+    margin-top: 400px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .logo-login {
+        display: flex;
+        justify-content: center;
+        
+        svg{
+            width: 50%;
+            height: auto;
+        }
+    }
+}

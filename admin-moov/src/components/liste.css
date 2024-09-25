@@ -129,3 +129,25 @@
     cursor: not-allowed;
   }
   
+  td .supp{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  .actions{
+    
+    .supp{
+      border-radius: 50px;
+      width: 40px;
+      height: 40px;
+    }
+   
+  }
+
+  .actions:hover{
+    cursor: pointer;
+    background-color: var(--text-color);
+    transition: 0.5s;
+    animation-duration: 1s;
+  }
