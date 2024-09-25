@@ -146,3 +146,9 @@ body .login-form{
     border: 1px solid var(--primary-color);
   }
   
+  .error-message {
+    color: var(--primary-color);
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  
