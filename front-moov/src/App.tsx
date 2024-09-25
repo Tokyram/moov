@@ -35,6 +35,7 @@ import Reservation_chauffeur from './pages/Reservation_chauffeur';
 import Notification_chauffeur from './pages/Notification_chauffeur';
 import { Storage } from '@capacitor/storage';
 import { checkTraitementCourse, getDecodedToken } from './services/api';
+import PaiementFailed from './pages/PaiementFailed';
 
 setupIonicReact();
 
@@ -112,6 +113,7 @@ const App: React.FC = () => {
           <Route path="/profil" component={Profil} exact={true} />
           <Route path="/paiement" component={Paiement} exact={true} />
           <Route path="/paiementSuccess" component={PaiementSuccess} exact={true} />
+          <Route path="/paiementFailed" component={PaiementFailed} exact={true} />
           <Route path="/service" component={Service} exact={true} />
           <Route path="/reservation" component={Reservation} exact={true} />
           <Route path="/reservation_chauffeur" component={Reservation_chauffeur} exact={true} />
