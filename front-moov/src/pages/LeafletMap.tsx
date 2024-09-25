@@ -60,12 +60,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
 
   const handleButtonClick = (chauffeur: any) => {
     console.log('Chauffeur ID:', chauffeur.id);
-
-    setSelectedChauffeur(chauffeur);
-    setChauffeurs([chauffeur]); // Affiche seulement le chauffeur sélectionné
-    // setEnd(chauffeur.position);
-    setStart([parseFloat(chauffeur.latitude), parseFloat(chauffeur.longitude)]);
-    setRealTimeChauffeur(chauffeur);
+    console.log('Course ID:', course.course_id);
   };
   
   const MapClickHandler = () => {
