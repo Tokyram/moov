@@ -158,7 +158,10 @@ CREATE TABLE traitement_course_utilisateur (
   utilisateur_id INT NOT NULL
 );
 
-
+CREATE TABLE tarifs (
+  id SERIAL PRIMARY KEY,
+  tarif_par_km DECIMAL(10, 2) NOT NULL
+);
 
 
 

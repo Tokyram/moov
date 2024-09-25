@@ -4,7 +4,8 @@ import 'leaflet/dist/leaflet.css';
 import L, { LatLngExpression } from 'leaflet';
 import 'leaflet-routing-machine';
 import './MapComponent.css';
-import { getListeChauffeursAcceptes } from '../services/api';
+import { getListeChauffeursAcceptes, getTarifKm } from '../services/api';
+import { useIonRouter } from '@ionic/react';
 
 const locationIcon = new L.Icon({
   iconUrl: 'assets/l.png', // Utilisez le chemin correct vers votre icône
@@ -41,7 +42,16 @@ interface LeafletMapProps {
   isCoursePlanned: boolean;
 }
 
+interface NavigationState {
+  chauffeur_id: any;
+  course_id: any;
+  prix_course: any;
+}
+
 const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistance, setStart, setEnd, course, isCoursePlanned }) => {
+
+  const router = useIonRouter();
+
   const [initialCenter, setInitialCenter] = useState(false); // État pour suivre si l'utilisateur a été centré initialement
   
   const [chauffeurs, setChauffeurs] = useState<any[]>([]);
@@ -49,6 +59,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
   const [error, setError] = useState<string | null>(null);
 
   const [selectedChauffeur, setSelectedChauffeur] = useState<any | null>(null);
+  const [prixCourse, setPrixCourse] = useState(0);
 
   const [routingControl, setRoutingControl] = useState<L.Routing.Control | null>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -61,6 +72,18 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
   const handleButtonClick = (chauffeur: any) => {
     console.log('Chauffeur ID:', chauffeur.id);
     console.log('Course ID:', course.course_id);
+    console.log('Prix Course:', prixCourse);
+
+    const state: NavigationState = {
+      chauffeur_id: chauffeur.id,
+      course_id: course.course_id,
+      prix_course: prixCourse
+    };
+    
+    // Encodez l'état en tant que paramètres de requête
+    const queryParams = new URLSearchParams(state as any).toString();
+    router.push(`/paiement?${queryParams}`, 'root', 'replace');
+
   };
   
   const MapClickHandler = () => {
@@ -166,7 +189,22 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
       }
     }
 
+    const getTarif = async () => {
+      if(course) {
+        try {
+          const response = await getTarifKm();
+          const prix = response.data.tarif * course.kilometre
+          setPrixCourse(Number(prix.toFixed(2)));
+        } catch(error: any) {
+          console.error("Erreur lors de la récupération du tarif :", error);
+          setError("Impossible de charger le tarif de la course");
+        }
+      }
+    }
+
     getListeChauffeurs();
+    getTarif();
+
   }, [course]);
 
   useEffect(() => {

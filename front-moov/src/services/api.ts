@@ -202,3 +202,17 @@ export const getListeChauffeursAcceptes = async (courseId: number) => {
         throw error;
     }
 }
+
+export const getTarifKm = async () => {
+    try {
+        const headers = {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+        const response = await api.get('/tarifs', { headers });
+        return response;
+    } catch(error: any) {
+        console.error('Erreur check tarif ', error.message);
+        throw error;
+    }
+}

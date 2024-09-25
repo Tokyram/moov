@@ -6,9 +6,20 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
-import { Route, useHistory } from 'react-router-dom';
+import { Route, RouteComponentProps, useHistory, useLocation } from 'react-router-dom';
 
-const Paiement: React.FC = () => {
+
+interface PaiementProps extends RouteComponentProps<{}> {}
+
+const Paiement: React.FC<PaiementProps> = ({ location }) => {
+
+    const params = new URLSearchParams(location.search);
+    const chauffeur_id = params.get('chauffeur_id');
+    const course_id = params.get('course_id');
+    const prix_course = params.get('prix_course');
+
+    console.log(chauffeur_id, course_id, prix_course);
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
@@ -48,7 +59,7 @@ const Paiement: React.FC = () => {
         <div className="content-paiement">
             <div className="prix">
                 <h4>PRIX TOTAL</h4>
-                <h1>10.000 Ar</h1>
+                <h1>{prix_course} Ar</h1>
             </div>
 
             <div className="carte">
