@@ -25,6 +25,11 @@
         justify-content: flex-start;
         flex-direction: column;
         margin-left: 20px;
+
+        span{
+            font-weight: 1000;
+            color: var(--primary-color);
+        }
     }
 }
 .dashboard .container .mt-5{

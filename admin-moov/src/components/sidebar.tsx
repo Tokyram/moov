@@ -1,9 +1,47 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './sidebar.css'; // Import your CSS styles here
+import { getDecodedToken } from '../services/api';
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userPrenom, setUserPrenom] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  const handleLogout = async () => {
+    const decodedToken = await getDecodedToken(); // Décoder le token
+
+    if (decodedToken) {
+      // Vérifier le rôle ou d'autres informations du token
+      if (decodedToken.role === 'ADMIN') { // Exemple de vérification
+        localStorage.removeItem('token'); // Supprimer le token
+        navigate('/'); // Rediriger vers la page de login ou d'accueil
+        console.log('Utilisateur deconnecté');
+      } else {
+        console.error('L\'utilisateur n\'a pas les droits nécessaires pour se déconnecter.');
+        // Vous pouvez afficher un message d'erreur si nécessaire
+      }
+    } else {
+      console.error('Aucun token trouvé.');
+      // Afficher un message si aucun token n'est présent
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const decodedToken = await getDecodedToken(); // Décoder le token pour obtenir les informations de l'utilisateur
+      if (decodedToken && decodedToken.nom && decodedToken.prenom && decodedToken.role) {
+        setUserName(decodedToken.nom); // Assurez-vous que le token contient le nom de l'utilisateur
+        setUserPrenom(decodedToken.prenom); // Assurez-vous que le token contient le nom de l'utilisateur
+        setUserRole(decodedToken.role); // Assurez-vous que le token contient le nom de l'utilisateur
+      }
+    };
+    fetchUserName();
+  }, []);
+
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
@@ -75,7 +113,7 @@ const Sidebar: React.FC = () => {
           </a>
         </li>
         <li>
-          <a href="/">
+          <a href="/" onClick={handleLogout}>
             <span className="material-symbols-outlined"><i className="bi bi-door-open-fill"></i></span>Déconnexion
           </a>
         </li>
@@ -84,8 +122,8 @@ const Sidebar: React.FC = () => {
         <div className="user-profile">
           <img src="../logo.png" alt="Profile Image" />
           <div className="user-detail">
-            <h3>Eva Murphy</h3>
-            <span>Web Developer</span>
+            <h3><span> {userName  || 'Utilisateur'} {userPrenom  || 'Utilisateur'}</span></h3>
+            <span>{userRole  || 'Utilisateur'}</span>
           </div>
         </div>
       </div>

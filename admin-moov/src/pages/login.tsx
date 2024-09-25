@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import './login.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import API_BASE_URL from '../api';  // Importation de l'URL de base
+import API_BASE_URL from '../domaine';  // Importation de l'URL de base
 import axios from "axios";
 import { useNavigate } from "react-router-dom";  // Utiliser useNavigate
+import { ToastContainer } from "react-toastify";
 
 const LoginForm: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -32,6 +33,10 @@ const LoginForm: React.FC = () => {
           setErrorMessage("Vous n'avez pas les droits d'accès.");
         } else {
           console.log("Connexion réussie", data);
+          
+          // Stocker le token localement
+          localStorage.setItem('token', data.token);  // Utiliser localStorage
+
           navigate("/home");  // Utiliser navigate pour rediriger
         }
       }
@@ -48,6 +53,19 @@ const LoginForm: React.FC = () => {
 
   return (
     <div className="login">
+
+      <ToastContainer
+        position="top-right"
+        autoClose={50000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      
       <form className="form" onSubmit={handleSubmit}>
         <div className="img">
           <img src="../logo.png" alt="logo" />
@@ -93,6 +111,7 @@ const LoginForm: React.FC = () => {
 
         {errorMessage && <div className="error-message">{errorMessage}</div>}
       </form>
+      
     </div>
   );
 };

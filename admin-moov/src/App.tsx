@@ -15,6 +15,7 @@ import Loader from './components/loader';
 function App() {
   return (
     <Router>
+      
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/inscription" element={<Inscription />} />

@@ -163,3 +163,37 @@ body {
 
 
 
+/* App.css ou un fichier CSS spécifique */
+.Toastify__toast {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+
+  background-color: #28a745; /* Couleur de fond pour le toast de succès */
+  color: #fff; /* Couleur du texte */
+  font-weight: bold; /* Texte en gras */
+  width: 10%;
+  height: auto;
+}
+
+.Toastify__toast--success {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #28a745; /* Couleur de fond pour le toast de succès */
+  color: #fff; /* Couleur du texte */
+  font-weight: bold; /* Texte en gras */
+  height: auto;
+}
+.logout-message {
+  background-color: #dff0d8; /* Vert clair */
+  color: #3c763d; /* Texte vert */
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  text-align: center;
+  transition: opacity 0.5s ease;
+}
