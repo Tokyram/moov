@@ -9,6 +9,7 @@ const Home: React.FC = () => {
     <div className="home">
         <Sidebar/>
         <Navbar/>
+        
         <div className="content">
           <Outlet /> {/* Affiche le contenu dynamique ici */}
         </div>

@@ -2,8 +2,31 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import './sidebar.css'; // Import your CSS styles here
+import { getDecodedToken } from '../services/api';
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    const decodedToken = await getDecodedToken(); // Décoder le token
+
+    if (decodedToken) {
+      // Vérifier le rôle ou d'autres informations du token
+      if (decodedToken.role === 'ADMIN') { // Exemple de vérification
+        localStorage.removeItem('token'); // Supprimer le token
+        navigate('/'); // Rediriger vers la page de login ou d'accueil
+        console.log('Utilisateur deconnecté');
+      } else {
+        console.error('L\'utilisateur n\'a pas les droits nécessaires pour se déconnecter.');
+        // Vous pouvez afficher un message d'erreur si nécessaire
+      }
+    } else {
+      console.error('Aucun token trouvé.');
+      // Afficher un message si aucun token n'est présent
+    }
+  };
+
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
@@ -75,7 +98,7 @@ const Sidebar: React.FC = () => {
           </a>
         </li>
         <li>
-          <a href="/">
+          <a href="/" onClick={handleLogout}>
             <span className="material-symbols-outlined"><i className="bi bi-door-open-fill"></i></span>Déconnexion
           </a>
         </li>
