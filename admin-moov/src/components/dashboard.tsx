@@ -1,32 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // App.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './dashboard.css'; // Votre CSS personnalisé
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import { getDecodedToken } from '../services/api';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement);
 
 const Dashboard: React.FC = () => {
   
-
-  // const dailySalesData = {
-  //   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  //   datasets: [{
-  //     label: 'Daily Sales',
-  //     data: [10, 20, 30, 40, 50, 60, 70],
-  //     backgroundColor: 'rgb(238, 51, 36)',
-  //     borderColor: 'rgb(240, 3, 3, 1)',
-  //     borderWidth: 1,
-  //     borderRadius: 10
-  //   }]
-  // };
-
- 
-
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userPrenom, setUserPrenom] = useState<string | null>(null);
   const [filter, setFilter] = useState<'week' | 'month' | 'year'>('week');
-
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const decodedToken = await getDecodedToken(); // Décoder le token pour obtenir les informations de l'utilisateur
+      if (decodedToken && decodedToken.nom && decodedToken.prenom) {
+        setUserName(decodedToken.nom); // Assurez-vous que le token contient le nom de l'utilisateur
+        setUserPrenom(decodedToken.prenom); // Assurez-vous que le token contient le nom de l'utilisateur
+      }
+    };
+    fetchUserName();
+  }, []);
 
   // Données pour chaque filtre
   const dataByFilter = {
@@ -93,7 +90,7 @@ const Dashboard: React.FC = () => {
     <div className="dashboard  ">
       <div className='stat'>
       <div className="titregraph">
-          <h3>Bienvenue</h3>
+          <h3>Bienvenue,<span> {userName  || 'Utilisateur'} {userPrenom  || 'Utilisateur'}</span></h3>
           <p>Présentation de tableau de bord concernant tout les mouvements de résevation et de clients</p>
         </div>
       <div className="row">
