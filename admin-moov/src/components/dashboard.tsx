@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './dashboard.css'; // Votre CSS personnalisé
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { getDecodedToken } from '../services/api';
+import { getDecodedToken, getTotalChauffeur, getTotalClient, getTotalCourses } from '../services/api';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -14,6 +14,10 @@ const Dashboard: React.FC = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [userPrenom, setUserPrenom] = useState<string | null>(null);
   const [filter, setFilter] = useState<'week' | 'month' | 'year'>('week');
+  const [totalCourses, setTotalCourses] = useState<number | null>(null);
+  const [totalClient, setTotalClient] = useState<number | null>(null);
+  const [totalChauffeur, setTotalChauffeur] = useState<number | null>(null);
+
   useEffect(() => {
     const fetchUserName = async () => {
       const decodedToken = await getDecodedToken(); // Décoder le token pour obtenir les informations de l'utilisateur
@@ -23,6 +27,50 @@ const Dashboard: React.FC = () => {
       }
     };
     fetchUserName();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchTotalCourses = async () => {
+      try {
+        const total = await getTotalCourses(); // Récupérer la valeur depuis l'API
+        const totalCoursesNumber = (total); // Accédez à la propriété total_courses et convertissez-la en nombre
+        setTotalCourses(Number(totalCoursesNumber.total_courses)); // Mettez à jour l'état avec le nombre
+      } catch (error) {
+        console.error('Erreur lors de la récupération du total des courses:', error);
+      }
+    };
+
+    fetchTotalCourses();
+  }, []);
+  
+
+  useEffect(() => {
+    const fetchTotalClient = async () => {
+      try {
+        const total = await getTotalClient(); // Récupérer la valeur depuis l'API
+        const totalClientCount = (total); // Accédez à la propriété total_courses et convertissez-la en nombre
+        setTotalClient(totalClientCount.passagerCount); // Mettez à jour l'état avec le nombre
+      } catch (error) {
+        console.error('Erreur lors de la récupération du total des clients:', error);
+      }
+    };
+
+    fetchTotalClient();
+  }, []);
+
+  useEffect(() => {
+    const fetchTotalChauffeur = async () => {
+      try {
+        const total = await getTotalChauffeur(); // Récupérer la valeur depuis l'API
+        const totalChauffeurCount = (total); // Accédez à la propriété total_courses et convertissez-la en nombre
+        setTotalChauffeur(totalChauffeurCount.chauffeurCount); // Mettez à jour l'état avec le nombre
+      } catch (error) {
+        console.error('Erreur lors de la récupération du total des Chauffeurs:', error);
+      }
+    };
+
+    fetchTotalChauffeur();
   }, []);
 
   // Données pour chaque filtre
@@ -101,24 +149,25 @@ const Dashboard: React.FC = () => {
           subtitle={<span className="text-success"><i className="fas fa-arrow-up"></i> 3% than last month</span>}
           bgColor="bg-primary"
         />
-        <Widget
-          iconClass="bi bi-patch-plus-fill"
-          title="Total réservation"
-          data="2,300"
-          subtitle={<span className="text-success"><i className="fas fa-arrow-up"></i> 1% than yesterday</span>}
-          bgColor="bg-success"
-        />
+         <Widget
+            iconClass="bi bi-patch-plus-fill"
+            title="Total réservation"
+            // Vérifiez si totalCourses est défini avant d'afficher son contenu
+            data={totalCourses !== null ? `${totalCourses}` : 'Chargement...'}
+            subtitle={<span className="text-success"><i className="fas fa-arrow-up"></i> 1% than yesterday</span>}
+            bgColor="bg-success"
+          />
         <Widget
           iconClass="bi bi-person-fill-check"
           title="Total clients"
-          data="34k"
+          data={totalClient !== null ? `${totalClient}` : 'Chargement...'}
           subtitle="Just updated"
           bgColor="bg-warning"
         />
         <Widget
           iconClass="bi bi-people-fill"
           title="Total conducteur"
-          data="+91"
+          data={totalChauffeur !== null ? `${totalChauffeur}` : 'Chargement...'}
           subtitle="Just updated"
           bgColor="bg-danger"
         />

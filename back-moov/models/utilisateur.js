@@ -303,6 +303,30 @@ class Utilisateur {
     return chauffeurs;
   }
 
+  static async countClient() {
+    let whereClause = '';
+    const params = [];
+    
+    const result = await db.query(
+      `SELECT COUNT(*) FROM utilisateur where role = 'UTILISATEUR'`,
+      params
+    );
+  
+    return parseInt(result.rows[0].count);
+  }
+
+  static async countChauffeur() {
+    let whereClause = '';
+    const params = [];
+    
+    const result = await db.query(
+      `SELECT COUNT(*) FROM utilisateur where role = 'CHAUFFEUR'`,
+      params
+    );
+  
+    return parseInt(result.rows[0].count);
+  }
+
   toJSON() {
     return {
       id: this.id,
