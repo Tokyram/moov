@@ -45,21 +45,20 @@ class PaiementController {
             if (paymentIntent.status === 'succeeded') {
                 const { courseId, chauffeurId, montantAriary } = paymentIntent.metadata;
                 
+                console.log('PaymentIntent:', JSON.stringify(paymentIntent, null, 2));
+
                 // Enregistrer le paiement
                 const paiement = await Paiement.create({
                     course_id: courseId,
                     montant: montantAriary,
                     status: 'COMPLETED',
-                    stripe_payment_id: paymentIntentId,
-                    stripe_charge_id: paymentIntent.charges.data[0].id
+                    stripe_payment_id: paymentIntentId
                 });
 
                 // Créer la facture
                 const facture = await Facture.create({
                     paiement_id: paiement.id,
-                    montant: paiement.montant,
-                    stripe_invoice_id: paymentIntent.invoice,
-                    stripe_invoice_url: paymentIntent.charges.data[0].receipt_url
+                    montant: paiement.montant
                 });
 
                 // Attribuer la course au chauffeur
