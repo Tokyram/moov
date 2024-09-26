@@ -206,6 +206,27 @@ class UtilisateurController {
     }
   }
 
+  static async countPassagers(req, res)  {
+    try {
+      const count = await Utilisateur.countClient();
+      res.status(200).json({ passagerCount: count });
+    } catch (error) {
+      console.error('Erreur lors de la récupération du compte des passagers:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
+    }
+  };
+  
+  // Contrôleur pour obtenir le nombre de chauffeurs
+  static async countChauffeurs(req, res)  {
+    try {
+      const count = await Utilisateur.countChauffeur();
+      res.status(200).json({ chauffeurCount: count });
+    } catch (error) {
+      console.error('Erreur lors de la récupération du compte des chauffeurs:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
+    }
+  };
+
 }
 
 module.exports = UtilisateurController;
