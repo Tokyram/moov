@@ -64,6 +64,7 @@ class PaiementController {
                 // Attribuer la course au chauffeur
                 await Course.attribuerChauffeur(courseId, chauffeurId);
                 const suppressionTraitement = TraitementCourseUtilisateur.suppressionTraitementCourse(courseId);
+                const suppressionConfirmation = Course.suppressionCourseChauffeur(courseId);
                 
                 res.status(200).json({
                     success: true,

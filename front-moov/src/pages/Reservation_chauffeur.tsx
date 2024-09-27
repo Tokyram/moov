@@ -151,7 +151,7 @@ const Reservation_chauffeur: React.FC = () => {
                 if(response.status === 200) {
                     setConfirmationLoading(false);
                     setShowConfirmeCoursePopup(false);
-                    history.push('/map');
+                    history.push('/reservation_chauffeur');
                 }
             }
             setConfirmationLoading(false);

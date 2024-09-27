@@ -228,7 +228,26 @@ export const getReservationAttribues = async () => {
             'ngrok-skip-browser-warning': '1'
         };
 
-        const response = await api.get(`/courses//chauffeur-attribue/${decodedToken.id}`, { headers });
+        const response = await api.get(`/courses/chauffeur-attribue/${decodedToken.id}`, { headers });
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors de la récupération la liste des reservations attribuées au chauffeur :', error.message);
+        throw error;
+    }
+}
+
+export const getReservationAttribuesUser = async () => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const decodedToken = await getDecodedToken();
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.get(`/courses/attribue/${decodedToken.id}`, { headers });
         return response;
     } catch(error: any) {
         console.error('Erreur lors de la récupération la liste des reservations attribuées au chauffeur :', error.message);

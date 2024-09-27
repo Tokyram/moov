@@ -3,6 +3,7 @@ import './Reservation.css';
 import './Profil.css';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
+import { detailCourse, getReservationAttribuesUser } from '../services/api';
 
 const Reservation: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,28 +15,8 @@ const Reservation: React.FC = () => {
 
     const [activeView, setActiveView] = useState<'reservations' | 'historique'>('reservations');
 
-    const reservations = [
-        {
-            id: 1,
-            price: "25 000Ar",
-            carImg: "assets/v1.png",
-            taxiNumber: "458203 TBA",
-            reservationNumber: "N°02",
-            date: "04 juillet",
-            time: "10h 00",
-            destination: "Ampitatafika à Ivandry"
-        },
-        {
-            id: 2,
-            price: "30 000Ar",
-            carImg: "assets/v1.png",
-            taxiNumber: "458204 TBA",
-            reservationNumber: "N°03",
-            date: "05 juillet",
-            time: "11h 00",
-            destination: "Ankadimbahoaka à Analakely"
-        }
-    ];
+    const [reservations, setReservations] = useState<any[]>([]);
+    const [reservation, setReservation] = useState<any>(null);
 
     const historique = [
         {
@@ -54,6 +35,38 @@ const Reservation: React.FC = () => {
         setIsVisible(true);
     }, []);
 
+    useEffect(() => {
+        const listeCourse = async () => {
+            if(activeView === "reservations") {
+                const response = await getReservationAttribuesUser();
+                setReservations(Array.isArray(response.data.data) ? response.data.data : []);
+            }
+        }
+        listeCourse();
+    }, [activeView]);
+
+    function splitDateTime(dateTimeString: string) {
+        // Parse the input string into a Date object
+        const dateObj = new Date(dateTimeString);
+      
+        // Format the date (YYYY-MM-DD)
+        const date = dateObj.toISOString().split('T')[0];
+      
+        // Format the time (HH:MM)
+        const hours = String(dateObj.getUTCHours()).padStart(2, '0');
+        const minutes = String(dateObj.getUTCMinutes()).padStart(2, '0');
+        const time = `${hours}:${minutes}`;
+      
+        return { date, time };
+    }
+
+    function splitPlace(place: string) {
+
+        const responsePlace = place.split(',')[0];
+      
+        return responsePlace;
+    }
+
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
@@ -63,10 +76,19 @@ const Reservation: React.FC = () => {
         setShowAnnulationPopup(true);
     };
 
-    const handleConfirmClickDetail = (reservationId: number) => {
-      setCurrentReservationId(reservationId);
-      setShowDetailPopup(true);
-  };
+    const handleConfirmClickDetail = async (reservationId: number) => {
+        setCurrentReservationId(reservationId);
+        try {
+          const response = await detailCourse(reservationId);
+          console.log("object", response.data);
+          if (response.data.course) {
+            setReservation(response.data.course);
+            setShowDetailPopup(true);
+          }
+        } catch (error) {
+          console.error("Erreur lors de la récupération des détails de la réservation:", error);
+        }
+    };
 
     const handleCloseDetail = () => {
       setShowDetailPopup(false);
@@ -110,52 +132,54 @@ const Reservation: React.FC = () => {
                             className={`toggle-button ${activeView === 'reservations' ? 'active' : ''}`}
                             onClick={() => setActiveView('reservations')}
                         >
-                            Réservations
+                            Réservations attribuées
                         </button>
                         <button
                             className={`toggle-button ${activeView === 'historique' ? 'active' : ''}`}
                             onClick={() => setActiveView('historique')}
                         >
-                            Historiques
+                            Historiques des réservations
                         </button>
                 </div>
 
                 {activeView === 'reservations' && (
-                reservations.map(reservation => (
-                    <div className="reservations" key={reservation.id} >
-                        <div className="statut-reservation">
-                            <div className="ico-stat">
-                                <i className="bi bi-car-front-fill"></i>
-                                <p>Réserver</p>
+                    reservations.map((reservation: any) => (
+                        <div className="reservations" key={reservation.course_id} >
+                            <div className="statut-reservation">
+                                <div className="ico-stat">
+                                    <i className="bi bi-car-front-fill"></i>
+                                    <p>{reservation.status}</p>
+                                </div>
+                                <div className="ico-stat2">
+                                    <p>{reservation.prix}Ar</p>
+                                    <a href="#">
+                                        <i className="bi bi-pen-fill"></i>
+                                    </a>
+                                </div>
                             </div>
-                            <div className="ico-stat2">
-                                <p>{reservation.price}</p>
-                                <a href="/map">
-                                    <i className="bi bi-pen-fill"></i>
-                                </a>
+                            <div className="fond-reservation" onClick={() => handleConfirmClickDetail(reservation.course_id)}>
+                                <img src="assets/v1.png" alt="car" />
+                            </div>
+                            <div className="info-reservation">
+                                <div className="taxi">
+                                    <h4>{reservation.voiture_immatriculation}</h4>
+                                    <h1>N°{reservation.course_id}</h1>
+                                </div>
+                                <div className="info-course">
+                                    <p>Date : <span>{splitDateTime(reservation.date_heure_depart).date}</span> à <span>{splitDateTime(reservation.date_heure_depart).time}</span></p>
+                                    <p>Destination : <span>{splitPlace(reservation.adresse_depart)}</span> à <span>{splitPlace(reservation.adresse_arrivee)}</span></p>
+                                    <p>Distance : <span>{reservation.kilometre}</span> km</p>
+                                </div>
+                                <div className="annuler-course">
+                                    <button onClick={() => handleConfirmClick(reservation.id)}>
+                                        <i className="bi bi-stop-circle-fill"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div className="fond-reservation" onClick={() => handleConfirmClickDetail(reservation.id)}>
-                            <img src={reservation.carImg} alt="car" />
-                        </div>
-                        <div className="info-reservation">
-                            <div className="taxi">
-                                <h4>{reservation.taxiNumber}</h4>
-                                <h1>{reservation.reservationNumber}</h1>
-                            </div>
-                            <div className="info-course">
-                                <p>Date : <span>{reservation.date}</span> à <span>{reservation.time}</span></p>
-                                <p>Destination : <span>{reservation.destination}</span></p>
-                            </div>
-                            <div className="annuler-course">
-                                <button onClick={() => handleConfirmClick(reservation.id)}>
-                                    <i className="bi bi-stop-circle-fill"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                ))
-                    )}
+                    ))
+                )}
+
                 {activeView === 'historique' && (
                     historique.map(historique => (
                         <div className="reservations" key={historique.id}>
@@ -185,7 +209,7 @@ const Reservation: React.FC = () => {
                     ))
                 )}
 
-                {showDetailPopup && (
+                {showDetailPopup && reservation && (
                   
                     <div className="popup-overlay3" onClick={handleCloseDetail}>
                         <button className="close-button3" onClick={handleCloseDetail}>
@@ -199,23 +223,27 @@ const Reservation: React.FC = () => {
                                     <h4>Détail de votre réservation</h4>
                                   </div>
                                   <div className="numero">
-                                    <h4>N°02</h4>
+                                    <h4>N°{reservation?.course_id}</h4>
                                   </div>
                               </div>
                               <div className="info-detail">
                                 
-                                <p>Chauffeur : <span>RAKOTO Jean</span></p>
-                                <p>Immatriculation : <span>458204 TBA</span></p>
-                                <p>Date : <span>04 juillet</span> à <span>10h 00</span></p>
-                                <p>Destination : <span>Analakely</span> à <span>Ivandry</span></p>
-                                <p>Distance : <span>10km</span></p>
+                                {reservation.chauffeur_id && <p>Chauffeur : <span>{reservation.chauffeur_nom+" "+reservation.chauffeur_prenom}</span></p>} 
+                                {reservation.voiture_id && <p>Immatriculation : <span>{reservation.immatriculation}</span></p>}
+                                <p>Date : <span>{splitDateTime(reservation?.date_heure_depart).date}</span> à <span>{splitDateTime(reservation?.date_heure_depart).time}</span></p>
+                                <p>Destination : <span>{splitPlace(reservation?.adresse_depart)}</span> à <span>{splitPlace(reservation?.adresse_arrivee)}</span></p>
+                                <p>Distance : <span>{reservation?.kilometre}</span> km</p>
 
                               </div>
 
-                              <a href="/map" className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center'}}>
-                                    {/* <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i> */}
-                                    Voir sur map <i className="bi bi-arrow-right-short" style={{ fontSize: '1.5rem', display:'flex', alignItems:'center', justifyContent:'center' }}></i>
-                                </a>
+                                {
+                                    activeView === 'reservations' && (
+                                        <a href={`/map/${reservation.course_id}`} className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center'}}>
+                                            {/* <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i> */}
+                                            Voir sur map <i className="bi bi-arrow-right-short" style={{ fontSize: '1.5rem', display:'flex', alignItems:'center', justifyContent:'center' }}></i>
+                                        </a>
+                                    )
+                                }
                             </div>
                             <div className="titrepopupMerci">
                                 <img src="assets/logo.png" alt="logo" />

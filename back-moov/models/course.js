@@ -446,6 +446,13 @@ class Course {
         const result = await db.query(query, [userId]);
         return result.rows;
     }
+
+    static async suppressionCourseChauffeur(courseId) {
+        const query = `DELETE FROM confirmation_course_chauffeur WHERE course_id = $1 RETURNING *`;
+        const result = await db.query(query, [courseId]);
+
+        return result.rows[0];
+    }
 }
 
 module.exports = Course;

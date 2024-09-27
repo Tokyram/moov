@@ -180,33 +180,35 @@ const MapComponent: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if(!isCoursePlanned) {
-
-      const geoOptions = {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-      };
-
-      const updatePosition = (position: GeolocationPosition) => {
-        const userPosition: [number, number] = [position.coords.latitude, position.coords.longitude];
-        setPosition(userPosition);
-      };
-
-      const handleError = (error: GeolocationPositionError) => {
-        console.error('Error obtaining location:', error);
-        const defaultPosition: [number, number] = [0, 0];
-        setStart(defaultPosition);
-      };
-
+    const geoOptions = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    };
+  
+    const updatePosition = (position: GeolocationPosition) => {
+      const userPosition: [number, number] = [position.coords.latitude, position.coords.longitude];
+      setPosition(userPosition);
+    };
+  
+    const handleError = (error: GeolocationPositionError) => {
+      console.error('Error obtaining location:', error);
+      const defaultPosition: [number, number] = [0, 0]; 
+      setStart(defaultPosition);
+    };
+  
+    const fetchPosition = () => {
       navigator.geolocation.getCurrentPosition(updatePosition, handleError, geoOptions);
-      const positionWatcher = navigator.geolocation.watchPosition(updatePosition, handleError, geoOptions);
+    };
+  
+    fetchPosition();
 
-      return () => {
-        navigator.geolocation.clearWatch(positionWatcher);
-      };
-    }
-    }, [isCoursePlanned]);
+    const intervalId = setInterval(fetchPosition, 10000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
     const reverseGeocode = (lat: number, lon: number, setLocation: React.Dispatch<React.SetStateAction<string | null>>) => {
       fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)

@@ -87,6 +87,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
   const routingControlRef = useRef<L.Routing.Control | null>(null);
 
   const [realTimeChauffeur, setRealTimeChauffeur] = useState<any | null>(null);
+  const [userPosition, setUserPosition] = useState<[number, number] | null>(null);
 
   console.log("course", course);
 
@@ -259,7 +260,13 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
       setRealTimeChauffeur(null); // Réinitialiser le suivi du chauffeur en temps réel
     }
   };
-  console.log(position);
+
+  useEffect(() => {
+    // Initialiser userPosition avec start s'il est disponible, sinon avec position
+    if (position && Array.isArray(position) && position.length === 2) {
+      setUserPosition(position as [number, number]);
+    }
+  }, [start, position]);
 
   return (
     <>
@@ -307,16 +314,11 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
             </Marker>
           ))}
 
-        {realTimeChauffeur && (
-          <Marker position={realTimeChauffeur.position} icon={chauffeurIcon}>
-            <Popup className='leaflet-popup-content'>
-              <div>
-                {realTimeChauffeur.name}
-                <p>{realTimeChauffeur.immatriculation}</p>
-              </div>
-            </Popup>
-          </Marker>
-        )}
+          {userPosition && (
+            <Marker position={userPosition} icon={userIcon}>
+              <Popup>Position actuelle du chauffeur</Popup>
+            </Marker>
+          )}
 
           {start &&  !selectedChauffeur && (
             <Marker position={start} icon={locationIcon}>

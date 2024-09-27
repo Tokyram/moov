@@ -37,6 +37,7 @@ import { Storage } from '@capacitor/storage';
 import { checkTraitementCourse, getDecodedToken } from './services/api';
 import PaiementFailed from './pages/PaiementFailed';
 import MapComponentChauffeur from './pages/MapComponentChauffeur';
+import Loader from './components/Loader';
 
 setupIonicReact();
 
@@ -92,7 +93,7 @@ const App: React.FC = () => {
   }, []);
   
   if (isLoading) {
-    return <Start_page />;
+    return <Loader />;
   }
 
   return (
