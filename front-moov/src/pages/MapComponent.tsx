@@ -53,7 +53,7 @@ const MapComponent: React.FC = () => {
   const [courseStart, setCourseStart] = useState<[number, number] | null>(null);
   const [courseEnd, setCourseEnd] = useState<[number, number] | null>(null);
   const [tarifCourse, setTarifCourse] = useState(0);
-  const [buttonState, setButtonState] = useState<'RESERVER' | 'COMMENCER' | 'TERMINER' | 'EN_ATTENTE'>('RESERVER');
+  const [buttonState, setButtonState] = useState<'RESERVER' | 'COMMENCER' | 'TERMINER' | 'ATTRIBUER' | 'EN_ATTENTE'>('RESERVER');
 
   const handleClose = () => {
     setIsVisible(false);
@@ -105,6 +105,8 @@ const MapComponent: React.FC = () => {
               setButtonState('COMMENCER');
             } else if (response.data.course.course_status === "EN COURS") {
               setButtonState('TERMINER');
+            } else if (response.data.course.course_status === "ATTRIBUEE" && now < departDate) {
+              setButtonState('ATTRIBUER');
             } else {
               setButtonState('EN_ATTENTE');
             }
@@ -343,6 +345,15 @@ const MapComponent: React.FC = () => {
               (!isBtnReservation || (courseId && buttonState === 'EN_ATTENTE')) && (
                 <button className="confirmation-button3" style={{ backgroundColor: 'var(--text-color)', color: 'var(--background-color)' }}>
                   En attente de chauffeur <Loader/>
+                  <i className="bi bi-check-circle-fill"></i>
+                </button>
+              )
+            }
+
+{
+              (buttonState === 'ATTRIBUER') && (
+                <button className="confirmation-button3" style={{ backgroundColor: 'var(--text-color)', color: 'var(--background-color)' }}>
+                  En attente <Loader/>
                   <i className="bi bi-check-circle-fill"></i>
                 </button>
               )
