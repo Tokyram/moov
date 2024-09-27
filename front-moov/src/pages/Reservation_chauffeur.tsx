@@ -41,20 +41,21 @@ const Reservation_chauffeur: React.FC = () => {
         setIsVisible(true);
     }, []);
 
-    useEffect(() => {
-        const listeCourse = async () => {
-            setIsLoading(true);
-            if(activeView === "reservations") {
-                const response = await listeCourseEnAttente();
-                setReservations(Array.isArray(response.data.data) ? response.data.data : []);
-                setIsLoading(false);
-            }
-            if(activeView === "attribues") {
-                const response = await getReservationAttribues();
-                setAttribues(Array.isArray(response.data.data) ? response.data.data : []);
-                setIsLoading(false);
-            }
+    const listeCourse = async () => {
+        setIsLoading(true);
+        if(activeView === "reservations") {
+            const response = await listeCourseEnAttente();
+            setReservations(Array.isArray(response.data.data) ? response.data.data : []);
+            setIsLoading(false);
         }
+        if(activeView === "attribues") {
+            const response = await getReservationAttribues();
+            setAttribues(Array.isArray(response.data.data) ? response.data.data : []);
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
         listeCourse();
     }, [activeView]);
 
@@ -136,7 +137,7 @@ const Reservation_chauffeur: React.FC = () => {
                 if(response.status === 200) {
                     setConfirmationLoading(false);
                     setShowAnnulationPopup(false);
-                    history.push('/reservation_chauffeur');
+                    listeCourse();
                 }
             }
             setConfirmationLoading(false);
