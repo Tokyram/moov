@@ -7,7 +7,7 @@ const LeafletMap = lazy(() => import('./LeafletMap'));
 import 'leaflet/dist/leaflet.css';
 import RechercheMap from '../components/RechercheMap';
 // import NotificationComponent from './NotificationComponent';
-import { CourseData, detailCourse, getDecodedToken, reserverCourse } from '../services/api';
+import { CourseData, detailCourse, getDecodedToken, getTarifKm, reserverCourse } from '../services/api';
 import Loader from '../components/Loader';
 import { useIonRouter } from '@ionic/react';
 import { Storage } from '@capacitor/storage';
@@ -52,6 +52,7 @@ const MapComponent: React.FC = () => {
   const [isCoursePlanned, setIsCoursePlanned] = useState(false);
   const [courseStart, setCourseStart] = useState<[number, number] | null>(null);
   const [courseEnd, setCourseEnd] = useState<[number, number] | null>(null);
+  const [tarifCourse, setTarifCourse] = useState(0);
 
   const handleClose = () => {
     setIsVisible(false);
@@ -103,7 +104,15 @@ const MapComponent: React.FC = () => {
       }
     }
 
+    const getTarif = async () => {
+      if(courseId) {
+        const response = await getTarifKm();
+        setTarifCourse(Number(response.data.tarif));
+      }
+    }
+
     getCourseEnCours();
+    getTarif();
   }, [courseId]);
 
   const handleConfirmDate = async () => {
@@ -214,9 +223,8 @@ const MapComponent: React.FC = () => {
 
   const calculatePrice = (distance: number | null): number => {
     if(!distance) distance = 0;
-    const prixBase = 1000; // en ariary
-    const tauxParKm = 500; // en ariary
-    return Math.round(prixBase + (distance * tauxParKm));
+    const prix = tarifCourse * distance
+    return Number(prix.toFixed(2));
   };
 
 

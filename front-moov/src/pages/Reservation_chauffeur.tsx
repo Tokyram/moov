@@ -4,7 +4,7 @@ import './Profil.css';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 import { Route, useHistory } from 'react-router-dom';
-import { accepterCourse, detailCourse, listeCourseEnAttente, refuserCourse } from '../services/api';
+import { accepterCourse, detailCourse, getReservationAttribues, listeCourseEnAttente, refuserCourse } from '../services/api';
 import Loader from '../components/Loader';
 
 const Reservation_chauffeur: React.FC = () => {
@@ -18,6 +18,7 @@ const Reservation_chauffeur: React.FC = () => {
     const history = useHistory();
     const [activeView, setActiveView] = useState<'reservations' | 'attribues' | 'historique'>('reservations');
     const [reservations, setReservations] = useState<any[]>([]);
+    const [attribues, setAttribues] = useState<any[]>([]);
     const [reservation, setReservation] = useState<any>(null);
     const [confirmationLoading, setConfirmationLoading] = useState(false);
 
@@ -44,9 +45,13 @@ const Reservation_chauffeur: React.FC = () => {
                 const response = await listeCourseEnAttente();
                 setReservations(Array.isArray(response.data.data) ? response.data.data : []);
             }
+            if(activeView === "attribues") {
+                const response = await getReservationAttribues();
+                setAttribues(Array.isArray(response.data.data) ? response.data.data : []);
+            }
         }
         listeCourse();
-    }, []);
+    }, [activeView]);
 
     function splitDateTime(dateTimeString: string) {
         // Parse the input string into a Date object
@@ -242,28 +247,29 @@ const Reservation_chauffeur: React.FC = () => {
                 )}
 
                 {activeView === 'attribues' && (
-                    historique.map(historique => (
-                        <div className="reservations" key={historique.id}>
+                    attribues.map(attribues => (
+                        <div className="reservations" key={attribues.course_id}>
                             <div className="statut-reservation">
                                 <div className="ico-stat">
                                     <i className="bi bi-car-front-fill"></i>
                                     <p>ATTRIBUE</p>
                                 </div>
                                 <div className="ico-stat2">
-                                    <p>{historique.price}</p>
+                                    <p>{attribues.prix}Ar</p>
                                 </div>
                             </div>
-                            <div className="fond-reservation" onClick={() => handleConfirmClickDetail(historique.id)}>
-                                <img src={historique.carImg} alt="car" />
+                            <div className="fond-reservation" onClick={() => handleConfirmClickDetail(attribues.course_id)}>
+                                <img src="assets/v1.png" alt="car" />
                             </div>
                             <div className="info-reservation">
                                 <div className="taxi">
-                                    <h4>{historique.taxiNumber}</h4>
-                                    <h1>{historique.reservationNumber}</h1>
+                                    <h4>{attribues.voiture_immatriculation}</h4>
+                                    <h1>N°{attribues.course_id}</h1>
                                 </div>
                                 <div className="info-course">
-                                    <p>Date : <span>{historique.date}</span> à <span>{historique.time}</span></p>
-                                    <p>Destination : <span>{historique.destination}</span></p>
+                                    <p>Date : <span>{splitDateTime(attribues.date_heure_depart).date}</span> à <span>{splitDateTime(attribues.date_heure_depart).time}</span></p>
+                                    <p>Destination : <span>{splitPlace(attribues.adresse_depart)}</span> à <span>{splitPlace(attribues.adresse_arrivee)}</span></p>
+                                    <p>Distance : <span>{attribues.kilometre}</span> km</p>
                                 </div>
                             </div>
                         </div>
@@ -318,8 +324,8 @@ const Reservation_chauffeur: React.FC = () => {
                               </div>
                               <div className="info-detail">
                                 
-                                {/* <p>Chauffeur : <span>RAKOTO Jean</span></p> */}
-                                {/* <p>Immatriculation : <span>458204 TBA</span></p> */}
+                                {reservation.chauffeur_id && <p>Chauffeur : <span>{reservation.chauffeur_nom+" "+reservation.chauffeur_prenom}</span></p>} 
+                                {reservation.voiture_id && <p>Immatriculation : <span>{reservation.immatriculation}</span></p>}
                                 <p>Date : <span>{splitDateTime(reservation?.date_heure_depart).date}</span> à <span>{splitDateTime(reservation?.date_heure_depart).time}</span></p>
                                 <p>Destination : <span>{splitPlace(reservation?.adresse_depart)}</span> à <span>{splitPlace(reservation?.adresse_arrivee)}</span></p>
                                 <p>Distance : <span>{reservation?.kilometre}</span> km</p>
@@ -327,7 +333,7 @@ const Reservation_chauffeur: React.FC = () => {
                               </div>
                               {
                                 activeView === "attribues" && (
-                                    <a href="/map" className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center'}}>
+                                    <a href={`/mapChauffeur/${reservation.course_id}`} className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center'}}>
                                         {/* <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i> */}
                                         Voir sur map <i className="bi bi-arrow-right-short" style={{ fontSize: '1.5rem', display:'flex', alignItems:'center', justifyContent:'center' }}></i>
                                     </a>

@@ -36,6 +36,7 @@ import Notification_chauffeur from './pages/Notification_chauffeur';
 import { Storage } from '@capacitor/storage';
 import { checkTraitementCourse, getDecodedToken } from './services/api';
 import PaiementFailed from './pages/PaiementFailed';
+import MapComponentChauffeur from './pages/MapComponentChauffeur';
 
 setupIonicReact();
 
@@ -122,6 +123,7 @@ const App: React.FC = () => {
           <Route path="/facture" component={Facture} exact={true} />
           <Route path="/mdpcode/:type" component={Mdp_code} exact={true} />
           <Route path="/mdpo" component={Mot_de_passe_oublie} exact={true} />
+          <Route path="/mapChauffeur/:courseId" component={MapComponentChauffeur} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

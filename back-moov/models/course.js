@@ -251,6 +251,10 @@ class Course {
                 c.date_heure_depart,
                 c.adresse_depart,
                 c.adresse_arrivee,
+                c.adresse_depart_longitude,
+                c.adresse_depart_latitude,
+                c.adresse_arrivee_longitude,
+                c.adresse_arrivee_latitude,
                 c.status,
                 c.prix,
                 c.kilometre,
@@ -270,7 +274,7 @@ class Course {
             JOIN utilisateur u_chauffeur ON c.chauffeur_id = u_chauffeur.id
             LEFT JOIN chauffeur_voiture cv ON u_chauffeur.id = cv.chauffeur_id
             LEFT JOIN voiture v ON cv.voiture_id = v.id
-            WHERE c.chauffeur_id = $1 AND c.status = 'ATTRIBUE'
+            WHERE c.chauffeur_id = $1 AND c.status = 'ATTRIBUEE'
             ORDER BY c.date_heure_depart DESC
         `;
         const result = await db.query(query, [chauffeurId]);

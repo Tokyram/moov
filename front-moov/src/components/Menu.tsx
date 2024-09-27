@@ -15,24 +15,31 @@ const Menu: React.FC = () => {
   const [userRole, setUserRole] = useState('');
   const [username, setUsername] = useState('');
   const [course, setCourse] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   useEffect(() => {
     // Ajouter la classe 'show' après le montage du composant
     setIsVisible(true);
+
     const initUser = async () => {
-      const decodedToken = await getDecodedToken();
-      const course = await Storage.get({key: 'course'});
-      if(course) {
-        setCourse(Number(course.value));
+      const token = await Storage.get({ key: 'token' });
+      if (token.value) {
+        setIsLoggedIn(true);
+        const decodedToken = await getDecodedToken();
+        const course = await Storage.get({key: 'course'});
+        if(course) {
+          setCourse(Number(course.value));
+        }
+        if (decodedToken) {
+          setUserRole(decodedToken.role);
+          setUsername(decodedToken.nom + " " + decodedToken.prenom);
+        } else {
+          console.error('Token non valide ou non trouvé');
+          // Gérer le cas où le token n'est pas valide (redirection vers la page de connexion, par exemple)
+          router.push('home', 'root', 'replace');
+        }
       }
-      if (decodedToken) {
-        setUserRole(decodedToken.role);
-        setUsername(decodedToken.nom + " " + decodedToken.prenom);
-      } else {
-        console.error('Token non valide ou non trouvé');
-        // Gérer le cas où le token n'est pas valide (redirection vers la page de connexion, par exemple)
-        router.push('home', 'root', 'replace');
-      }
+      setIsLoggedIn(false);
     }
 
     initUser();
@@ -53,7 +60,7 @@ const Menu: React.FC = () => {
   return (
       <div className='sidebar'>
         {
-          userRole === "CHAUFFEUR" && (
+          userRole === "CHAUFFEUR" && isLoggedIn && (
             <ChauffeurLocationTracker/>
           )
         }
