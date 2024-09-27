@@ -24,7 +24,8 @@ CREATE TABLE voiture (
   id SERIAL PRIMARY KEY,
   marque VARCHAR(255) NOT NULL,
   modele VARCHAR(255) NOT NULL,
-  immatriculation VARCHAR(10) UNIQUE NOT NULL
+  immatriculation VARCHAR(10) UNIQUE NOT NULL,
+  photo_url VARCHAR(255) 
 );
 
 CREATE TABLE photo_voiture (
