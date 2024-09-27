@@ -147,7 +147,7 @@ const MapComponentChauffeur: React.FC = () => {
           </div>
           <div className="label-item">
             <div className="label">Lieu :</div>
-            <div className="label-value"><label className="loc">{startLocation || 'Not set'}</label> <span> à </span> <label className="loc">{endLocation || 'Not set'}</label></div>
+            <div className="label-value"><label style={{ color: 'red' }} className="loc">{startLocation || 'Not set'}</label> <span> à </span> <label style={{ color: 'yellow' }} className="loc">{endLocation || 'Not set'}</label></div>
           </div>
         </div>
 
