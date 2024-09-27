@@ -29,19 +29,26 @@ const LeafletMapChauffeur: React.FC<LeafletMapProps> = ({ position, start, end, 
 
   const mapRef = useRef<L.Map | null>(null);
   const [userPosition, setUserPosition] = useState<[number, number] | null>(null);
+  const [initialCenter, setInitialCenter] = useState(false); // État pour suivre si l'utilisateur a été centré initialement
   
+  const routingControlRef = useRef<L.Routing.Control | null>(null);
+
   useEffect(() => {
     if (isCoursePlanned) {
-      // Simuler le déplacement de l'utilisateur
       const interval = setInterval(() => {
-        if (start && end) {
-          const newPosition: [number, number] = [
-            start[0] + (end[0] - start[0]) * Math.random(),
-            start[1] + (end[1] - start[1]) * Math.random()
-          ];
-          setUserPosition(newPosition);
+        if (userPosition) {
+          setUserPosition((prevChauffeur: any) => {
+            if (prevChauffeur) {
+              const newPosition: [number, number] = [
+                prevChauffeur.position[0] + (Math.random() - 0.5) * 0.001, // Variation aléatoire pour la simulation
+                prevChauffeur.position[1] + (Math.random() - 0.5) * 0.001
+              ];
+              return { ...prevChauffeur, position: newPosition };
+            }
+            return null;
+          });
         }
-      }, 5000); // Mise à jour toutes les 5 secondes
+      }, 5000);
 
       return () => clearInterval(interval);
     }
@@ -52,27 +59,54 @@ const LeafletMapChauffeur: React.FC<LeafletMapProps> = ({ position, start, end, 
     const map = useMap();
 
     useEffect(() => {
-      if (!map || !start || !end) return;
+      if (!map) return;
 
-      let routingControl = L.Routing.control({
+      if (position && Array.isArray(position) && position.length === 2) {
+        if (!initialCenter) {
+          map.setView(position, 15);
+          setInitialCenter(true);
+        }
+      }
+    }, [position, initialCenter, map]);
+
+    useEffect(() => {
+      if (!start || !end) return; 
+
+      if (!map) return;
+
+      let routingControl: L.Routing.Control | null = null;
+
+      if (routingControlRef.current) {
+        routingControlRef.current.remove();
+      }
+
+      routingControl = L.Routing.control({
         waypoints: [
           L.latLng(start[0], start[1]),
           L.latLng(end[0], end[1]),
         ],
-        routeWhileDragging: false,
-        addWaypoints: false,
-      }).addTo(map);
+        routeWhileDragging: !isCoursePlanned,
+        addWaypoints: !isCoursePlanned,
+      })
+        .on('routesfound', function (e) {
+          const routes = e.routes;
+          const summary = routes[0].summary;
+          setDistance(parseFloat((summary.totalDistance / 1000).toFixed(2))); 
+        });
 
-      routingControl.on('routesfound', function (e) {
-        const routes = e.routes;
-        const summary = routes[0].summary;
-        setDistance(parseFloat((summary.totalDistance / 1000).toFixed(2)));
-      });
+      if (routingControl && map) {
+        routingControl.addTo(map); 
+      }
+
+      routingControlRef.current = routingControl;
 
       return () => {
-        map.removeControl(routingControl);
+        if (routingControlRef.current) {
+          routingControlRef.current.remove(); 
+          routingControlRef.current = null; 
+        }
       };
-    }, [map, start, end]);
+    }, [start, end, map, setDistance, isCoursePlanned]);
 
     return null;
   };

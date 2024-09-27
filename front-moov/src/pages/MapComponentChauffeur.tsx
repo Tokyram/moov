@@ -4,7 +4,6 @@ import '../components/Header.css';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 import 'leaflet/dist/leaflet.css';
-// import NotificationComponent from './NotificationComponent';
 import { detailCourse } from '../services/api';
 import Loader from '../components/Loader';
 import { useIonRouter } from '@ionic/react';
@@ -13,9 +12,9 @@ const LeafletMapChauffeur = lazy(() => import('./LeafletMapChauffeur'));
 
 const MapComponentChauffeur: React.FC = () => {
   const router = useIonRouter();
-  const { courseId } = useParams<any>();
+  const { courseId } = useParams<{ courseId: string }>();
   
-  const [position, setPosition] = useState<[number, number] | null>(null);
+  const [position, setPosition] = useState<[number, number] | null>([0, 0]); // Initialisé avec une valeur par défaut
   const [start, setStart] = useState<[number, number] | null>(null);
   const [end, setEnd] = useState<[number, number] | null>(null);
   const [distance, setDistance] = useState<number | null>(null);
@@ -24,10 +23,7 @@ const MapComponentChauffeur: React.FC = () => {
   const [endLocation, setEndLocation] = useState<string | null>(null);
   const [courseEnCours, setCourseEnCours] = useState<any>(null);
   const [isCoursePlanned, setIsCoursePlanned] = useState(false);
-  const [courseStart, setCourseStart] = useState<[number, number] | null>(null);
-  const [courseEnd, setCourseEnd] = useState<[number, number] | null>(null);
   const [buttonState, setButtonState] = useState<'RESERVER' | 'COMMENCER' | 'TERMINER' | 'EN_ATTENTE'>('RESERVER');
-
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -37,21 +33,19 @@ const MapComponentChauffeur: React.FC = () => {
     const getCourseEnCours = async () => {
       if(courseId) {
         try {
-          const response = await detailCourse(courseId);
+          const response = await detailCourse(Number(courseId));
+          console.log(response.data.course);
           if (response.data.course) {
             setCourseEnCours(response.data.course);
             setIsCoursePlanned(true);
-            setCourseStart([response.data.course.adresse_depart_latitude, response.data.course.adresse_depart_longitude]);
-            setCourseEnd([response.data.course.adresse_arrivee_latitude, response.data.course.adresse_arrivee_longitude]);
             setStart([response.data.course.adresse_depart_latitude, response.data.course.adresse_depart_longitude]);
             setEnd([response.data.course.adresse_arrivee_latitude, response.data.course.adresse_arrivee_longitude]);
             
             const now = new Date();
             const departDate = new Date(response.data.course.date_heure_depart);
-            
-            if (response.data.course.status_course === "ATTRIBUEE" && departDate >= now) {
+            if (response.data.course.course_status === "ATTRIBUEE" && now >= departDate) {
               setButtonState('COMMENCER');
-            } else if (response.data.course.status_course === "EN COURS") {
+            } else if (response.data.course.course_status === "EN COURS") {
               setButtonState('TERMINER');
             } else {
               setButtonState('EN_ATTENTE');
@@ -65,6 +59,32 @@ const MapComponentChauffeur: React.FC = () => {
 
     getCourseEnCours();
   }, [courseId]);
+
+  useEffect(() => {
+    const geoOptions = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    };
+
+    const updatePosition = (position: GeolocationPosition) => {
+      const userPosition: [number, number] = [position.coords.latitude, position.coords.longitude];
+      setPosition(userPosition);
+    };
+
+    const handleError = (error: GeolocationPositionError) => {
+      console.error('Error obtaining location:', error);
+      const defaultPosition: [number, number] = [0, 0];
+      setStart(defaultPosition);
+    };
+
+    navigator.geolocation.getCurrentPosition(updatePosition, handleError, geoOptions);
+    const positionWatcher = navigator.geolocation.watchPosition(updatePosition, handleError, geoOptions);
+
+    return () => {
+      navigator.geolocation.clearWatch(positionWatcher);
+    };
+  }, []);
 
   const handleButtonClick = async () => {
     if (!courseId) return;
@@ -106,23 +126,20 @@ const MapComponentChauffeur: React.FC = () => {
   };
 
   useEffect(() => {
-    if (start || courseStart) {
-      reverseGeocode(start ? start[0] : courseStart ? courseStart[0] : 0, start ? start[1] : courseStart ? courseStart[1] : 0, setStartLocation);
+    if (start) {
+      reverseGeocode(start[0], start[1], setStartLocation);
     }
-    if (end || courseEnd) {
-      reverseGeocode(end ? end[0] : courseEnd ? courseEnd[0] : 0, end ? end[1] : courseEnd ? courseEnd[1] : 0, setEndLocation);
+    if (end) {
+      reverseGeocode(end[0], end[1], setEndLocation);
     }
-  }, [start, end, courseStart, courseEnd]);
+  }, [start, end]);
 
   return (
     <div className="homeMap">
-      {/* <NotificationComponent /> */}
-
       <Header toggleMenu={toggleMenu} />
       {isMenuOpen && <Menu />}
       
       <div className="content">
-  
         <div className="distance-labels">
           <div className="label-item">
             <div className="label">Distance :</div>
@@ -137,9 +154,9 @@ const MapComponentChauffeur: React.FC = () => {
         <div className="map">
           <Suspense fallback={<div>Loading...</div>}>
             <LeafletMapChauffeur 
-              position={position} 
-              start={isCoursePlanned ? courseStart : start}
-              end={isCoursePlanned ? courseEnd : end}
+              position={position}
+              start={start}
+              end={end}
               setDistance={setDistance}
               setStart={setStart}
               setEnd={setEnd}
@@ -171,7 +188,6 @@ const MapComponentChauffeur: React.FC = () => {
             )}
           </div>
         </div>
-
       </div>
     </div>
   );
