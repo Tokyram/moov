@@ -53,6 +53,7 @@ const MapComponent: React.FC = () => {
   const [courseStart, setCourseStart] = useState<[number, number] | null>(null);
   const [courseEnd, setCourseEnd] = useState<[number, number] | null>(null);
   const [tarifCourse, setTarifCourse] = useState(0);
+  const [buttonState, setButtonState] = useState<'RESERVER' | 'COMMENCER' | 'TERMINER' | 'EN_ATTENTE'>('RESERVER');
 
   const handleClose = () => {
     setIsVisible(false);
@@ -97,6 +98,17 @@ const MapComponent: React.FC = () => {
             setIsCoursePlanned(true);
             setCourseStart([response.data.course.adresse_depart_latitude, response.data.course.adresse_depart_longitude]);
             setCourseEnd([response.data.course.adresse_arrivee_latitude, response.data.course.adresse_arrivee_longitude]);
+
+            const now = new Date();
+            const departDate = new Date(response.data.course.date_heure_depart);
+            if (response.data.course.course_status === "ATTRIBUEE" && now >= departDate) {
+              setButtonState('COMMENCER');
+            } else if (response.data.course.course_status === "EN COURS") {
+              setButtonState('TERMINER');
+            } else {
+              setButtonState('EN_ATTENTE');
+            }
+
           }
         } catch (error) {
           console.error("Erreur lors de la récupération des détails de la réservation:", error);
@@ -104,16 +116,16 @@ const MapComponent: React.FC = () => {
       }
     }
 
-    const getTarif = async () => {
-      if(courseId) {
-        const response = await getTarifKm();
-        setTarifCourse(Number(response.data.tarif));
-      }
-    }
-
     getCourseEnCours();
-    getTarif();
   }, [courseId]);
+
+  useEffect(() => {
+    const getTarif = async () => {
+      const response = await getTarifKm();
+      setTarifCourse(Number(response.data.tarif));
+    }
+    getTarif();
+  },[])
 
   const handleConfirmDate = async () => {
     if (!passagerId || !start || !end || !distance || !selectedDate || !startLocation || !endLocation) {
@@ -227,7 +239,28 @@ const MapComponent: React.FC = () => {
     return Number(prix.toFixed(2));
   };
 
+  const handleButtonClick = async () => {
+    if (!courseId) return;
 
+    switch (buttonState) {
+      case 'COMMENCER':
+        try {
+          // await commencerCourse(courseId);
+          setButtonState('TERMINER');
+        } catch (error) {
+          console.error("Erreur lors du démarrage de la course:", error);
+        }
+        break;
+      case 'TERMINER':
+        try {
+          // await terminerCourse(courseId);
+          router.push('/home', 'root', 'replace');
+        } catch (error) {
+          console.error("Erreur lors de la terminaison de la course:", error);
+        }
+        break;
+    }
+  };
 
   return (
     <div className="homeMap">
@@ -255,11 +288,11 @@ const MapComponent: React.FC = () => {
         <div className="distance-labels">
           <div className="label-item">
             <div className="label">Distance :</div>
-            <div className="label-value"><label className="distance">{distance ? `${distance.toFixed(2)} km` : 'Not set'}</label></div>
+            <div className="label-value"><label className="distance">{distance ? `${distance.toFixed(2)} km` : '0 km'}</label></div>
           </div>
           <div className="label-item">
             <div className="label">Lieu :</div>
-            <div className="label-value"><label className="loc">{startLocation || 'Not set'}</label> <span> à </span> <label className="loc">{endLocation || 'Not set'}</label></div>
+            <div className="label-value"><span> De </span><label className="loc">{startLocation || ''}</label> <span> à </span> <label className="loc">{endLocation || ''}</label></div>
           </div>
         </div>
 
@@ -297,7 +330,7 @@ const MapComponent: React.FC = () => {
             )}
             {
               isBtnReservation && !courseId && !isCoursePlanned && (
-                <button className="confirmation-button3" onClick={handleConfirmClick}>
+                <button className="confirmation-button3" onClick={handleConfirmClick} disabled={!start || !end}>
                   Confirmer la destination
                   <i className="bi bi-check-circle-fill"></i>
                 </button>
@@ -305,29 +338,27 @@ const MapComponent: React.FC = () => {
             }
             
             {
-              (!isBtnReservation || courseId) && (
+              (!isBtnReservation || (courseId && buttonState === 'EN_ATTENTE')) && (
                 <button className="confirmation-button3" style={{ backgroundColor: 'var(--text-color)', color: 'var(--background-color)' }}>
                   En attente de chauffeur <Loader/>
                   <i className="bi bi-check-circle-fill"></i>
                 </button>
               )
             }
-            
 
-            {/*<button className="confirmation-button3" style={{ backgroundColor: 'var(--text-color)', color: 'var(--background-color)' }} onClick={handleConfirmClick}>
-              En attente de validation...
-              <i className="bi bi-check-circle-fill"></i>
-            </button>
+            {buttonState === 'COMMENCER' && (
+              <button className="confirmation-button3" style={{ backgroundColor: 'var(--secondary-color)', color: 'var(--white-color)' }} onClick={handleButtonClick}>
+                Commencer la course
+                <i className="bi bi-check-circle-fill"></i>
+              </button>
+            )}
+            {buttonState === 'TERMINER' && (
+              <button className="confirmation-button3" style={{ backgroundColor: 'var(--win-color)', color: 'var(--text-color)' }} onClick={handleButtonClick}>
+                Arriver à la destination
+                <i className="bi bi-check-circle-fill"></i>
+              </button>
+            )}
 
-            <button className="confirmation-button3" style={{ backgroundColor: 'var(--secondary-color)', color: 'var(--white-color)' }} onClick={handleConfirmClick}>
-              Commencer la couse
-              <i className="bi bi-check-circle-fill"></i>
-            </button>
-
-            <button className="confirmation-button3" style={{ backgroundColor: 'var(--win-color)', color: 'var(--text-color)' }} onClick={handleConfirmClick}>
-              Arriver à la destination
-              <i className="bi bi-check-circle-fill"></i>
-            </button> */}
           </div>
         </div>
         {/* Date Picker Popup */}

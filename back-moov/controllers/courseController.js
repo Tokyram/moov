@@ -254,6 +254,25 @@ class CourseController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    static async listeReservationAttribuesUser(req, res) {
+        const userId = req.params.userId;
+
+        try {
+            const reservations = await Course.listeReservationAttribueesUser(userId);
+            res.json({
+                success: true,
+                data: reservations
+            })
+        } catch(error) {
+            console.error('Erreur lors de la récupération de la liste :', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Erreur serveur', 
+                error: error.message 
+            });
+        }
+    }
 }
 
 module.exports = CourseController;

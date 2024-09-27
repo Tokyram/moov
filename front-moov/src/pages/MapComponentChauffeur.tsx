@@ -66,25 +66,31 @@ const MapComponentChauffeur: React.FC = () => {
       timeout: 10000,
       maximumAge: 0
     };
-
+  
     const updatePosition = (position: GeolocationPosition) => {
       const userPosition: [number, number] = [position.coords.latitude, position.coords.longitude];
       setPosition(userPosition);
     };
-
+  
     const handleError = (error: GeolocationPositionError) => {
       console.error('Error obtaining location:', error);
-      const defaultPosition: [number, number] = [0, 0];
+      const defaultPosition: [number, number] = [0, 0]; 
       setStart(defaultPosition);
     };
+  
+    const fetchPosition = () => {
+      navigator.geolocation.getCurrentPosition(updatePosition, handleError, geoOptions);
+    };
+  
+    fetchPosition();
 
-    navigator.geolocation.getCurrentPosition(updatePosition, handleError, geoOptions);
-    const positionWatcher = navigator.geolocation.watchPosition(updatePosition, handleError, geoOptions);
+    const intervalId = setInterval(fetchPosition, 10000);
 
     return () => {
-      navigator.geolocation.clearWatch(positionWatcher);
+      clearInterval(intervalId);
     };
   }, []);
+  
 
   const handleButtonClick = async () => {
     if (!courseId) return;
@@ -143,11 +149,11 @@ const MapComponentChauffeur: React.FC = () => {
         <div className="distance-labels">
           <div className="label-item">
             <div className="label">Distance :</div>
-            <div className="label-value"><label className="distance">{distance ? `${distance.toFixed(2)} km` : 'Not set'}</label></div>
+            <div className="label-value"><label className="distance">{distance ? `${distance.toFixed(2)} km` : '0 km'}</label></div>
           </div>
           <div className="label-item">
             <div className="label">Lieu :</div>
-            <div className="label-value"><label className="loc">{startLocation || 'Not set'}</label> <span> à </span> <label className="loc">{endLocation || 'Not set'}</label></div>
+            <div className="label-value"><span> De </span><label className="loc">{startLocation || ''}</label> <span> à </span> <label className="loc">{endLocation || ''}</label></div>
           </div>
         </div>
 

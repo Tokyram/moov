@@ -7,8 +7,16 @@ import './MapComponent.css';
 import { getListeChauffeursAcceptes, getTarifKm } from '../services/api';
 import { useIonRouter } from '@ionic/react';
 
+
+const defaultIcon = new L.Icon({
+  iconUrl: 'assets/t.png',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
+});
+
 const locationIcon = new L.Icon({
-  iconUrl: 'assets/l.png', // Utilisez le chemin correct vers votre icône
+  iconUrl: 'assets/l.png',
   iconSize: [32, 32],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32]
@@ -21,7 +29,21 @@ const chauffeurIcon = new L.Icon({
   popupAnchor: [0, -32]
 });
 
-L.Marker.prototype.options.icon = locationIcon;
+const userIcon = new L.Icon({
+  iconUrl: 'assets/luser.png',
+  iconSize: [20, 20],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
+});
+
+const location2Icon = new L.Icon({
+  iconUrl: 'assets/l2.png', 
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
+});
+
+L.Marker.prototype.options.icon = defaultIcon;
 
 interface Chauffeur {
   id: number;
@@ -61,7 +83,6 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
   const [selectedChauffeur, setSelectedChauffeur] = useState<any | null>(null);
   const [prixCourse, setPrixCourse] = useState(0);
 
-  const [routingControl, setRoutingControl] = useState<L.Routing.Control | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const routingControlRef = useRef<L.Routing.Control | null>(null);
 
@@ -257,7 +278,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
           {position && Array.isArray(position) && !isCoursePlanned && (
-            <Marker position={position} icon={locationIcon}>
+            <Marker position={position} icon={userIcon}>
               <Popup className='leaflet-popup-content'>
                 <div>
                   Position actuelle
@@ -306,7 +327,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
           )}
           
           {end && (
-            <Marker position={end} icon={locationIcon}>
+            <Marker position={end} icon={location2Icon}>
               <Popup className='leaflet-popup-content'>
                 Destination
               </Popup>

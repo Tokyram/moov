@@ -11,6 +11,7 @@ router.post('/refuser', authMiddleware, CourseController.refuserCourseChauffeur)
 router.get('/chauffeurs-acceptes/:courseId', authMiddleware, CourseController.getChauffeurAcceptes);
 router.get('/details_course/:courseId', authMiddleware, CourseController.getCourseDetails);
 router.get('/chauffeur-attribue/:chauffeurId', authMiddleware, CourseController.listeReservationAttribues);
+router.get('/attribue/:userId', authMiddleware, CourseController.listeReservationAttribuesUser);
 
 router.get('/chauffeur/total-distance', authMiddleware, CourseController.getTotalDistanceByChauffeur);
 router.get('/passager/total-distance', authMiddleware, CourseController.getTotalDistanceByPassager);

@@ -5,14 +5,36 @@ import L, { LatLngExpression } from 'leaflet';
 import 'leaflet-routing-machine';
 import './MapComponent.css';
 
-const locationIcon = new L.Icon({
-  iconUrl: 'assets/l.png', // Utilisez le chemin correct vers votre icône
+
+const defaultIcon = new L.Icon({
+  iconUrl: 'assets/t.png',
   iconSize: [32, 32],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32]
 });
 
-L.Marker.prototype.options.icon = locationIcon;
+const location1Icon = new L.Icon({
+  iconUrl: 'assets/l.png', 
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
+});
+
+const chauffeurIcon = new L.Icon({
+  iconUrl: 'assets/taxi.png',
+  iconSize: [20, 20],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
+});
+
+const location2Icon = new L.Icon({
+  iconUrl: 'assets/l2.png', 
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
+});
+
+L.Marker.prototype.options.icon = defaultIcon;
 
 interface LeafletMapProps {
   position: LatLngExpression | null;
@@ -34,76 +56,51 @@ const LeafletMapChauffeur: React.FC<LeafletMapProps> = ({ position, start, end, 
   const routingControlRef = useRef<L.Routing.Control | null>(null);
 
   useEffect(() => {
-    if (isCoursePlanned) {
-      const interval = setInterval(() => {
-        if (userPosition) {
-          setUserPosition((prevChauffeur: any) => {
-            if (prevChauffeur) {
-              const newPosition: [number, number] = [
-                prevChauffeur.position[0] + (Math.random() - 0.5) * 0.001, // Variation aléatoire pour la simulation
-                prevChauffeur.position[1] + (Math.random() - 0.5) * 0.001
-              ];
-              return { ...prevChauffeur, position: newPosition };
-            }
-            return null;
-          });
-        }
-      }, 5000);
-
-      return () => clearInterval(interval);
+    // Initialiser userPosition avec start s'il est disponible, sinon avec position
+    if (position && Array.isArray(position) && position.length === 2) {
+      setUserPosition(position as [number, number]);
     }
-  }, [isCoursePlanned, start, end]);
+  }, [start, position]);
 
-  
   const MapUpdater = () => {
     const map = useMap();
 
     useEffect(() => {
       if (!map) return;
 
-      if (position && Array.isArray(position) && position.length === 2) {
-        if (!initialCenter) {
-          map.setView(position, 15);
-          setInitialCenter(true);
-        }
+      if (userPosition && !initialCenter) {
+        map.setView(userPosition, 15);
+        setInitialCenter(true);
       }
-    }, [position, initialCenter, map]);
+    }, [userPosition, initialCenter, map]);
 
     useEffect(() => {
-      if (!start || !end) return; 
-
-      if (!map) return;
-
-      let routingControl: L.Routing.Control | null = null;
+      if (!start || !end || !map) return;
 
       if (routingControlRef.current) {
         routingControlRef.current.remove();
       }
 
-      routingControl = L.Routing.control({
+      const routingControl = L.Routing.control({
         waypoints: [
           L.latLng(start[0], start[1]),
           L.latLng(end[0], end[1]),
         ],
         routeWhileDragging: !isCoursePlanned,
         addWaypoints: !isCoursePlanned,
-      })
-        .on('routesfound', function (e) {
-          const routes = e.routes;
-          const summary = routes[0].summary;
-          setDistance(parseFloat((summary.totalDistance / 1000).toFixed(2))); 
-        });
+      }).on('routesfound', function (e) {
+        const routes = e.routes;
+        const summary = routes[0].summary;
+        setDistance(parseFloat((summary.totalDistance / 1000).toFixed(2)));
+      });
 
-      if (routingControl && map) {
-        routingControl.addTo(map); 
-      }
-
+      routingControl.addTo(map);
       routingControlRef.current = routingControl;
 
       return () => {
         if (routingControlRef.current) {
-          routingControlRef.current.remove(); 
-          routingControlRef.current = null; 
+          routingControlRef.current.remove();
+          routingControlRef.current = null;
         }
       };
     }, [start, end, map, setDistance, isCoursePlanned]);
@@ -119,20 +116,20 @@ const LeafletMapChauffeur: React.FC<LeafletMapProps> = ({ position, start, end, 
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
           
-          {isCoursePlanned && userPosition && (
-            <Marker position={userPosition} icon={locationIcon}>
-              <Popup>Position actuelle de l'utilisateur</Popup>
+          {userPosition && (
+            <Marker position={userPosition} icon={chauffeurIcon}>
+              <Popup>Position actuelle du chauffeur</Popup>
             </Marker>
           )}
 
           {start && (
-            <Marker position={start} icon={locationIcon}>
+            <Marker position={start} icon={location1Icon}>
               <Popup>Départ</Popup>
             </Marker>
           )}
           
           {end && (
-            <Marker position={end} icon={locationIcon}>
+            <Marker position={end} icon={location2Icon}>
               <Popup>Destination</Popup>
             </Marker>
           )}
