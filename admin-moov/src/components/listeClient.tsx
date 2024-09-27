@@ -1,35 +1,37 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './liste.css';
+import { getClient } from '../services/api';
 
 interface ItemProps {
-    id:number;
-    nom: string;
-    description: string;
-    icon: string; // Classe d'icône FontAwesome
-    imageUrl: string; // URL de l'image de la personne
-    telephone: string; // Nom de la personne
-    status: string; // Statut de la personne
-    onDelete: () => void;
+  id:number;
+  nom: string;
+  prenom: string;
+  mail: string; 
+  photo: string; 
+  telephone: string; 
+  status: string; 
+  onDelete: () => void;
 }
 
-const Item: React.FC<ItemProps> = ({ id, nom, description, icon, imageUrl, telephone, status,onDelete }) => {
+const Item: React.FC<ItemProps> = ({id, nom, prenom, mail, photo, telephone, status,onDelete }) => {
   return (
     <tr>
       <td>
         <div className="image-container">
-          <img src={imageUrl} alt={telephone} className="profile-image" />
+          <img src={photo} alt={telephone} className="profile-image" />
         </div>
       </td>
       <td>{nom}</td>
-      <td>{description}</td>
+      <td>{prenom}</td>
       <td>{telephone}</td>
+      <td>{mail}</td>
       <td>
         <p className={`status ${status === 'Bon' ? 'active' : 'inactive'}`}>
           {status}
         </p>
       </td>
-      <td className='supp'>
+      <td>
         <div className="actions">
           {/* <button className="btn btn-primary">Voir plus</button> */}
           {/* <button className='edit' ><i className="bi bi-pencil-square"></i></button> */}
@@ -41,125 +43,28 @@ const Item: React.FC<ItemProps> = ({ id, nom, description, icon, imageUrl, telep
 };
 
 const ItemList: React.FC = () => {
-
+    const [items, setItems] = useState<ItemProps[]>([]);
     const [filterStatus, setFilterStatus] = useState<string>(''); 
     const [currentPage, setCurrentPage] = useState<number>(1); // Page actuelle
     const itemsPerPage = 8; // Nombre d'éléments par page
-
-    const [items, setItems] = useState([
-      {
-          id:1,
-        nom: 'Rakoto',
-        description: 'Description du projet de développement',
-        icon: 'bi bi-people-fill',
-        imageUrl: 'https://via.placeholder.com/50',
-        telephone: '+ 261 34 00 000 00',
-        status: 'Moyen',
-      },
-      {
-          id:2,
-        nom: 'Randria',
-        description: 'Description de la réunion d\'équipe',
-        icon: 'bi bi-people-fill',
-        imageUrl: 'https://via.placeholder.com/50',
-        telephone: '+ 261 34 00 000 00',
-        status: 'Bon',
-      },
-      {
-          id:3,
-        nom: 'Razafy',
-        description: 'Description du rapport financier',
-        icon: 'bi bi-people-fill',
-        imageUrl: 'https://via.placeholder.com/50',
-        telephone: '+ 261 34 00 000 00',
-        status: 'Bon',
-      },
-      {
-          id:4,
-          nom: 'Rakoto',
-          description: 'Description du projet de développement',
-          icon: 'bi bi-people-fill',
-          imageUrl: 'https://via.placeholder.com/50',
-          telephone: '+ 261 34 00 000 00',
-          status: 'Moyen',
-        },
-        {
-          id:5,
-          nom: 'Randria',
-          description: 'Description de la réunion d\'équipe',
-          icon: 'bi bi-people-fill',
-          imageUrl: 'https://via.placeholder.com/50',
-          telephone: '+ 261 34 00 000 00',
-          status: 'Bon',
-        },
-        {
-          id:6,
-          nom: 'Razafy',
-          description: 'Description du rapport financier',
-          icon: 'bi bi-people-fill',
-          imageUrl: 'https://via.placeholder.com/50',
-          telephone: '+ 261 34 00 000 00',
-          status: 'Mauvaise',
-        },
-        {
-          id:7,
-          nom: 'Rakoto',
-          description: 'Description du projet de développement',
-          icon: 'bi bi-people-fill',
-          imageUrl: 'https://via.placeholder.com/50',
-          telephone: '+ 261 34 00 000 00',
-          status: 'Moyen',
-        },
-        {
-          id:8,
-          nom: 'Randria',
-          description: 'Description de la réunion d\'équipe',
-          icon: 'bi bi-people-fill',
-          imageUrl: 'https://via.placeholder.com/50',
-          telephone: '+ 261 34 00 000 00',
-          status: 'Mauvaise',
-        },
-        {
-          id:9,
-          nom: 'Razafy',
-          description: 'Description du rapport financier',
-          icon: 'bi bi-people-fill',
-          imageUrl: 'https://via.placeholder.com/50',
-          telephone: '+ 261 34 00 000 00',
-          status: 'Mauvaise',
-        },
-        {
-          id:10,
-          nom: 'Rakoto',
-          description: 'Description du projet de développement',
-          icon: 'bi bi-people-fill',
-          imageUrl: 'https://via.placeholder.com/50',
-          telephone: '+ 261 34 00 000 00',
-          status: 'Moyen',
-        },
-        {
-          id:11,
-          nom: 'Randria',
-          description: 'Description de la réunion d\'équipe',
-          icon: 'bi bi-people-fill',
-          imageUrl: 'https://via.placeholder.com/50',
-          telephone: '+ 261 34 00 000 00',
-          status: 'Mauvaise',
-        },
-        {
-          id:12,
-          nom: 'Razafy',
-          description: 'Description du rapport financier',
-          icon: 'bi bi-people-fill',
-          imageUrl: 'https://via.placeholder.com/50',
-          telephone: '+ 261 34 00 000 00',
-          status: 'Bon',
-        },
-    ]);
-  
     const [showModal, setShowModal] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<number | null>(null); // Pour stocker l'item à supprimer
   
+    useEffect(() => {
+      // Charger la liste des chauffeurs au chargement du composant
+      const fetchChauffeurs = async () => {
+        try {
+          const chauffeurs = await getClient();
+          console.log(chauffeurs); 
+          setItems(chauffeurs.data); // Mettre à jour la liste des chauffeurs
+        } catch (error) {
+          console.error('Erreur lors de la récupération des chauffeurs :', error);
+        }
+      };
+      
+      fetchChauffeurs();
+    }, []);
+
     const handleDeleteClick = (id: number) => {
         setSelectedItem(id);
         setShowModal(true);
@@ -175,14 +80,16 @@ const ItemList: React.FC = () => {
   };
   
   // Filtrer les items en fonction du statut sélectionné
-  const filteredItems = filterStatus
-    ? items.filter(item => item.status === filterStatus)
-    : items;
+  const filteredItems: ItemProps[] = filterStatus
+  ? items.filter(item => item.status === filterStatus)
+  : items;
 
   // Pagination : Détermine les clients à afficher sur la page actuelle
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = Array.isArray(filteredItems)
+  ? filteredItems.slice(indexOfFirstItem, indexOfLastItem)
+  : [];
 
   // Nombre total de pages
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
@@ -233,6 +140,7 @@ const ItemList: React.FC = () => {
               <th>Nom</th>
               <th>Description</th>
               <th>Téléphone</th>
+              <th>Email</th>
               <th>Statut</th>
               <th>Bannir</th>
             </tr>
@@ -241,11 +149,11 @@ const ItemList: React.FC = () => {
             {currentItems.map((item, index) => (
               <Item
                 key={index}
-                id={item.id}
                 nom={item.nom}
-                description={item.description}
-                icon={item.icon}
-                imageUrl={item.imageUrl}
+                id={item.id}
+                prenom={item.prenom}
+                mail={item.mail}
+                photo={item.photo}
                 telephone={item.telephone}
                 status={item.status}
                 onDelete={() => handleDeleteClick(item.id)}

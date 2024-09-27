@@ -100,3 +100,40 @@ export const getTotalChauffeur = async (): Promise<any> => {
     throw error;
   }
 };
+
+const getToken = (): string | null => {
+  return localStorage.getItem('token');
+};
+
+// Fonction pour récupérer la liste des chauffeurs
+export const getChauffeurs = async () => {
+  const token = getToken();
+  
+  try {
+    const response = await axios.get(`${API_BASE_URL}/users/chauffeurs`, {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des chauffeurs :', error);
+    throw error;
+  }
+};
+
+export const getClient = async () => {
+  const token = getToken();
+  
+  try {
+    const response = await axios.get(`${API_BASE_URL}/users/clients`, {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des clients :', error);
+    throw error;
+  }
+};

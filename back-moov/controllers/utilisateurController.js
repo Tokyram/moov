@@ -206,6 +206,18 @@ class UtilisateurController {
     }
   }
 
+  static async listClient(req, res) {
+    try {
+      const clients = await Utilisateur.findAllClient();
+
+      res.json({ success: true, data: clients.map(client => client.toJSON())});
+
+    } catch(error) {
+      console.error('Erreur lors de la récupération de la liste des cleints:', error);
+      res.status(500).json({ success: false, message: 'Erreur serveur', error: error.message });
+    }
+  }
+
   static async countPassagers(req, res)  {
     try {
       const count = await Utilisateur.countClient();

@@ -302,6 +302,32 @@ class Utilisateur {
 
     return chauffeurs;
   }
+  static async findAllClient() {
+    let client = [];
+
+    const result = await db.query("SELECT * FROM utilisateur WHERE role = 'UTILISATEUR'");
+
+    for (const row of result.rows) {
+      client.push(
+        new Utilisateur(
+          row.id,
+          row.nom,
+          row.prenom,
+          row.telephone,
+          row.mail,
+          row.mdp,
+          row.adresse,
+          row.photo,
+          row.role,
+          row.date_inscription,
+          row.est_banni,
+          row.date_banni
+        )
+      );
+    }
+
+    return client;
+  }
 
   static async countClient() {
     let whereClause = '';

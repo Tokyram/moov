@@ -30,6 +30,7 @@ router.get('/photo/:filename', UtilisateurController.servePhoto);
 router.get('/list', authMiddleware, UtilisateurController.listUsers);
 router.put('/bannir/:userId', authMiddleware, UtilisateurController.bannirUser);
 router.get('/chauffeurs', authMiddleware, UtilisateurController.listChauffeurs);
+router.get('/clients', authMiddleware, UtilisateurController.listClient);
 
 
 router.get('/passager/count',authMiddleware, UtilisateurController.countPassagers);
