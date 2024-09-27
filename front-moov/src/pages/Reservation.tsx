@@ -4,6 +4,7 @@ import './Profil.css';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 import { detailCourse, getReservationAttribuesUser } from '../services/api';
+import LoaderPage from '../components/LoaderPage';
 
 const Reservation: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,6 +18,7 @@ const Reservation: React.FC = () => {
 
     const [reservations, setReservations] = useState<any[]>([]);
     const [reservation, setReservation] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const historique = [
         {
@@ -37,9 +39,11 @@ const Reservation: React.FC = () => {
 
     useEffect(() => {
         const listeCourse = async () => {
+            setIsLoading(true);
             if(activeView === "reservations") {
                 const response = await getReservationAttribuesUser();
                 setReservations(Array.isArray(response.data.data) ? response.data.data : []);
+                setIsLoading(false);
             }
         }
         listeCourse();
@@ -78,12 +82,14 @@ const Reservation: React.FC = () => {
 
     const handleConfirmClickDetail = async (reservationId: number) => {
         setCurrentReservationId(reservationId);
+        setIsLoading(true);
         try {
           const response = await detailCourse(reservationId);
           console.log("object", response.data);
           if (response.data.course) {
             setReservation(response.data.course);
             setShowDetailPopup(true);
+            setIsLoading(false);
           }
         } catch (error) {
           console.error("Erreur lors de la récupération des détails de la réservation:", error);
@@ -142,146 +148,156 @@ const Reservation: React.FC = () => {
                         </button>
                 </div>
 
-                {activeView === 'reservations' && (
-                    reservations.map((reservation: any) => (
-                        <div className="reservations" key={reservation.course_id} >
-                            <div className="statut-reservation">
-                                <div className="ico-stat">
-                                    <i className="bi bi-car-front-fill"></i>
-                                    <p>{reservation.status}</p>
-                                </div>
-                                <div className="ico-stat2">
-                                    <p>{reservation.prix}Ar</p>
-                                    <a href="#">
-                                        <i className="bi bi-pen-fill"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div className="fond-reservation" onClick={() => handleConfirmClickDetail(reservation.course_id)}>
-                                <img src="assets/v1.png" alt="car" />
-                            </div>
-                            <div className="info-reservation">
-                                <div className="taxi">
-                                    <h4>{reservation.voiture_immatriculation}</h4>
-                                    <h1>N°{reservation.course_id}</h1>
-                                </div>
-                                <div className="info-course">
-                                    <p>Date : <span>{splitDateTime(reservation.date_heure_depart).date}</span> à <span>{splitDateTime(reservation.date_heure_depart).time}</span></p>
-                                    <p>Destination : <span>{splitPlace(reservation.adresse_depart)}</span> à <span>{splitPlace(reservation.adresse_arrivee)}</span></p>
-                                    <p>Distance : <span>{reservation.kilometre}</span> km</p>
-                                </div>
-                                <div className="annuler-course">
-                                    <button onClick={() => handleConfirmClick(reservation.id)}>
-                                        <i className="bi bi-stop-circle-fill"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    ))
-                )}
-
-                {activeView === 'historique' && (
-                    historique.map(historique => (
-                        <div className="reservations" key={historique.id}>
-                            <div className="statut-reservation">
-                                <div className="ico-stat">
-                                    <i className="bi bi-clock-history"></i>
-                                    <p>Historique</p>
-                                </div>
-                                <div className="ico-stat2">
-                                    <p>{historique.price}</p>
-                                </div>
-                            </div>
-                            <div className="fond-reservation" onClick={() => handleConfirmClickDetail(historique.id)}>
-                                <img src={historique.carImg} alt="car" />
-                            </div>
-                            <div className="info-reservation">
-                                <div className="taxi">
-                                    <h4>{historique.taxiNumber}</h4>
-                                    <h1>{historique.reservationNumber}</h1>
-                                </div>
-                                <div className="info-course">
-                                    <p>Date : <span>{historique.date}</span> à <span>{historique.time}</span></p>
-                                    <p>Destination : <span>{historique.destination}</span></p>
-                                </div>
-                            </div>
-                        </div>
-                    ))
-                )}
-
-                {showDetailPopup && reservation && (
-                  
-                    <div className="popup-overlay3" onClick={handleCloseDetail}>
-                        <button className="close-button3" onClick={handleCloseDetail}>
-                          &times;
-                        </button>
-                        <div className={`popup-content3 ${isVisible ? 'show' : ''}`}>
-                            <div className="titrepopup3">
-                              <div className="titre-detail">
-                                  <div className="titre">
-                                    <i className="bi bi-arrow-down-right-square-fill"></i>
-                                    <h4>Détail de votre réservation</h4>
-                                  </div>
-                                  <div className="numero">
-                                    <h4>N°{reservation?.course_id}</h4>
-                                  </div>
-                              </div>
-                              <div className="info-detail">
-                                
-                                {reservation.chauffeur_id && <p>Chauffeur : <span>{reservation.chauffeur_nom+" "+reservation.chauffeur_prenom}</span></p>} 
-                                {reservation.voiture_id && <p>Immatriculation : <span>{reservation.immatriculation}</span></p>}
-                                <p>Date : <span>{splitDateTime(reservation?.date_heure_depart).date}</span> à <span>{splitDateTime(reservation?.date_heure_depart).time}</span></p>
-                                <p>Destination : <span>{splitPlace(reservation?.adresse_depart)}</span> à <span>{splitPlace(reservation?.adresse_arrivee)}</span></p>
-                                <p>Distance : <span>{reservation?.kilometre}</span> km</p>
-
-                              </div>
-
-                                {
-                                    activeView === 'reservations' && (
-                                        <a href={`/map/${reservation.course_id}`} className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center'}}>
-                                            {/* <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i> */}
-                                            Voir sur map <i className="bi bi-arrow-right-short" style={{ fontSize: '1.5rem', display:'flex', alignItems:'center', justifyContent:'center' }}></i>
+                {
+                    isLoading && (
+                        <LoaderPage/>
+                    )
+                }
+                {
+                    !isLoading && (
+                    <>
+                    {activeView === 'reservations' && (
+                        reservations.map((reservation: any) => (
+                            <div className="reservations" key={reservation.course_id} >
+                                <div className="statut-reservation">
+                                    <div className="ico-stat">
+                                        <i className="bi bi-car-front-fill"></i>
+                                        <p>{reservation.status}</p>
+                                    </div>
+                                    <div className="ico-stat2">
+                                        <p>{reservation.prix}Ar</p>
+                                        <a href="#">
+                                            <i className="bi bi-pen-fill"></i>
                                         </a>
-                                    )
-                                }
+                                    </div>
+                                </div>
+                                <div className="fond-reservation" onClick={() => handleConfirmClickDetail(reservation.course_id)}>
+                                    <img src="assets/v1.png" alt="car" />
+                                </div>
+                                <div className="info-reservation">
+                                    <div className="taxi">
+                                        <h4>{reservation.voiture_immatriculation}</h4>
+                                        <h1>N°{reservation.course_id}</h1>
+                                    </div>
+                                    <div className="info-course">
+                                        <p>Date : <span>{splitDateTime(reservation.date_heure_depart).date}</span> à <span>{splitDateTime(reservation.date_heure_depart).time}</span></p>
+                                        <p>Destination : <span>{splitPlace(reservation.adresse_depart)}</span> à <span>{splitPlace(reservation.adresse_arrivee)}</span></p>
+                                        <p>Distance : <span>{reservation.kilometre}</span> km</p>
+                                    </div>
+                                    <div className="annuler-course">
+                                        <button onClick={() => handleConfirmClick(reservation.id)}>
+                                            <i className="bi bi-stop-circle-fill"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="titrepopupMerci">
-                                <img src="assets/logo.png" alt="logo" />
-                                <h4>Merci de votre confiance !</h4>
-                            </div>
-                            
-                        </div>
-                    </div>
-                )}
+                        ))
+                    )}
 
-                {showAnnulationPopup && (
-                    <div className="popup-overlay">
-                        <div className="popup-content">
-                            <div className="titrepopup">
-                                <img src="assets/logo.png" alt="logo" />
-                                <h4>Annuler la course !</h4>
+                    {activeView === 'historique' && (
+                        historique.map(historique => (
+                            <div className="reservations" key={historique.id}>
+                                <div className="statut-reservation">
+                                    <div className="ico-stat">
+                                        <i className="bi bi-clock-history"></i>
+                                        <p>Historique</p>
+                                    </div>
+                                    <div className="ico-stat2">
+                                        <p>{historique.price}</p>
+                                    </div>
+                                </div>
+                                <div className="fond-reservation" onClick={() => handleConfirmClickDetail(historique.id)}>
+                                    <img src={historique.carImg} alt="car" />
+                                </div>
+                                <div className="info-reservation">
+                                    <div className="taxi">
+                                        <h4>{historique.taxiNumber}</h4>
+                                        <h1>{historique.reservationNumber}</h1>
+                                    </div>
+                                    <div className="info-course">
+                                        <p>Date : <span>{historique.date}</span> à <span>{historique.time}</span></p>
+                                        <p>Destination : <span>{historique.destination}</span></p>
+                                    </div>
+                                </div>
                             </div>
-                            <p>Voulez-vous vraiment annuler votre réservation de course ?</p>
-                            <div className="popup-buttons">
-                                <button className="cancel-button" onClick={handleCancelAnnulation}>Annuler</button>
-                                <button onClick={handleConfirmAnnulation}>Confirmer</button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                        ))
+                    )}
 
-                {showSuccessPopup && (
-                    <div className="popup-overlay">
-                        <div className="popup-content">
-                            <div className="titrepopup2">
-                                <i className="bi bi-check-circle-fill"></i>
-                                <h4>Annulation effectuée</h4>
-                            </div>
-                            <div className="popup-buttons">
-                                <button onClick={handleCloseSuccess}>OK</button>
+                    {showDetailPopup && reservation && (
+                    
+                        <div className="popup-overlay3" onClick={handleCloseDetail}>
+                            <button className="close-button3" onClick={handleCloseDetail}>
+                            &times;
+                            </button>
+                            <div className={`popup-content3 ${isVisible ? 'show' : ''}`}>
+                                <div className="titrepopup3">
+                                <div className="titre-detail">
+                                    <div className="titre">
+                                        <i className="bi bi-arrow-down-right-square-fill"></i>
+                                        <h4>Détail de votre réservation</h4>
+                                    </div>
+                                    <div className="numero">
+                                        <h4>N°{reservation?.course_id}</h4>
+                                    </div>
+                                </div>
+                                <div className="info-detail">
+                                    
+                                    {reservation.chauffeur_id && <p>Chauffeur : <span>{reservation.chauffeur_nom+" "+reservation.chauffeur_prenom}</span></p>} 
+                                    {reservation.voiture_id && <p>Immatriculation : <span>{reservation.immatriculation}</span></p>}
+                                    <p>Date : <span>{splitDateTime(reservation?.date_heure_depart).date}</span> à <span>{splitDateTime(reservation?.date_heure_depart).time}</span></p>
+                                    <p>Destination : <span>{splitPlace(reservation?.adresse_depart)}</span> à <span>{splitPlace(reservation?.adresse_arrivee)}</span></p>
+                                    <p>Distance : <span>{reservation?.kilometre}</span> km</p>
+
+                                </div>
+
+                                    {
+                                        activeView === 'reservations' && (
+                                            <a href={`/map/${reservation.course_id}`} className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center'}}>
+                                                {/* <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i> */}
+                                                Voir sur map <i className="bi bi-arrow-right-short" style={{ fontSize: '1.5rem', display:'flex', alignItems:'center', justifyContent:'center' }}></i>
+                                            </a>
+                                        )
+                                    }
+                                </div>
+                                <div className="titrepopupMerci">
+                                    <img src="assets/logo.png" alt="logo" />
+                                    <h4>Merci de votre confiance !</h4>
+                                </div>
+                                
                             </div>
                         </div>
-                    </div>
+                    )}
+
+                    {showAnnulationPopup && (
+                        <div className="popup-overlay">
+                            <div className="popup-content">
+                                <div className="titrepopup">
+                                    <img src="assets/logo.png" alt="logo" />
+                                    <h4>Annuler la course !</h4>
+                                </div>
+                                <p>Voulez-vous vraiment annuler votre réservation de course ?</p>
+                                <div className="popup-buttons">
+                                    <button className="cancel-button" onClick={handleCancelAnnulation}>Annuler</button>
+                                    <button onClick={handleConfirmAnnulation}>Confirmer</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {showSuccessPopup && (
+                        <div className="popup-overlay">
+                            <div className="popup-content">
+                                <div className="titrepopup2">
+                                    <i className="bi bi-check-circle-fill"></i>
+                                    <h4>Annulation effectuée</h4>
+                                </div>
+                                <div className="popup-buttons">
+                                    <button onClick={handleCloseSuccess}>OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    </>
                 )}
             </div>
         </div>

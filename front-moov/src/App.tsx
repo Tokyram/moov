@@ -12,7 +12,6 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
-import Start_page from './pages/Start_page';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { useEffect, useState } from 'react';
 import './splash.css';
@@ -37,7 +36,7 @@ import { Storage } from '@capacitor/storage';
 import { checkTraitementCourse, getDecodedToken } from './services/api';
 import PaiementFailed from './pages/PaiementFailed';
 import MapComponentChauffeur from './pages/MapComponentChauffeur';
-import Loader from './components/Loader';
+import LoaderPage from './components/LoaderPage';
 
 setupIonicReact();
 
@@ -93,7 +92,7 @@ const App: React.FC = () => {
   }, []);
   
   if (isLoading) {
-    return <Loader />;
+    return <LoaderPage />;
   }
 
   return (
