@@ -2,11 +2,12 @@ const db = require("../db");
 
 
 class Voiture {
-    constructor(id, marque, modele, immatriculation) {
+    constructor(id, marque, modele, immatriculation,photo_url) {
         this.id = id;
         this.marque = marque;
         this.modele = modele;
         this.immatriculation = immatriculation;
+        this.photo_url = photo_url;
     }
 
     static async findAllCar() {
@@ -20,7 +21,8 @@ class Voiture {
                     row.id,
                     row.marque,
                     row.modele,
-                    row.immatriculation
+                    row.immatriculation,
+                    row.photo_url
                 )
             );
         }
@@ -28,20 +30,21 @@ class Voiture {
         return cars;
     }
 
-    static async createVoiture(marque, modele, immatriculation) {
+    static async createVoiture(marque, modele, immatriculation,photo_url) {
         try {
             const result = await db.query(
-                `INSERT INTO voiture (marque, modele, immatriculation) 
-                 VALUES ($1, $2, $3) 
+                `INSERT INTO voiture (marque, modele, immatriculation, photo_url) 
+                 VALUES ($1, $2, $3, $4) 
                  RETURNING *`,
-                [marque, modele, immatriculation]
+                [marque, modele, immatriculation, photo_url]
             );
             const voitureData = result.rows[0];
             return new Voiture(
                 voitureData.id,
                 voitureData.marque,
                 voitureData.modele,
-                voitureData.immatriculation
+                voitureData.immatriculation,
+                voitureData.photo_url
             );
         } catch (error) {
             throw new Error('Erreur lors de la création de la voiture : ' + error.message);
@@ -62,21 +65,22 @@ class Voiture {
                 voitureData.id,
                 voitureData.marque,
                 voitureData.modele,
-                voitureData.immatriculation
+                voitureData.immatriculation,
+                voitureData.photo_url
             );
         } catch (error) {
             throw new Error('Erreur lors de la récupération de la voiture : ' + error.message);
         }
     }
 
-    static async updateVoiture(id, marque, modele, immatriculation) {
+    static async updateVoiture(id, marque, modele, immatriculation, photo_url) {
         try {
             const result = await db.query(
                 `UPDATE voiture
-                 SET marque = $2, modele = $3, immatriculation = $4
+                 SET marque = $2, modele = $3, immatriculation = $4, photo_url = $5
                  WHERE id = $1
                  RETURNING *`,
-                [id, marque, modele, immatriculation]
+                [id, marque, modele, immatriculation, photo_url]
             );
             return result.rows[0];
         } catch (error) {
@@ -91,7 +95,8 @@ class Voiture {
                 row.id,
                 row.marque,
                 row.modele,
-                row.immatriculation
+                row.immatriculation,
+                row.photo_url
             ));
         } catch (error) {
             throw new Error('Erreur lors de la récupération des voitures : ' + error.message);
@@ -115,7 +120,8 @@ class Voiture {
             id: this.id,
             marque: this.marque,
             modele: this.modele,
-            immatriculation: this.immatriculation
+            immatriculation: this.immatriculation,
+            photo_url: this.photo_url
         };
     }
 }

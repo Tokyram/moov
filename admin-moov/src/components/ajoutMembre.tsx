@@ -1,31 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import '../pages/login.css';
 import './ajout.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { getChauffeurAdmin } from "../services/api";
 interface ItemProps {
-    id:number;
-    nom: string;
-    description: string;
-    icon: string; // Classe d'icône FontAwesome
-    imageUrl: string; // URL de l'image de la personne
-    telephone: string; // Nom de la personne
-    status: string; // Statut de la personne
-    onDelete: () => void;
-  }
-  const Item: React.FC<ItemProps> = ({id, nom, description, icon, imageUrl, telephone, status,onDelete }) => {
+  id:number;
+  nom: string;
+  prenom: string;
+  mail: string; 
+  photo: string; 
+  role: string;
+  telephone: string; 
+  onDelete: () => void;
+}
+  const Item: React.FC<ItemProps> = ({id, nom, prenom, mail, photo,role, telephone,onDelete }) => {
     return (
       <tr>
         <td>
           <div className="image-container">
-            <img src={imageUrl} alt={telephone} className="profile-image" />
+            <img src={photo} alt={telephone} className="profile-image" />
           </div>
         </td>
         <td>{nom}</td>
-        <td>{description}</td>
+        <td>{prenom}</td>
         <td>{telephone}</td>
+        <td>{mail}</td>
         <td>
-          <p className={`status ${status === 'ADMIN' ? 'active' : 'inactive'}`}>
-            {status}
+          <p className={`status ${role === 'ADMIN' ? 'active' : 'inactive'}`}>
+            {role}
           </p>
         </td>
         <td>
@@ -43,121 +45,25 @@ const AjoutMembre: React.FC = () => {
     const [filterStatus, setFilterStatus] = useState<string>(''); 
     const [currentPage, setCurrentPage] = useState<number>(1); // Page actuelle
     const itemsPerPage = 8; // Nombre d'éléments par page
+    const [items, setItems] = useState<ItemProps[]>([]);
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [selectedItem, setSelectedItem] = useState<number | null>(null); // Pour stocker l'item à supprimer
 
-  const [items, setItems] = useState([
-    {
-        id:1,
-      nom: 'Rakoto',
-      description: 'Description du projet de développement',
-      icon: 'bi bi-people-fill',
-      imageUrl: 'https://via.placeholder.com/50',
-      telephone: '+ 261 34 00 000 00',
-      status: 'ADMIN',
-    },
-    {
-        id:2,
-      nom: 'Randria',
-      description: 'Description de la réunion d\'équipe',
-      icon: 'bi bi-people-fill',
-      imageUrl: 'https://via.placeholder.com/50',
-      telephone: '+ 261 34 00 000 00',
-      status: 'CHAUFFEUR',
-    },
-    {
-        id:3,
-      nom: 'Razafy',
-      description: 'Description du rapport financier',
-      icon: 'bi bi-people-fill',
-      imageUrl: 'https://via.placeholder.com/50',
-      telephone: '+ 261 34 00 000 00',
-      status: 'CHAUFFEUR',
-    },
-    {
-        id:4,
-        nom: 'Rakoto',
-        description: 'Description du projet de développement',
-        icon: 'bi bi-people-fill',
-        imageUrl: 'https://via.placeholder.com/50',
-        telephone: '+ 261 34 00 000 00',
-        status: 'ADMIN',
-      },
-      {
-        id:5,
-        nom: 'Randria',
-        description: 'Description de la réunion d\'équipe',
-        icon: 'bi bi-people-fill',
-        imageUrl: 'https://via.placeholder.com/50',
-        telephone: '+ 261 34 00 000 00',
-        status: 'CHAUFFEUR',
-      },
-      {
-        id:6,
-        nom: 'Razafy',
-        description: 'Description du rapport financier',
-        icon: 'bi bi-people-fill',
-        imageUrl: 'https://via.placeholder.com/50',
-        telephone: '+ 261 34 00 000 00',
-        status: 'CHAUFFEUR',
-      },
-      {
-        id:7,
-        nom: 'Rakoto',
-        description: 'Description du projet de développement',
-        icon: 'bi bi-people-fill',
-        imageUrl: 'https://via.placeholder.com/50',
-        telephone: '+ 261 34 00 000 00',
-        status: 'ADMIN',
-      },
-      {
-        id:8,
-        nom: 'Randria',
-        description: 'Description de la réunion d\'équipe',
-        icon: 'bi bi-people-fill',
-        imageUrl: 'https://via.placeholder.com/50',
-        telephone: '+ 261 34 00 000 00',
-        status: 'CHAUFFEUR',
-      },
-      {
-        id:9,
-        nom: 'Razafy',
-        description: 'Description du rapport financier',
-        icon: 'bi bi-people-fill',
-        imageUrl: 'https://via.placeholder.com/50',
-        telephone: '+ 261 34 00 000 00',
-        status: 'CHAUFFEUR',
-      },
-      {
-        id:10,
-        nom: 'Rakoto',
-        description: 'Description du projet de développement',
-        icon: 'bi bi-people-fill',
-        imageUrl: 'https://via.placeholder.com/50',
-        telephone: '+ 261 34 00 000 00',
-        status: 'ADMIN',
-      },
-      {
-        id:11,
-        nom: 'Randria',
-        description: 'Description de la réunion d\'équipe',
-        icon: 'bi bi-people-fill',
-        imageUrl: 'https://via.placeholder.com/50',
-        telephone: '+ 261 34 00 000 00',
-        status: 'CHAUFFEUR',
-      },
-      {
-        id:12,
-        nom: 'Razafy',
-        description: 'Description du rapport financier',
-        icon: 'bi bi-people-fill',
-        imageUrl: 'https://via.placeholder.com/50',
-        telephone: '+ 261 34 00 000 00',
-        status: 'CHAUFFEUR',
-      },
-  ]);
-
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = useState<number | null>(null); // Pour stocker l'item à supprimer
-
+  useEffect(() => {
+    // Charger la liste des chauffeurs au chargement du composant
+    const fetchChauffeurAdmin = async () => {
+      try {
+        const chauffeurAdmin = await getChauffeurAdmin();
+        console.log(chauffeurAdmin); 
+        setItems(chauffeurAdmin.data); // Mettre à jour la liste des chauffeurs
+      } catch (error) {
+        console.error('Erreur lors de la récupération des chauffeurs et admins :', error);
+      }
+    };
+    
+    fetchChauffeurAdmin();
+  }, []);
+  
   const handleDeleteClick = (id: number) => {
       setSelectedItem(id);
       setShowModal(true);
@@ -173,15 +79,17 @@ const closeModal = () => {
 };
 
   // Filtrer les items en fonction du statut sélectionné
-  const filteredItems = filterStatus
-    ? items.filter(item => item.status === filterStatus)
-    : items;
+  const filteredItems: ItemProps[] = filterStatus
+  ? items.filter(item => item.role === filterStatus)
+  : items;
 
   // Pagination : Détermine les clients à afficher sur la page actuelle
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
-
+  // const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = Array.isArray(filteredItems)
+  ? filteredItems.slice(indexOfFirstItem, indexOfLastItem)
+  : [];
   // Nombre total de pages
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
@@ -331,11 +239,11 @@ const closeModal = () => {
                 key={index}
                 id={item.id}
                 nom={item.nom}
-                description={item.description}
-                icon={item.icon}
-                imageUrl={item.imageUrl}
+                prenom={item.prenom}
+                mail={item.mail}
+                photo={item.photo}
                 telephone={item.telephone}
-                status={item.status}
+                role={item.role}
                 onDelete={() => handleDeleteClick(item.id)}
               />
             ))}

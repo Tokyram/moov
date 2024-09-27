@@ -218,6 +218,18 @@ class UtilisateurController {
     }
   }
 
+  static async listChauffeurAdmin(req, res) {
+    try {
+      const chauffeurAdmins = await Utilisateur.findAllChauffeurAdmin();
+
+      res.json({ success: true, data: chauffeurAdmins.map(chauffeurAdmin => chauffeurAdmin.toJSON())});
+
+    } catch(error) {
+      console.error('Erreur lors de la récupération de la liste des chauffeurs et amdin:', error);
+      res.status(500).json({ success: false, message: 'Erreur serveur', error: error.message });
+    }
+  }
+
   static async countPassagers(req, res)  {
     try {
       const count = await Utilisateur.countClient();

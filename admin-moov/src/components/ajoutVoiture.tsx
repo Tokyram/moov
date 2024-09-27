@@ -1,34 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import '../pages/login.css';
 import './ajout.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { creationVoiture, getAllVoiture, getVoitureById, modifierVoiture, supprimerVoiture } from "../services/api";
 interface ItemProps {
+    id: number;
     modele: string;
     marque: string;
     icon: string; 
-    imageUrl: string; 
+    photo_url: string ; 
     immatriculation: string; 
     onDelete: () => void;
+    onEdit: () => void;
   }
-  const Item: React.FC<ItemProps> = ({ modele, marque, immatriculation , icon, imageUrl ,onDelete  }) => {
+  const Item: React.FC<ItemProps> = ({ id, modele, marque, immatriculation , icon, photo_url ,onDelete, onEdit  }) => {
     return (
       <tr>
         <td>
           <div className="image-container">
-            <img src={imageUrl} alt={immatriculation} className="profile-image" />
+            <img src={photo_url} alt={immatriculation} className="profile-image" />
           </div>
         </td>
         <td>{modele}</td>
         <td>{marque}</td>
         <td>{immatriculation}</td>
-        {/* <td>
-          <p className={`status ${status === 'ADMIN' ? 'active' : 'inactive'}`}>
-            {status}
-          </p>
-        </td> */}
+       
         <td>
           <div className="actions">
-            <button className='supp' ><i className="bi bi-pencil-square"></i></button>
+            <button className='supp' onClick={onEdit} ><i className="bi bi-pencil-square"></i></button>
           </div>
         </td>
         <td>
@@ -44,37 +43,137 @@ const AjoutVoiture: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>(''); 
     const [currentPage, setCurrentPage] = useState<number>(1); // Page actuelle
     const itemsPerPage = 8; // Nombre d'éléments par page
-
-    
-  const [items, setItems] = useState([
-    {
-      modele: 'Raptor',
-      marque: 'FORD',
-      icon: 'bi bi-people-fill',
-      imageUrl: 'https://via.placeholder.com/50',
-      immatriculation: '508687 WWT',
-    },
-    
-  ]);
+    const [items, setItems] = useState<ItemProps[]>([]); 
 
   const [showModal, setShowModal] = useState<boolean>(false);
-    const [selectedItem, setSelectedItem] = useState<string | null>(null); // Pour stocker l'item à supprimer
+  const [selectedItem, setSelectedItem] = useState<number | null>(null); // ID de l'item à supprimer
+  const [editingCarId, setEditingCarId] = useState<number | null>(null);
+    const [formData, setFormData] = useState({
+      modele: "",
+      marque: "",
+      immatriculation: "",
+      photo_url: "",
+    });
 
-    const handleDeleteClick = (immatriculation: string) => {
-        setSelectedItem(immatriculation);
+    useEffect(() => {
+      // Charger la liste des chauffeurs au chargement du composant
+      const fetchVoiture = async () => {
+        try {
+          const voitures = await getAllVoiture();
+          console.log(voitures); 
+          setItems(voitures); // Mettre à jour la liste des chauffeurs
+        } catch (error) {
+          console.error('Erreur lors de la récupération des voiture :', error);
+        }
+      };
+      
+      fetchVoiture();
+    }, []);
+
+    const handleEditClick = async (voitureId: number) => {
+      setEditingCarId(voitureId);
+      try {
+        const voiture = await getVoitureById(voitureId);
+        setFormData({
+          modele: voiture.modele,
+          marque: voiture.marque,
+          immatriculation: voiture.immatriculation,
+          photo_url: voiture.photo_url,
+        });
+      } catch (error) {
+        console.error("Erreur lors de la récupération des données de la voiture :", error);
+      }
+    };
+    
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }));
+    };
+  
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+  
+      // Vérifiez que tous les champs obligatoires sont remplis
+      if (!formData.modele || !formData.marque || !formData.immatriculation) {
+          alert("Veuillez remplir tous les champs sauf la photo.");
+          return;
+      }
+  
+      // Si la photo n'est pas définie, la mettre à null
+      const dataToSend = {
+          ...formData,
+          photo_url: formData.photo_url || null, // Définit `photo_url` comme null si non défini
+      };
+  
+      if (editingCarId !== null) {
+          // Modification d'une voiture existante
+          try {
+              await modifierVoiture(editingCarId, dataToSend);
+              alert("Voiture modifiée avec succès");
+              setEditingCarId(null);
+          } catch (error) {
+              console.error("Erreur lors de la modification de la voiture :", error);
+          }
+      } else {
+          // Ajout d'une nouvelle voiture
+          try {
+              await creationVoiture(dataToSend);
+              alert("Voiture ajoutée avec succès");
+          } catch (error) {
+              console.error("Erreur lors de l'ajout de la voiture :", error);
+          }
+      }
+  
+      // Récupérer à nouveau la liste des voitures après modification ou ajout
+      const updatedVoitures = await getAllVoiture();
+      setItems(updatedVoitures);
+      setFormData({ modele: "", marque: "", immatriculation: "", photo_url: "" }); // Réinitialiser le formulaire
+  };
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            photo_url: URL.createObjectURL(file), // Création d'une URL d'objet pour l'image
+        }));
+    }
+};
+
+    const confirmDelete = async () => {
+      if (selectedItem !== null) {
+        try {
+          await supprimerVoiture(selectedItem); // Appel à l'API pour supprimer la voiture
+          setItems(items.filter(item => item.id !== selectedItem)); // Met à jour la liste des voitures
+          alert("Voiture supprimée avec succès");
+        } catch (error) {
+          console.error('Erreur lors de la suppression de la voiture :', error);
+          alert("Échec de la suppression de la voiture");
+        }
+      }
+      closeModal();
+    };
+    
+
+      const handleDeleteClick = (id: number) => {
+        setSelectedItem(id);
         setShowModal(true);
     };
 
-    const confirmDelete = () => {
-        setItems(items.filter(item => item.immatriculation !== selectedItem));
-        setShowModal(false);
-    };
+    // const confirmDelete = () => {
+    //     setItems(items.filter(item => item.immatriculation !== selectedItem));
+    //     setShowModal(false);
+    // };
 
   const closeModal = () => {
     setShowModal(false);
   };
 
-  const filteredItems = searchTerm
+  const filteredItems: ItemProps[] = searchTerm
   ? items.filter(item =>
       item.modele.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.marque.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -85,7 +184,9 @@ const AjoutVoiture: React.FC = () => {
 // Pagination : Détermine les clients à afficher sur la page actuelle
 const indexOfLastItem = currentPage * itemsPerPage;
 const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+const currentItems = Array.isArray(filteredItems)
+  ? filteredItems.slice(indexOfFirstItem, indexOfLastItem)
+  : [];
 
 // Nombre total de pages
 const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
@@ -112,7 +213,7 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
         </div>
 
         <div className="ajoutliste">
-        <form className="form" action="/home">
+        <form className="form" onSubmit={handleSubmit}>
         {/* <div className="img">
             <img src="../logo.png" alt="" />
 
@@ -124,17 +225,30 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
         <div className="inputForm">
             
             <i className="bi bi-person"></i>
-
-            <input type="text" className="input" placeholder=" @modèle" />
+            <input
+            type="text"
+            name="modele"
+            value={formData.modele}
+            onChange={handleChange}
+            placeholder="@Modèle"
+            className="input"
+          />
         </div>
+
         <div className="flex-column">
             <label>Marque </label>
         </div>
         <div className="inputForm">
             
-        <i className="bi bi-at"></i>
-
-            <input type="text" className="input" placeholder="@marque" />
+          <i className="bi bi-at"></i>
+          <input
+            type="text"
+            name="marque"
+            value={formData.marque}
+            onChange={handleChange}
+            placeholder="@Marque"
+            className="input"
+          />
         </div>
 
         <div className="flex-column">
@@ -143,8 +257,14 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
         <div className="inputForm">
             
             <i className="bi bi-person"></i>
-
-            <input type="text" className="input" placeholder=" @immatriculation" />
+            <input
+            type="text"
+            name="immatriculation"
+            value={formData.immatriculation}
+            onChange={handleChange}
+            placeholder="@Immatriculation"
+            className="input"
+          />
         </div>
 
         <div className="flex-column">
@@ -160,12 +280,16 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
                 <p>Drag and Drop</p>
                 <p>or</p>
                 <span className="browse-button">Browse file</span>
-                </div>
-            <input id="file" type="file" />
+              </div>
+              <input
+                type="file"
+                id="file"
+                name="photo_url"
+                accept="image/*"
+                onChange={handleFileChange} // Créer une fonction pour gérer l'upload de fichier
+                placeholder="URL de la photo"
+              />
         </label>
-        
-
-        
         <button className="button-submit">Ajouter la voiture</button>
         
         
@@ -191,13 +315,15 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
           <tbody>
             {currentItems.map((item, index) => (
               <Item
-                key={index}
+                key={item.id}
+                id={item.id}
                 modele={item.modele}
                 marque={item.marque}
                 icon={item.icon}
-                imageUrl={item.imageUrl}
+                photo_url={item.photo_url}
                 immatriculation={item.immatriculation}
-                onDelete={() => handleDeleteClick(item.immatriculation)}
+                onDelete={() => handleDeleteClick(item.id)}
+                onEdit={() => handleEditClick(item.id)}
               />
             ))}
           </tbody>
