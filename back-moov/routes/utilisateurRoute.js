@@ -31,6 +31,7 @@ router.get('/list', authMiddleware, UtilisateurController.listUsers);
 router.put('/bannir/:userId', authMiddleware, UtilisateurController.bannirUser);
 router.get('/chauffeurs', authMiddleware, UtilisateurController.listChauffeurs);
 router.get('/clients', authMiddleware, UtilisateurController.listClient);
+router.get('/chauffeurAdmin',authMiddleware, UtilisateurController.listChauffeurAdmin);
 
 
 router.get('/passager/count',authMiddleware, UtilisateurController.countPassagers);

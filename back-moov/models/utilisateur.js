@@ -329,6 +329,33 @@ class Utilisateur {
     return client;
   }
 
+  static async findAllChauffeurAdmin() {
+    let chauffeurAdmin = [];
+
+    const result = await db.query("SELECT * FROM utilisateur WHERE role in ('CHAUFFEUR','ADMIN')");
+
+    for (const row of result.rows) {
+      chauffeurAdmin.push(
+        new Utilisateur(
+          row.id,
+          row.nom,
+          row.prenom,
+          row.telephone,
+          row.mail,
+          row.mdp,
+          row.adresse,
+          row.photo,
+          row.role,
+          row.date_inscription,
+          row.est_banni,
+          row.date_banni
+        )
+      );
+    }
+
+    return chauffeurAdmin;
+  }
+
   static async countClient() {
     let whereClause = '';
     const params = [];
