@@ -269,6 +269,55 @@ class UtilisateurController {
     }
 };
 
+static async deleteChauffeurAdmin(req, res) {
+  const { id } = req.params;
+  try {
+      const deleteChauffeurAdmin = await Utilisateur.deleteChauffeurAdmin(id);
+      res.status(200).json(deleteChauffeurAdmin);
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+}
+
+static async getUserById(req, res) {
+  const { id } = req.params;
+  try {
+      const voiture = await Utilisateur.findUserId(id);
+      res.status(200).json(voiture);
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+}
+
+static async updateUser(req, res) {
+  try {
+    const { id } = req.params;
+    const {
+      nom, prenom, telephone, mail, mdp, adresse, photo, role, est_banni, date_banni
+    } = req.body;
+
+    // Vérification des champs obligatoires
+    if (!telephone || !nom || !prenom || !mail || !mdp || !adresse) {
+      return res.status(400).json({ message: "Tous les champs requis doivent être fournis." });
+    }
+
+    const utilisateur = await Utilisateur.updateUser(id, nom, prenom, telephone, mail, mdp, adresse, photo, role, est_banni, date_banni);
+
+    if (!utilisateur) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    return res.status(200).json({
+      message: "Utilisateur mis à jour avec succès",
+      data: utilisateur
+    });
+  } catch (error) {
+    return res.status(500).json({ message: `Erreur lors de la mise à jour de la personne : ${error.message}` });
+  }
+}
+
+
+
 }
 
 module.exports = UtilisateurController;

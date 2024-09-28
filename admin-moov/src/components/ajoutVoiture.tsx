@@ -3,6 +3,7 @@ import '../pages/login.css';
 import './ajout.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { creationVoiture, getAllVoiture, getVoitureById, modifierVoiture, supprimerVoiture } from "../services/api";
+import CustomAlert from "./CustomAlertProps";
 interface ItemProps {
     id: number;
     modele: string;
@@ -44,7 +45,7 @@ const AjoutVoiture: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(1); // Page actuelle
     const itemsPerPage = 8; // Nombre d'éléments par page
     const [items, setItems] = useState<ItemProps[]>([]); 
-
+    const [showAlert, setShowAlert] = useState(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<number | null>(null); // ID de l'item à supprimer
   const [editingCarId, setEditingCarId] = useState<number | null>(null);
@@ -149,7 +150,7 @@ const AjoutVoiture: React.FC = () => {
         try {
           await supprimerVoiture(selectedItem); // Appel à l'API pour supprimer la voiture
           setItems(items.filter(item => item.id !== selectedItem)); // Met à jour la liste des voitures
-          alert("Voiture supprimée avec succès");
+          setShowAlert(true);
         } catch (error) {
           console.error('Erreur lors de la suppression de la voiture :', error);
           alert("Échec de la suppression de la voiture");
@@ -168,6 +169,9 @@ const AjoutVoiture: React.FC = () => {
     //     setItems(items.filter(item => item.immatriculation !== selectedItem));
     //     setShowModal(false);
     // };
+    const closeAlert = () => {
+      setShowAlert(false); // Fermer l'alerte
+    };
 
   const closeModal = () => {
     setShowModal(false);
@@ -198,7 +202,9 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
           <h3>Ajout de voiture</h3>
           <p>Ce tableau comporte la liste des voitures et l'ajout de voiture, les detail du voiture peuvent etre modifier et visualiser</p>
         </div>
-
+        {showAlert && (
+        <CustomAlert message="Voiture Supprimer avec succès" onClose={closeAlert} />
+        )}
         
         {/* Barre de recherche */}
         <div className="searchhisto2" style={{ marginBottom: '20px' }}>

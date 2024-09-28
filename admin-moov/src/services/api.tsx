@@ -188,6 +188,23 @@ export const modifierVoiture = async (voitureId: number, updatedData: any) => {
   }
 };
 
+export const modifierUser = async (id: number, updatedData: any) => {
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/users/modifierUser/${id}`,
+      updatedData,
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la modification de la voiture :", error);
+    throw error;
+  }
+};
 // Récupérer les données d'une voiture
 export const getVoitureById = async (voitureId: number) => {
   try {
@@ -203,9 +220,37 @@ export const getVoitureById = async (voitureId: number) => {
   }
 };
 
+export const getUserById = async (id: number) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/users/getUserId/${id}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de la personne :", error);
+    throw error;
+  }
+};
+
 export const supprimerVoiture = async (id: number) => {
   try {
     const response = await axios.delete(`${API_BASE_URL}/voiture/SupprimerVoiture/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${getToken()}`, // Ajoute le token pour vérifier l'utilisateur
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la suppression de la voiture', error);
+    throw error;
+  }
+};
+
+export const supprimerChauffeurAdmin = async (id: number) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/users/SupprimerChauffeurAdmin/${id}`, {
       headers: {
         'Authorization': `Bearer ${getToken()}`, // Ajoute le token pour vérifier l'utilisateur
       },

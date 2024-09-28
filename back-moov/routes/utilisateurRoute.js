@@ -34,8 +34,10 @@ router.get('/clients', authMiddleware, UtilisateurController.listClient);
 
 router.get('/chauffeurAdmin',authMiddleware, UtilisateurController.listChauffeurAdmin);
 router.post('/insertionChauffeurAdmin',authMiddleware, UtilisateurController.createUtilisateurController);
+router.delete('/SupprimerChauffeurAdmin/:id',authMiddleware, UtilisateurController.deleteChauffeurAdmin);
+router.put('/modifierUser/:id',authMiddleware, UtilisateurController.updateUser);
 
-
+router.get('/getUserId/:id',authMiddleware, UtilisateurController.getUserById);
 router.get('/passager/count',authMiddleware, UtilisateurController.countPassagers);
 router.get('/chauffeur/count',authMiddleware, UtilisateurController.countChauffeurs);
 

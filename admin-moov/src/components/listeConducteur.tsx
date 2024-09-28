@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import './liste.css';
-import { getChauffeurs } from '../services/api';
+import { getChauffeurs, supprimerChauffeurAdmin } from '../services/api';
+import CustomAlert from './CustomAlertProps';
 
 interface ItemProps {
   id:number;
@@ -49,7 +50,8 @@ const ItemListConducteur: React.FC = () => {
     const itemsPerPage = 8; // Nombre d'éléments par page
     const [showModal, setShowModal] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<number | null>(null); // Pour stocker l'item à supprimer
-   
+    const [showAlert, setShowAlert] = useState(false);
+
     useEffect(() => {
       // Charger la liste des chauffeurs au chargement du composant
       const fetchChauffeurs = async () => {
@@ -65,17 +67,28 @@ const ItemListConducteur: React.FC = () => {
       fetchChauffeurs();
     }, []);
 
-    
+    const confirmDelete = async () => {
+    if (selectedItem !== null) {
+      try {
+        await supprimerChauffeurAdmin(selectedItem); // Appel à l'API pour supprimer la voiture
+        setItems(items.filter(item => item.id !== selectedItem)); // Met à jour la liste des voitures
+        setShowAlert(true);
+      } catch (error) {
+        console.error('Erreur lors de la suppression du conducteur ', error);
+        alert("Échec de la suppression du conducteur");
+      }
+    }
+    closeModal();
+  };
+  const closeAlert = () => {
+    setShowAlert(false); // Fermer l'alerte
+  };
   
     const handleDeleteClick = (id: number) => {
         setSelectedItem(id);
         setShowModal(true);
     };
   
-    const confirmDelete = () => {
-      setItems(items.filter(item => item.id !== selectedItem));
-        setShowModal(false);
-    };
   
   const closeModal = () => {
     setShowModal(false);
@@ -105,7 +118,9 @@ const ItemListConducteur: React.FC = () => {
           <h3>Liste des conducteurs</h3>
           <p>Ce tableau comporte la liste des clients avec son status, ils peuvent etre alors banni ou pas selon leur statut</p>
       </div>
-
+      {showAlert && (
+        <CustomAlert message="Conducteur banni avec succès" onClose={closeAlert} />
+        )}
       {/* Filtre par statut avec des boutons */}
       <div className='buttonChart-group' style={{ marginBottom: '20px' }}>
         <button
@@ -171,20 +186,21 @@ const ItemListConducteur: React.FC = () => {
             <div className="modal-dialog">
                 <div className="modal-content">
                 <div className="modal-header">
-                    <h5 className="modal-title">Confirmation de suppression</h5>
+                    <h5 className="modal-title">Message de Confirmation</h5>
                     <button type="button" className="btn-close" onClick={closeModal}></button>
                 </div>
                 <div className="modal-body">
-                    <p>Êtes-vous sûr de vouloir supprimer cette voiture ?</p>
+                    <p>Êtes-vous sûr de vouloir bannir cette Personne ?</p>
                 </div>
                 <div className="modal-footer">
                     <button style={{ borderRadius: '25px', backgroundColor: 'var(--text-color)' }} type="button" className="btn btn-secondary" onClick={closeModal}>Annuler</button>
-                    <button style={{ borderRadius: '25px', backgroundColor: 'var(--primary-color)' }} type="button" className="btn btn-danger" onClick={confirmDelete}>Supprimer</button>
+                    <button style={{ borderRadius: '25px', backgroundColor: 'var(--primary-color)' }} type="button" className="btn btn-danger" onClick={confirmDelete}>Bannir</button>
                 </div>
                 </div>
             </div>
             </div>
         )}
+
           {/* Pagination */}
             <div className="pagination">
                 <button 

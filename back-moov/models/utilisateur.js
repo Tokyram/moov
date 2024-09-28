@@ -243,6 +243,66 @@ class Utilisateur {
   
     return users;
   }
+
+  static async findAllUser() {
+    let users = [];
+
+
+    const result = await db.query(
+      `SELECT * FROM utilisateur WHERE id = $1`,
+      [id]
+    );
+  
+    for (const row of result.rows) {
+      users.push(
+        new Utilisateur(
+          row.id,
+          row.nom,
+          row.prenom,
+          row.telephone,
+          row.mail,
+          row.mdp,
+          row.adresse,
+          row.photo,
+          row.role,
+          row.date_inscription,
+          row.est_banni,
+          row.date_banni
+        )
+      );
+    }
+  
+    return users;
+  }
+
+  static async findUserId(id) {
+    try {
+        const result = await db.query(
+            `SELECT * FROM utilisateur WHERE id = $1`,
+            [id]
+        );
+        if (result.rows.length === 0) {
+            throw new Error('utilisateur non trouvée');
+        }
+        const userData = result.rows[0];
+        return new Utilisateur(
+            userData.id,
+            userData.nom,
+            userData.prenom,
+            userData.telephone,
+            userData.mail,
+            userData.mdp,
+            userData.adresse,
+            userData.photo,
+            userData.role,
+            userData.date_inscription,
+            userData.est_banni,
+            userData.date_banni
+        );
+    } catch (error) {
+        throw new Error('Erreur lors de la récupération de la personne : ' + error.message);
+    }
+}
   
   static async count() {
     let whereClause = '';
@@ -410,6 +470,35 @@ class Utilisateur {
         throw new Error('Erreur lors de la création d\'utilisateur models: ' + error.message);
     }
 }
+
+static async deleteChauffeurAdmin(id) {
+  try {
+      const result = await db.query(
+          `DELETE FROM utilisateur WHERE id = $1 RETURNING *`,
+          [id]
+      );
+      return result.rows[0];
+  } catch (error) {
+      throw new Error('Erreur lors de la suppression de la personne : ' + error.message);
+  }
+}
+
+static async updateUser(id, nom, prenom, telephone, mail, mdp, adresse, photo, role, est_banni, date_banni) {
+  try {
+    const result = await db.query(
+      `UPDATE utilisateur
+       SET nom = $1, prenom = $2, telephone = $3, mail = $4, mdp = $5, adresse = $6, photo = $7, role = $8, est_banni = $9, date_banni = $10
+       WHERE id = $11
+       RETURNING *`,
+      [nom, prenom, telephone, mail, mdp, adresse, photo, role, est_banni, date_banni, id] // ID doit être passé en dernier
+    );
+    return result.rows[0];
+  } catch (error) {
+    throw new Error('Erreur lors de la mise à jour de la personne : ' + error.message);
+  }
+}
+
+
 
 
   toJSON() {

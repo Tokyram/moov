@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import '../pages/login.css';
 import './ajout.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { creationChauffeurAdmin, getChauffeurAdmin } from "../services/api";
+import { creationChauffeurAdmin, getChauffeurAdmin, getUserById, modifierUser, supprimerChauffeurAdmin } from "../services/api";
+import CustomAlert from "./CustomAlertProps";
 interface ItemProps {
   id:number;
   nom: string;
@@ -15,8 +16,10 @@ interface ItemProps {
   // mdp: string; 
   // adresse: string; 
   onDelete: () => void;
+  onEdit: () => void;
+
 }
-  const Item: React.FC<ItemProps> = ({id, nom, prenom, mail, photo,role, telephone ,onDelete }) => {
+  const Item: React.FC<ItemProps> = ({id, nom, prenom, mail, photo,role, telephone ,onDelete, onEdit }) => {
     return (
       <tr>
         <td>
@@ -35,6 +38,11 @@ interface ItemProps {
         </td>
         <td>
           <div className="actions">
+            <button className='supp' onClick={onEdit} ><i className="bi bi-pencil-square"></i></button>
+          </div>
+        </td>
+        <td>
+          <div className="actions">
             {/* <button className="btn btn-primary">Voir plus</button> */}
             {/* <button className='edit' ><i className="bi bi-pencil-square"></i></button> */}
             <button className='supp' onClick={onDelete}><i className="bi bi-trash3-fill" style={{ color: 'var(--primary-color)' }}></i></button>
@@ -50,6 +58,8 @@ const AjoutMembre: React.FC = () => {
     const itemsPerPage = 8; // Nombre d'éléments par page
     const [items, setItems] = useState<ItemProps[]>([]);
     const [showModal, setShowModal] = useState<boolean>(false);
+    const [showAlert, setShowAlert] = useState(false);
+    const [editingUserId, setEditingUserId] = useState<number | null>(null);
     const [selectedItem, setSelectedItem] = useState<number | null>(null); // Pour stocker l'item à supprimer
     const [formData, setFormData] = useState({
       nom: "",
@@ -89,13 +99,7 @@ const AjoutMembre: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   
-    // Vérification que tous les champs obligatoires sont remplis
-    // if (!formData.nom || !formData.prenom || !formData.mail || !formData.role || !formData.telephone || !formData.adresse || !formData.mdp || !formData.mdp2) {
-    //   alert("Veuillez remplir tous les champs.");
-    //   return;
-    // }
-  
-    // Vérification que le mot de passe et la confirmation sont identiques
+    // Vérification que les mots de passe correspondent
     if (formData.mdp !== formData.mdp2) {
       alert("Les mots de passe ne correspondent pas.");
       return;
@@ -104,19 +108,45 @@ const AjoutMembre: React.FC = () => {
     // Si la photo n'est pas définie, la mettre à null
     const dataToSend = {
       ...formData,
-      photo: formData.photo || null, // Définit `photo_url` comme null si non défini
+      photo: formData.photo || null, // Définit `photo` comme null si non défini
     };
   
-    try {
-      await creationChauffeurAdmin(dataToSend);
-      alert("Membre ajouté avec succès.");
-      // setItems(prevItems => [...prevItems, newChauffeur.data]);
-    } catch (error) {
-      console.error("Erreur lors de l'ajout du membre :", error);
+      if (editingUserId !== null) {
+        // Modification d'une voiture existante
+        try {
+            await modifierUser(editingUserId, dataToSend);
+            alert("Utilisateur modifiée avec succès");
+            setEditingUserId(null);
+        } catch (error) {
+            console.error("Erreur lors de la modification de la voiture :", error);
+        }
+    } else {
+        // Ajout d'une nouvelle voiture
+        try {
+            await creationChauffeurAdmin(dataToSend);
+            alert("Voiture ajoutée avec succès");
+        } catch (error) {
+            console.error("Erreur lors de l'ajout de la voiture :", error);
+        }
     }
 
-    setFormData({ nom: "", prenom: "", mail: "", photo: "", role: "", telephone: "", adresse: "", mdp: "", mdp2: "" });
+    // Récupérer à nouveau la liste des voitures après modification ou ajout
+    const updatedUser = await getChauffeurAdmin();
+    setItems(updatedUser.data);
+    setFormData({
+      nom: "",
+      prenom: "",
+      mail: "",
+      photo: "",
+      role: "",
+      telephone: "",
+      adresse: "",
+      mdp: "",
+      mdp2: ""
+  });
+  
   };
+  
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -133,14 +163,48 @@ const AjoutMembre: React.FC = () => {
       setShowModal(true);
   };
 
-  const confirmDelete = () => {
-      setItems(items.filter(item => item.id !== selectedItem));
-      setShowModal(false);
+  const confirmDelete = async () => {
+    if (selectedItem !== null) {
+      try {
+        await supprimerChauffeurAdmin(selectedItem); // Appel à l'API pour supprimer la voiture
+        setItems(items.filter(item => item.id !== selectedItem)); // Met à jour la liste des voitures
+        setShowAlert(true);
+      } catch (error) {
+        console.error('Erreur lors de la suppression de la personne :', error);
+        alert("Échec de la suppression de la voiture");
+      }
+    }
+    closeModal();
+  };
+
+  const handleEditClick = async (id: number) => {
+    setEditingUserId(id);
+    try {
+      const user = await getUserById(id);
+      setFormData({
+        nom: user.nom,
+        prenom: user.prenom,
+        mail: user.mail,
+        photo: user.photo,
+        role: user.role,
+        telephone: user.telephone,
+        adresse: user.adresse,
+        mdp: user.mdp,
+        mdp2: user.mdp,
+        // photo_url: user.photo_url,
+      });
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données de la voiture :", error);
+    }
+  };
+  const closeAlert = () => {
+    setShowAlert(false); // Fermer l'alerte
   };
 
 const closeModal = () => {
   setShowModal(false);
 };
+
 
   // Filtrer les items en fonction du statut sélectionné
   const filteredItems: ItemProps[] = filterStatus
@@ -165,7 +229,9 @@ const closeModal = () => {
           <h3>Ajout d'un membre</h3>
           <p>Ce tableau comporte la liste des clients avec son status, ils peuvent etre alors banni ou pas selon leur statut</p>
         </div>
-
+        {showAlert && (
+        <CustomAlert message="Membre banni avec succès" onClose={closeAlert} />
+        )}
         {/* Filtre par statut avec des boutons */}
         <div className='buttonChart-group' style={{ marginBottom: '20px' }}>
                 <button
@@ -376,6 +442,7 @@ const closeModal = () => {
               <th>Téléphone</th>
               <th>Email</th>
               <th>Role</th>
+              <th>Modifier</th>
               <th>Bannir</th>
             </tr>
           </thead>
@@ -391,6 +458,7 @@ const closeModal = () => {
                 telephone={item.telephone}
                 role={item.role}
                 onDelete={() => handleDeleteClick(item.id)}
+                onEdit={() => handleEditClick(item.id)}
               />
             ))}
           </tbody>
@@ -402,15 +470,15 @@ const closeModal = () => {
             <div className="modal-dialog">
                 <div className="modal-content">
                 <div className="modal-header">
-                    <h5 className="modal-title">Confirmation de suppression</h5>
+                    <h5 className="modal-title">Message de Confirmation</h5>
                     <button type="button" className="btn-close" onClick={closeModal}></button>
                 </div>
                 <div className="modal-body">
-                    <p>Êtes-vous sûr de vouloir supprimer cette voiture ?</p>
+                    <p>Êtes-vous sûr de vouloir bannir cette Personne ?</p>
                 </div>
                 <div className="modal-footer">
                     <button style={{ borderRadius: '25px', backgroundColor: 'var(--text-color)' }} type="button" className="btn btn-secondary" onClick={closeModal}>Annuler</button>
-                    <button style={{ borderRadius: '25px', backgroundColor: 'var(--primary-color)' }} type="button" className="btn btn-danger" onClick={confirmDelete}>Supprimer</button>
+                    <button style={{ borderRadius: '25px', backgroundColor: 'var(--primary-color)' }} type="button" className="btn btn-danger" onClick={confirmDelete}>Bannir</button>
                 </div>
                 </div>
             </div>
