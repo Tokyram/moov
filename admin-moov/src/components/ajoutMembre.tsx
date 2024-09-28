@@ -1,8 +1,9 @@
+/* eslint-disable no-dupe-keys */
 import React, { useEffect, useState } from "react";
 import '../pages/login.css';
 import './ajout.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { getChauffeurAdmin } from "../services/api";
+import { creationChauffeurAdmin, getChauffeurAdmin } from "../services/api";
 interface ItemProps {
   id:number;
   nom: string;
@@ -11,9 +12,11 @@ interface ItemProps {
   photo: string; 
   role: string;
   telephone: string; 
+  // mdp: string; 
+  // adresse: string; 
   onDelete: () => void;
 }
-  const Item: React.FC<ItemProps> = ({id, nom, prenom, mail, photo,role, telephone,onDelete }) => {
+  const Item: React.FC<ItemProps> = ({id, nom, prenom, mail, photo,role, telephone ,onDelete }) => {
     return (
       <tr>
         <td>
@@ -48,7 +51,17 @@ const AjoutMembre: React.FC = () => {
     const [items, setItems] = useState<ItemProps[]>([]);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<number | null>(null); // Pour stocker l'item à supprimer
-
+    const [formData, setFormData] = useState({
+      nom: "",
+      prenom: "",
+      mail: "",
+      photo: "",
+      role: "",
+      telephone: "",
+      adresse: "",
+      mdp: "",
+      mdp2: "",
+    });
   useEffect(() => {
     // Charger la liste des chauffeurs au chargement du composant
     const fetchChauffeurAdmin = async () => {
@@ -63,6 +76,57 @@ const AjoutMembre: React.FC = () => {
     
     fetchChauffeurAdmin();
   }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+  
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  
+    // Vérification que tous les champs obligatoires sont remplis
+    // if (!formData.nom || !formData.prenom || !formData.mail || !formData.role || !formData.telephone || !formData.adresse || !formData.mdp || !formData.mdp2) {
+    //   alert("Veuillez remplir tous les champs.");
+    //   return;
+    // }
+  
+    // Vérification que le mot de passe et la confirmation sont identiques
+    if (formData.mdp !== formData.mdp2) {
+      alert("Les mots de passe ne correspondent pas.");
+      return;
+    }
+  
+    // Si la photo n'est pas définie, la mettre à null
+    const dataToSend = {
+      ...formData,
+      photo: formData.photo || null, // Définit `photo_url` comme null si non défini
+    };
+  
+    try {
+      await creationChauffeurAdmin(dataToSend);
+      alert("Membre ajouté avec succès.");
+      // setItems(prevItems => [...prevItems, newChauffeur.data]);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout du membre :", error);
+    }
+
+    setFormData({ nom: "", prenom: "", mail: "", photo: "", role: "", telephone: "", adresse: "", mdp: "", mdp2: "" });
+  };
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            photo: URL.createObjectURL(file), // Création d'une URL d'objet pour l'image
+        }));
+    }
+};
   
   const handleDeleteClick = (id: number) => {
       setSelectedItem(id);
@@ -125,7 +189,7 @@ const closeModal = () => {
                 
             </div>
         <div className="ajoutliste">
-        <form className="form" action="/home">
+        <form className="form" onSubmit={handleSubmit}>
         {/* <div className="img">
             <img src="../logo.png" alt="" />
 
@@ -138,7 +202,14 @@ const closeModal = () => {
             
             <i className="bi bi-person"></i>
 
-            <input type="text" className="input" placeholder=" nom de la personne" />
+            <input
+            type="text"
+            name="nom"
+            value={formData.nom}
+            onChange={handleChange}
+            placeholder="@nom de la personne"
+            className="input"
+          />
         </div>
 
         <div className="flex-column">
@@ -148,7 +219,14 @@ const closeModal = () => {
             
             <i className="bi bi-person"></i>
 
-            <input type="text" className="input" placeholder=" prénom de la personne" />
+            <input
+            type="text"
+            name="prenom"
+            value={formData.prenom}
+            onChange={handleChange}
+            placeholder="@prénom de la personne"
+            className="input"
+          />
         </div>
 
         <div className="flex-column">
@@ -158,7 +236,14 @@ const closeModal = () => {
             
         <i className="bi bi-at"></i>
 
-            <input type="email" className="input" placeholder="Email@gmail.com" />
+          <input
+              type="email"
+              name="mail"
+              value={formData.mail}
+              onChange={handleChange}
+              placeholder="@email de la personne"
+              className="input"
+            />
         </div>
 
         <div className="flex-column">
@@ -168,8 +253,33 @@ const closeModal = () => {
             
             <i className="bi bi-telephone"></i>
 
-            <input type="number" className="input" placeholder="numéro de téléphone" />
+            <input
+            type="text"
+            name="telephone"
+            value={formData.telephone}
+            onChange={handleChange}
+            placeholder="@numero téléphone"
+            className="input"
+          />
         </div>
+
+        <div className="flex-column">
+            <label>Adresse </label>
+        </div>
+        <div className="inputForm">
+            
+        <i className="bi bi-pin-map"></i>
+
+            <input
+            type="text"
+            name="adresse"
+            value={formData.adresse}
+            onChange={handleChange}
+            placeholder="@l'adresse de la personne"
+            className="input"
+          />
+        </div>
+
 
         <div className="flex-column">
             <label>Nouveau mot de passe </label>
@@ -179,9 +289,12 @@ const closeModal = () => {
             <i className="bi bi-key"></i>
             <input
             type="password"
+            name="mdp"
+            value={formData.mdp}
+            onChange={handleChange}
+            placeholder="@nouveau mot de passe"
             className="input"
-            placeholder="mot de passe "
-            />
+          />
         </div>
 
         <div className="flex-column">
@@ -189,12 +302,14 @@ const closeModal = () => {
         </div>
         <div className="inputForm">
             
-            <i className="bi bi-key"></i>
-            <input
+          <input
             type="password"
+            name="mdp2"
+            value={formData.mdp2}
+            onChange={handleChange}
+            placeholder="@confirmer le mot de passe"
             className="input"
-            placeholder="mot de passe "
-            />
+          />
         </div>
 
         <div className="flex-column">
@@ -204,11 +319,41 @@ const closeModal = () => {
             
             
             <i className="bi bi-person-add"></i>
-            <select className="input" name="" id="">
-                <option value="">ADMIN</option>
-                <option value="">CHAUFFEUR</option>
+            <select
+                className="input"
+                name="role"
+                value={formData.role}
+                onChange={handleChange} // Ajoutez un gestionnaire d'événements pour mettre à jour formData.role
+            >
+                <option value="">-- Sélectionnez un rôle --</option> {/* Valeur par défaut vide */}
+                <option value="ADMIN">ADMIN</option> {/* Met à jour formData.role avec "ADMIN" */}
+                <option value="CHAUFFEUR">CHAUFFEUR</option> {/* Met à jour formData.role avec "CHAUFFEUR" */}
             </select>
         </div>
+
+        <div className="flex-column">
+            <label>Photo </label>
+        </div>
+        <label htmlFor="file" className="file-upload-label">
+            <div className="file-upload-design">
+                <svg viewBox="0 0 640 512" height="1em">
+                    <path
+                    d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-217c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l39-39V392c0 13.3 10.7 24 24 24s24-10.7 24-24V257.9l39 39c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0l-80 80z"
+                    ></path>
+                </svg>
+                <p>Drag and Drop</p>
+                <p>or</p>
+                <span className="browse-button">Browse file</span>
+              </div>
+              <input
+                type="file"
+                id="file"
+                name="photo"
+                accept="image/*"
+                onChange={handleFileChange} // Créer une fonction pour gérer l'upload de fichier
+                placeholder="URL de la photo"
+              />
+        </label>
 
         
         <button className="button-submit">Ajouter la personne</button>
@@ -227,16 +372,17 @@ const closeModal = () => {
             <tr>
               <th>Image</th>
               <th>Nom</th>
-              <th>Description</th>
+              <th>Prénom</th>
               <th>Téléphone</th>
-              <th>Statut</th>
+              <th>Email</th>
+              <th>Role</th>
               <th>Bannir</th>
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((item, index) => (
+            {currentItems.map((item) => (
               <Item
-                key={index}
+                key={item.id}
                 id={item.id}
                 nom={item.nom}
                 prenom={item.prenom}

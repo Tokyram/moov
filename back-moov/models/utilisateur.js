@@ -380,6 +380,38 @@ class Utilisateur {
     return parseInt(result.rows[0].count);
   }
 
+  static async createUtilisateur(nom, prenom, telephone, mail, mdp, adresse, photo, role, est_banni, date_banni) {
+    try {
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(mdp, saltRounds);
+
+        const result = await db.query(`
+            INSERT INTO utilisateur (nom, prenom, telephone, mail, mdp, adresse, photo, role, est_banni, date_banni)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            RETURNING *
+        `, [nom, prenom, telephone, mail, hashedPassword, adresse, photo, role, false, null]);
+
+        const utilisateurData = result.rows[0];
+        return new Utilisateur(
+            utilisateurData.id,
+            utilisateurData.nom,
+            utilisateurData.prenom,
+            utilisateurData.telephone,
+            utilisateurData.mail,
+            utilisateurData.mdp,
+            utilisateurData.adresse,
+            utilisateurData.photo, // Chemin de la photo dans la base de données
+            utilisateurData.role,
+            utilisateurData.date_inscription,
+            utilisateurData.est_banni,
+            utilisateurData.date_banni
+        );
+    } catch (error) {
+        throw new Error('Erreur lors de la création d\'utilisateur models: ' + error.message);
+    }
+}
+
+
   toJSON() {
     return {
       id: this.id,

@@ -226,7 +226,21 @@ export const creationVoiture = async (voitureData: any) => {
       });
       return response.data;
   } catch (error) {
-    console.error('Erreur lors de la suppression de l insertion', error);
+    console.error('Erreur lors de la creation de la voiture', error);
+      throw error;
+  }
+};
+
+export const creationChauffeurAdmin = async (voitureData: any) => {
+  try {
+      const response = await axios.post(`${API_BASE_URL}/users/insertionChauffeurAdmin`, voitureData, {
+          headers: {
+              Authorization: `Bearer ${getToken()}`
+          }
+      });
+      return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la creation de l utilisateur', error);
       throw error;
   }
 };

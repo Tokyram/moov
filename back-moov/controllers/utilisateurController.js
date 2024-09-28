@@ -251,6 +251,24 @@ class UtilisateurController {
     }
   };
 
+  static async createUtilisateurController(req, res){
+    const {nom, prenom, telephone, mail, mdp, adresse, photo, role, est_banni, date_banni} = req.body;
+
+    try {
+
+        // // Vous pouvez effectuer des validations ici
+        // if (!utilisateurData.nom || !utilisateurData.prenom || !utilisateurData.telephone || !utilisateurData.mail || !utilisateurData.mdp || !utilisateurData.adresse || !utilisateurData.role) {
+        //     return res.status(400).json({ error: 'Tous les champs sont obligatoires' });
+        // }
+
+        const newUtilisateur = await Utilisateur.createUtilisateur(nom, prenom, telephone, mail, mdp, adresse, photo, role, est_banni, date_banni);
+        res.status(201).json(newUtilisateur);
+    } catch (error) {
+        console.error("Erreur lors de l'insertion de l'utilisateur controller :", error);
+        res.status(500).json({ error: 'Erreur lors de l\'insertion de l\'utilisateur controller' });
+    }
+};
+
 }
 
 module.exports = UtilisateurController;

@@ -43,15 +43,6 @@ class VoitureController {
         }
     }
 
-    // static async deletePhotosByVoitureId(req, res) {
-    //     const { id } = req.params;
-    //     try {
-    //         const deletedVoiture = await VoitureService.deletePhotosByVoitureId(id);
-    //         res.status(200).json(deletedVoiture);
-    //     } catch (error) {
-    //         res.status(500).json({ error: error.message });
-    //     }
-    // }
 
     static async getAllVoitures(req, res) {
         try {
@@ -62,15 +53,6 @@ class VoitureController {
         }
     }
 
-    // static async addPhotoToVoiture(req, res) {
-    //     const { voiture_id, photo_url } = req.body;
-    //     try {
-    //         const newPhoto = await VoitureService.addPhotoToVoiture(voiture_id, photo_url);
-    //         res.status(201).json(newPhoto);
-    //     } catch (error) {
-    //         res.status(500).json({ error: error.message });
-    //     }
-    // }
 }
 
 module.exports = VoitureController;
