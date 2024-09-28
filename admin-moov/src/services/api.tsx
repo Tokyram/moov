@@ -262,6 +262,20 @@ export const supprimerChauffeurAdmin = async (id: number) => {
   }
 };
 
+export const BannirChauffeurAdmin = async (userId: number,  updatedData: any) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/users/bannir/${userId}`, updatedData, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, // Ajoute le token pour vérifier l'utilisateur
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la bannissment de la personne', error);
+    throw error;
+  }
+};
+
 export const creationVoiture = async (voitureData: any) => {
   try {
       const response = await axios.post(`${API_BASE_URL}/voiture/creationVoiture`, voitureData, {

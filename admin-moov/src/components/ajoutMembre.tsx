@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import '../pages/login.css';
 import './ajout.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { creationChauffeurAdmin, getChauffeurAdmin, getUserById, modifierUser, supprimerChauffeurAdmin } from "../services/api";
+import { BannirChauffeurAdmin, creationChauffeurAdmin, getChauffeurAdmin, getUserById, modifierUser, supprimerChauffeurAdmin } from "../services/api";
 import CustomAlert from "./CustomAlertProps";
 interface ItemProps {
   id:number;
@@ -164,9 +164,13 @@ const AjoutMembre: React.FC = () => {
   };
 
   const confirmDelete = async () => {
+    const dataToSend = {
+      ...formData,
+      photo: formData.photo || null, // Définit `photo` comme null si non défini
+    };
     if (selectedItem !== null) {
       try {
-        await supprimerChauffeurAdmin(selectedItem); // Appel à l'API pour supprimer la voiture
+        await BannirChauffeurAdmin(selectedItem, dataToSend); // Appel à l'API pour supprimer la voiture
         setItems(items.filter(item => item.id !== selectedItem)); // Met à jour la liste des voitures
         setShowAlert(true);
       } catch (error) {

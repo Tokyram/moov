@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import './liste.css';
-import { getClient, supprimerChauffeurAdmin } from '../services/api';
+import { BannirChauffeurAdmin, getClient, supprimerChauffeurAdmin } from '../services/api';
 import CustomAlert from './CustomAlertProps';
 
 interface ItemProps {
@@ -51,6 +51,17 @@ const ItemList: React.FC = () => {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<number | null>(null); // Pour stocker l'item à supprimer
     const [showAlert, setShowAlert] = useState(false);
+    const [formData, setFormData] = useState({
+      nom: "",
+      prenom: "",
+      mail: "",
+      photo: "",
+      role: "",
+      telephone: "",
+      adresse: "",
+      mdp: "",
+      mdp2: "",
+    });
     useEffect(() => {
       // Charger la liste des chauffeurs au chargement du composant
       const fetchChauffeurs = async () => {
@@ -72,9 +83,13 @@ const ItemList: React.FC = () => {
     };
   
     const confirmDelete = async () => {
+      const dataToSend = {
+        ...formData,
+        photo: formData.photo || null, // Définit `photo` comme null si non défini
+      };
       if (selectedItem !== null) {
         try {
-          await supprimerChauffeurAdmin(selectedItem); // Appel à l'API pour supprimer la voiture
+          await BannirChauffeurAdmin(selectedItem, dataToSend); // Appel à l'API pour supprimer la voiture
           setItems(items.filter(item => item.id !== selectedItem)); // Met à jour la liste des voitures
           setShowAlert(true);
         } catch (error) {
