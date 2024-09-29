@@ -24,6 +24,7 @@ const PaiementForm: React.FC<{ montant: number | null, courseId: string | null, 
   const [processing, setProcessing] = useState(false);
   const history = useHistory();
   const [showPaiementPopup, setShowPaiementPopup] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   
   const handleSubmit = async () => {
@@ -40,7 +41,6 @@ const PaiementForm: React.FC<{ montant: number | null, courseId: string | null, 
     const cardNumberElement = elements.getElement(CardNumberElement);
     const cardExpiryElement = elements.getElement(CardExpiryElement);
     const cardCvcElement = elements.getElement(CardCvcElement);
-  
     // Vérifier que chaque élément est bien récupéré
     if (!cardNumberElement || !cardExpiryElement || !cardCvcElement) {
       setError('Impossible de trouver les champs de carte bancaire.');
@@ -109,6 +109,7 @@ const PaiementForm: React.FC<{ montant: number | null, courseId: string | null, 
   };
 
   return (
+    <>
     <form className="form" onSubmit={handleConfirmPaiement}>
       <div className="cle">
 
@@ -142,6 +143,19 @@ const PaiementForm: React.FC<{ montant: number | null, courseId: string | null, 
             
         {/* </div> */}
 
+      </div>
+
+      <div className="btn-card">
+
+      <div className={`a-btn-card ${isVisible ? 'show' : ''}`}>
+            <div className="profile-content">
+                <img src="assets/logo.png" alt="profileImg" />
+            </div>
+
+            <div className="name-job">
+                <div className="job"><p>Ce prix inclus le frais de déplacement du chauffeur vers son client</p></div>
+            </div>
+        </div>
       </div>
 
       <div className="btn-card">
@@ -184,7 +198,8 @@ const PaiementForm: React.FC<{ montant: number | null, courseId: string | null, 
       )}
 
     </form>
-
+    
+    </>
     
   );
 };

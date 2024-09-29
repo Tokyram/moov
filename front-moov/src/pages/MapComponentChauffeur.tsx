@@ -148,11 +148,11 @@ const MapComponentChauffeur: React.FC = () => {
       <div className="content">
         <div className="distance-labels">
           <div className="label-item">
-            <div className="label">Distance :</div>
+            <div className="label">Distance</div>
             <div className="label-value"><label className="distance">{distance ? `${distance.toFixed(2)} km` : '0 km'}</label></div>
           </div>
           <div className="label-item">
-            <div className="label">Lieu :</div>
+            <div className="label">Lieu</div>
             <div className="label-value"><span> De </span><label style={{ color: 'var(--primary-color)' }} className="loc"><i className="bi bi-geo-alt-fill" style={{color:'red'}}> </i>{startLocation || ''}</label> <span> à </span> <label style={{ color: 'var(--primary-color)' }} className="loc"><i className="bi bi-geo-alt-fill" style={{color:'yellow'}}> </i>{endLocation || ''}</label></div>
           </div>
         </div>
