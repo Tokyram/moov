@@ -22,5 +22,6 @@ router.put('/terminer/:courseId', authMiddleware, CourseController.terminerCours
 
 router.get('/chauffeurTotalCourse/:chauffeur_id/:period',authMiddleware, CourseController.getCoursesByChauffeur);
 router.get('/totalCourses',authMiddleware, CourseController.getTotalCourses); // Total global
-router.get('/totalCoursesPeriode/:period',authMiddleware, CourseController.getCoursesByPeriod);
+// router.get('/totalCoursesPeriode/:period',authMiddleware, CourseController.getCoursesByPeriod);
+router.get('/totalCoursesPeriode/:periodType', authMiddleware,CourseController.getTotalCoursesByPeriod);
 module.exports = router;

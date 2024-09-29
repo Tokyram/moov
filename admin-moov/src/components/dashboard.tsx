@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './dashboard.css'; // Votre CSS personnalisé
 import { Bar, Line, Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { getDecodedToken, getTotalChauffeur, getTotalClient, getTotalCourses } from '../services/api';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement, Colors } from 'chart.js';
+import { getDecodedToken, getTotalChauffeur, getTotalClient, getTotalCourses, getTotalCoursesByPeriod } from '../services/api';
+import axios from 'axios';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -17,7 +18,11 @@ const Dashboard: React.FC = () => {
   const [totalCourses, setTotalCourses] = useState<number | null>(null);
   const [totalClient, setTotalClient] = useState<number | null>(null);
   const [totalChauffeur, setTotalChauffeur] = useState<number | null>(null);
+  const [chartData, setChartData] = useState<number[]>([]);
 
+  // Fonction pour récupérer le total des courses par période
+  
+  
   useEffect(() => {
     const fetchUserName = async () => {
       const decodedToken = await getDecodedToken(); // Décoder le token pour obtenir les informations de l'utilisateur
@@ -29,6 +34,25 @@ const Dashboard: React.FC = () => {
     fetchUserName();
   }, []);
 
+  useEffect(() => {
+    const fetchChartData = async () => {
+      try {
+        const data = await getTotalCoursesByPeriod(filter);
+        if (Array.isArray(data)) {
+          // Extraire uniquement les valeurs de total_courses
+          const totalCoursesData = data.map(item => item.total_courses);
+          setChartData(totalCoursesData);
+        } else {
+          console.error('Les données du graphique ne sont pas au format tableau :', data);
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données du graphique:', error);
+      }
+    };
+    fetchChartData();
+  }, [filter]);
+  
+  
 
   useEffect(() => {
     const fetchTotalCourses = async () => {
@@ -73,49 +97,43 @@ const Dashboard: React.FC = () => {
     fetchTotalChauffeur();
   }, []);
 
-  // Données pour chaque filtre
+
   const dataByFilter = {
     week: {
       labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
-      datasets: [
-        {
-          label: 'Revenus (Semaine)',
-          data: [12, 19, 3, 5, 2, 3, 7],
-          backgroundColor: 'rgb(238, 51, 36)',
-          borderColor: 'rgb(238, 51, 36)',
-          borderWidth: 1,
-          borderRadius: 20
-        },
-      ],
+      datasets: [{
+        label: 'Nombre de courses (Semaine)',
+        data: chartData,
+        backgroundColor: 'rgb(238, 51, 36)',
+        borderColor: 'rgb(238, 51, 36)',
+        borderWidth: 1,
+        borderRadius: 20
+      }],
     },
     month: {
       labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
-      datasets: [
-        {
-          label: 'Revenus (Mois)',
-          data: [40, 60, 80, 100],
-          backgroundColor: 'rgb(238, 51, 36)',
-          borderColor: 'rgb(238, 51, 36)',
-          borderWidth: 1,
-          borderRadius: 20
-        },
-      ],
+      datasets: [{
+        label: 'Nombre de courses (Mois)',
+        data: chartData,
+        backgroundColor: 'rgb(238, 51, 36)',
+        borderColor: 'rgb(238, 51, 36)',
+        borderWidth: 1,
+        borderRadius: 20
+      }],
     },
     year: {
       labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
-      datasets: [
-        {
-          label: 'Revenus (Année)',
-          data: [400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950],
-          backgroundColor: 'rgb(238, 51, 36)',
-          borderColor: 'rgb(238, 51, 36)',
-          borderWidth: 1,
-          borderRadius: 20
-        },
-      ],
+      datasets: [{
+        label: 'Nombre de courses (Année)',
+        data: chartData,
+        backgroundColor: 'rgb(238, 51, 36)',
+        borderColor: 'rgb(238, 51, 36)',
+        borderWidth: 1,
+        borderRadius: 20
+      }],
     },
   };
-
+  
   const options = {
     responsive: true,
     plugins: {
@@ -128,6 +146,7 @@ const Dashboard: React.FC = () => {
       },
     },
   };
+  console.log('Données utilisées pour le graphique:', dataByFilter[filter]);
 
    // Fonction pour changer le filtre
    const handleFilterChange = (newFilter: 'week' | 'month' | 'year') => {
@@ -175,7 +194,7 @@ const Dashboard: React.FC = () => {
       </div>
       <div className="row">
         <div className="titregraph">
-          <h3>Graphique sur le total de revenue</h3>
+          <h3>Graphique sur le total de course</h3>
           <p>Les revenues sont affichés par Semaine , mois, années dans le graphique</p>
         </div>
 
@@ -192,8 +211,10 @@ const Dashboard: React.FC = () => {
               onClick={() => handleFilterChange('year')}>Année</button>
           </div>
         {/* <ChartCard title="Website Views" chart={<Line data={websiteViewsData} />} subtitle="Campaign sent 2 days ago" /> */}
-        <ChartCard title="Graphique de revenus" chart={<Bar data={dataByFilter[filter]} options={options} />} subtitle="Updated 4 min ago" />
+        {/* <ChartCard title="Graphique de revenus" chart={<Bar data={dataByFilter[filter]} options={options} />} subtitle="Updated 4 min ago" /> */}
+        <ChartCard title="Graphique des courses" chart={<Bar data={dataByFilter[filter]} options={options} />} subtitle={''} />
         {/* <ChartCard title="Completed Tasks" chart={<Pie data={completedTasksData} />} subtitle="Just updated" /> */}
+        
       </div>
 
       <div className="row">

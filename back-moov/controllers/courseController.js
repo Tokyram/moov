@@ -228,7 +228,7 @@ class CourseController {
         const { chauffeur_id, period } = req.params;
 
         try {
-            const totalCourses = await CourseService.getCoursesByChauffeurAndPeriod(chauffeur_id, period);
+            const totalCourses = await Course.getCoursesByChauffeurAndPeriod(chauffeur_id, period);
             res.status(200).json({ total_courses: totalCourses });
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -237,23 +237,33 @@ class CourseController {
 
     static async getTotalCourses(req, res) {
         try {
-            const totalCourses = await CourseService.getTotalCourses();
+            const totalCourses = await Course.getTotalCourses();
             res.status(200).json({ total_courses: totalCourses });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    static async getCoursesByPeriod(req, res) {
-        const { period } = req.params;
-
+    // static async getCoursesByPeriod(req, res) {
+    //     const { period, type } = req.params; // Type peut être 'jour', 'mois', ou 'annee'
+    
+    //     try {
+    //         const totalCourses = await CourseService.getTotalCoursesByPeriod(period, type);
+    //         res.status(200).json(totalCourses); // Renvoyer directement les résultats groupés
+    //     } catch (error) {
+    //         res.status(500).json({ error: error.message });
+    //     }
+    // }
+    static async getTotalCoursesByPeriod (req, res){
+        const periodType = req.params.periodType; // Assurez-vous que cette ligne est bien présente
+    
         try {
-            const totalCourses = await CourseService.getTotalCoursesByPeriod(period);
-            res.status(200).json({ total_courses: totalCourses });
+            const totalCourses = await Course.getTotalCoursesByPeriod(periodType);
+            return res.status(200).json(totalCourses);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            return res.status(500).json({ error: error.message });
         }
-    }
+    };
 
     static async listeReservationAttribuesUser(req, res) {
         const userId = req.params.userId;

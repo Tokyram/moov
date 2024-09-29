@@ -79,27 +79,34 @@ const getTotalCourses = async () => {
     }
 };
 
-const getTotalCoursesByPeriod = async (period) => {
-    let interval;
-    switch (period) {
-        case 'semaine':
-            interval = '1 week';
-            break;
-        case 'mois':
-            interval = '1 month';
-            break;
-        case 'annee':
-            interval = '1 year';
-            break;
-        default:
-            throw new Error('Période non valide');
-    }
+// const getTotalCoursesByPeriod = async (period, type) => {
+//     let interval;
+
+//     switch (period) {
+//         case 'semaine':
+//             interval = '7 days';
+//             break;
+//         case 'mois':
+//             interval = '1 month';
+//             break;
+//         case 'annee':
+//             interval = '1 year';
+//             break;
+//         default:
+//             throw new Error('Période invalide');
+//     }
+
+//     return await Course.getTotalCoursesByPeriod(interval, type);
+// };
+
+const getTotalCoursesByPeriod = async (req, res) => {
+    const periodType = req.params.periodType;
 
     try {
-        const totalCourses = await Course.getTotalCoursesByPeriod(interval);
-        return totalCourses;
+        const totalCourses = await Course.getTotalCoursesByPeriod(periodType);
+        return res.status(200).json(totalCourses);
     } catch (error) {
-        throw new Error('Erreur lors de la récupération des courses : ' + error.message);
+        return res.status(500).json({ error: error.message });
     }
 };
 
