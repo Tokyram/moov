@@ -4,11 +4,18 @@ import '../components/Header.css';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 import 'leaflet/dist/leaflet.css';
-import { detailCourse } from '../services/api';
+import { commencerCourse, detailCourse, terminerCourse } from '../services/api';
 import Loader from '../components/Loader';
 import { useIonRouter } from '@ionic/react';
 import { useParams } from 'react-router-dom';
 const LeafletMapChauffeur = lazy(() => import('./LeafletMapChauffeur'));
+
+
+interface NavigationState {
+  chauffeur_id: any;
+  course_id: any;
+  passager_id: any;
+}
 
 const MapComponentChauffeur: React.FC = () => {
   const router = useIonRouter();
@@ -24,6 +31,7 @@ const MapComponentChauffeur: React.FC = () => {
   const [courseEnCours, setCourseEnCours] = useState<any>(null);
   const [isCoursePlanned, setIsCoursePlanned] = useState(false);
   const [buttonState, setButtonState] = useState<'RESERVER' | 'COMMENCER' | 'TERMINER' | 'EN_ATTENTE'>('RESERVER');
+  const [isCourseLoading, setIsCourseLoading] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -95,21 +103,33 @@ const MapComponentChauffeur: React.FC = () => {
   const handleButtonClick = async () => {
     if (!courseId) return;
 
+    const state: NavigationState = {
+      chauffeur_id: courseEnCours.chauffeur_id,
+      course_id: courseEnCours.course_id,
+      passager_id: courseEnCours.passager_id
+    };
+
+    setIsCourseLoading(true);
+
     switch (buttonState) {
       case 'COMMENCER':
         try {
-          // await commencerCourse(courseId);
+          const repsonse = await commencerCourse(courseId);
           setButtonState('TERMINER');
+          setIsCourseLoading(false);
         } catch (error) {
           console.error("Erreur lors du démarrage de la course:", error);
         }
         break;
       case 'TERMINER':
         try {
-          // await terminerCourse(courseId);
-          router.push('/home', 'root', 'replace');
+          const repsonse = await terminerCourse(courseId);
+          setIsCourseLoading(false);
+          const queryParams = new URLSearchParams(state as any).toString();
+          router.push(`/avis?${queryParams}`, 'root', 'replace');
         } catch (error) {
           console.error("Erreur lors de la terminaison de la course:", error);
+          setIsCourseLoading(false);
         }
         break;
     }
@@ -182,7 +202,7 @@ const MapComponentChauffeur: React.FC = () => {
             )}
             {buttonState === 'TERMINER' && (
               <button className="confirmation-button3" style={{ backgroundColor: 'var(--win-color)', color: 'var(--text-color)' }} onClick={handleButtonClick}>
-                Arriver à la destination
+                Terminer la course
                 <i className="bi bi-check-circle-fill"></i>
               </button>
             )}
