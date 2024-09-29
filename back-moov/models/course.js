@@ -367,15 +367,15 @@ class Course {
         return result.rows[0];
     }
 
-    static async getCourseCountByChauffeur(chauffeur_id, interval) {
+    static async getCourseCountByChauffeur(period) {
         try {
             const result = await db.query(
                 `SELECT COUNT(*) as total_courses 
                  FROM course 
                  WHERE chauffeur_id = $1 
                  AND status = 'TERMINE'
-                 AND created_at >= NOW() - INTERVAL '${interval}'`,
-                [chauffeur_id]
+                 AND created_at >= NOW() - INTERVAL '${period}'`,
+                [period]
             );
             return result.rows[0].total_courses;
         } catch (error) {
@@ -396,19 +396,75 @@ class Course {
         }
     }
 
-    static async getTotalCoursesByPeriod(interval) {
+    // static async getTotalCoursesByPeriod(interval) {
+    //     try {
+    //         const result = await db.query(
+    //             `SELECT COUNT(*) AS total_courses 
+    //              FROM course 
+    //              WHERE status = $1 
+    //              AND created_at >= NOW() - INTERVAL '${interval}'`,
+    //             ['TERMINE']
+    //         );
+    //         // Convertir total_courses en entier avant de le renvoyer
+    //         return parseInt(result.rows[0].total_courses, 10);
+    //     } catch (error) {
+    //         throw new Error('Erreur lors de la récupération des courses : ' + error.message);
+    //     }
+    // }
+
+    static async getTotalCoursesByPeriod(periodType) {
         try {
-            const result = await db.query(
-                `SELECT COUNT(*) AS total_courses 
-                 FROM course 
-                 WHERE status = 'TERMINE' 
-                 AND created_at >= NOW() - INTERVAL '${interval}'`
-            );
-            return result.rows[0].total_courses;
+            let query;
+    
+            if (periodType === 'day') {
+                query = `
+                    SELECT DATE(date_heure_depart) AS date, COUNT(*) AS total_courses
+                    FROM course
+                    WHERE status = 'TERMINE'
+                    GROUP BY DATE(date_heure_depart)
+                    ORDER BY DATE(date_heure_depart) ASC
+                `;
+            } else if (periodType === 'week') {
+                query = `
+                    SELECT DATE_TRUNC('week', date_heure_depart) AS week, COUNT(*) AS total_courses
+                    FROM course
+                    WHERE status = 'TERMINE'
+                    GROUP BY week
+                    ORDER BY week ASC
+                `;
+            } else if (periodType === 'month') {
+                query = `
+                    SELECT DATE_TRUNC('month', date_heure_depart) AS month, COUNT(*) AS total_courses
+                    FROM course
+                    WHERE status = 'TERMINE'
+                    GROUP BY month
+                    ORDER BY month ASC
+                `;
+            } else if (periodType === 'year') {
+                query = `
+                    SELECT DATE_TRUNC('year', date_heure_depart) AS year, COUNT(*) AS total_courses
+                    FROM course
+                    WHERE status = 'TERMINE'
+                    GROUP BY year
+                    ORDER BY year ASC
+                `;
+            } else {
+                throw new Error('Type de période invalide');
+            }
+    
+            const result = await db.query(query);
+    
+            // Parcourir les résultats et parser le champ 'total_courses'
+            return result.rows.map(row => ({
+                ...row,
+                total_courses: parseInt(row.total_courses, 10) // Convertir total_courses en entier
+            }));
+    
         } catch (error) {
             throw new Error('Erreur lors de la récupération des courses : ' + error.message);
         }
     }
+    
 
     static async listeReservationAttribueesUser(userId) {
         const query = `

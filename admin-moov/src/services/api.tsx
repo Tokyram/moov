@@ -303,3 +303,37 @@ export const creationChauffeurAdmin = async (voitureData: any) => {
       throw error;
   }
 };
+
+// export const getTotalCoursesPerPeriod = async (period: 'semaine' | 'mois' | 'annee',day: string) => {
+//   try {
+//     const response = await axios.get(`${API_BASE_URL}/courses/totalCoursesPeriode/${period}/${day}`, {
+//       headers: {
+//         Authorization: `Bearer ${getToken()}`, // Ajoute le token pour vérifier l'utilisateur
+//       },
+//     });
+//     return response.data;
+//   } catch (error) {
+//       if (axios.isAxiosError(error)) {
+//           console.error('Erreur Axios:', error.response?.data);
+//       } else {
+//           console.error('Erreur:', error);
+//       }
+// }
+
+// };
+  
+export const getTotalCoursesByPeriod = async (periodType: string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/courses/totalCoursesPeriode/${periodType}`, {
+      headers: {
+        'Authorization': `Bearer ${getToken()}`, // Ajoute le token pour vérifier l'utilisateur
+      },
+    });
+    return response.data; // Retourne les données récupérées
+  } catch (error) {
+    // Gérer les erreurs de manière appropriée
+    console.error("Erreur lors de la récupération des cours :", error);
+    throw error;
+    // throw new Error(`Erreur lors de la récupération des cours : ${error.response?.data?.error || error.message}`);
+  }
+};
