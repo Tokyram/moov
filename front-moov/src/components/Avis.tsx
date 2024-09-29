@@ -6,8 +6,17 @@ import 'regenerator-runtime/runtime';
 import Header from './Header';
 import Menu from './Menu';
 import '../pages/Login.css';
+import { RouteComponentProps } from 'react-router-dom';
 
-const Avis: React.FC = () => {
+interface AvisProps extends RouteComponentProps<{}> {}
+
+const Avis: React.FC<AvisProps> = ({ location }) => {
+
+  const params = new URLSearchParams(location.search);
+  const chauffeur_id = params.get('chauffeur_id');
+  const course_id = params.get('course_id');
+  const prix_course = params.get('prix_course');
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [rating, setRating] = useState(0); // État pour la notation
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);

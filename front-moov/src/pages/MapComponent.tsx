@@ -7,7 +7,7 @@ const LeafletMap = lazy(() => import('./LeafletMap'));
 import 'leaflet/dist/leaflet.css';
 import RechercheMap from '../components/RechercheMap';
 // import NotificationComponent from './NotificationComponent';
-import { CourseData, detailCourse, getDecodedToken, getTarifKm, reserverCourse } from '../services/api';
+import { commencerCourse, CourseData, detailCourse, getDecodedToken, getTarifKm, reserverCourse, terminerCourse } from '../services/api';
 import Loader from '../components/Loader';
 import { useIonRouter } from '@ionic/react';
 import { Storage } from '@capacitor/storage';
@@ -246,21 +246,27 @@ const MapComponent: React.FC = () => {
   const handleButtonClick = async () => {
     if (!courseId) return;
 
+    setIsCourseLoading(true);
+
     switch (buttonState) {
       case 'COMMENCER':
         try {
-          // await commencerCourse(courseId);
+          const repsonse = await commencerCourse(courseId);
           setButtonState('TERMINER');
+          setIsCourseLoading(false);
         } catch (error) {
           console.error("Erreur lors du démarrage de la course:", error);
+          setIsCourseLoading(false);
         }
         break;
       case 'TERMINER':
         try {
-          // await terminerCourse(courseId);
-          router.push('/home', 'root', 'replace');
+          const response = await terminerCourse(courseId);
+          setIsCourseLoading(false);
+          // router.push('/home', 'root', 'replace');
         } catch (error) {
           console.error("Erreur lors de la terminaison de la course:", error);
+          setIsCourseLoading(false);
         }
         break;
     }
@@ -350,7 +356,7 @@ const MapComponent: React.FC = () => {
               )
             }
 
-{
+            {
               (buttonState === 'ATTRIBUER') && (
                 <button className="confirmation-button3" style={{ backgroundColor: 'var(--text-color)', color: 'var(--background-color)' }}>
                   En attente <Loader/>
@@ -360,14 +366,14 @@ const MapComponent: React.FC = () => {
             }
 
             {buttonState === 'COMMENCER' && (
-              <button className="confirmation-button3" style={{ backgroundColor: 'var(--secondary-color)', color: 'var(--white-color)' }} onClick={handleButtonClick}>
-                Commencer la course
+              <button className="confirmation-button3" style={{ backgroundColor: 'var(--secondary-color)', color: 'var(--white-color)' }} onClick={handleButtonClick} disabled={isCourseLoading}>
+                {!isCourseLoading ? "Commencer la course" : <Loader/>}
                 <i className="bi bi-check-circle-fill"></i>
               </button>
             )}
             {buttonState === 'TERMINER' && (
-              <button className="confirmation-button3" style={{ backgroundColor: 'var(--win-color)', color: 'var(--text-color)' }} onClick={handleButtonClick}>
-                Arriver à la destination
+              <button className="confirmation-button3" style={{ backgroundColor: 'var(--win-color)', color: 'var(--text-color)' }} onClick={handleButtonClick} disabled={isCourseLoading}>
+                {!isCourseLoading ? "Terminer la course" : <Loader/>}
                 <i className="bi bi-check-circle-fill"></i>
               </button>
             )}

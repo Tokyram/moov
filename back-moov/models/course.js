@@ -274,7 +274,7 @@ class Course {
             JOIN utilisateur u_chauffeur ON c.chauffeur_id = u_chauffeur.id
             LEFT JOIN chauffeur_voiture cv ON u_chauffeur.id = cv.chauffeur_id
             LEFT JOIN voiture v ON cv.voiture_id = v.id
-            WHERE c.chauffeur_id = $1 AND c.status = 'ATTRIBUEE'
+            WHERE c.chauffeur_id = $1 AND c.status = 'ATTRIBUEE' OR c.status = 'EN COURS'
             ORDER BY c.date_heure_depart DESC
         `;
         const result = await db.query(query, [chauffeurId]);
@@ -353,6 +353,7 @@ class Course {
             RETURNING *
         `;
         const result = await db.query(query, [courseId]);
+        const addTraitement = await TraitementCourseUtilisateur.enregistrementTraitementCourse(result.rows[0].id, result.rows[0].passager_id);
         return result.rows[0];
     }
 
@@ -364,6 +365,7 @@ class Course {
             RETURNING *
         `;
         const result = await db.query(query, [courseId]);
+        const suppressionTraitement = TraitementCourseUtilisateur.suppressionTraitementCourse(result.rows[0].id);
         return result.rows[0];
     }
 
@@ -440,7 +442,7 @@ class Course {
             JOIN utilisateur u_chauffeur ON c.chauffeur_id = u_chauffeur.id
             LEFT JOIN chauffeur_voiture cv ON u_chauffeur.id = cv.chauffeur_id
             LEFT JOIN voiture v ON cv.voiture_id = v.id
-            WHERE c.passager_id = $1 AND c.status = 'ATTRIBUEE'
+            WHERE c.passager_id = $1 AND c.status = 'ATTRIBUEE' OR c.status = 'EN COURS'
             ORDER BY c.date_heure_depart DESC
         `;
         const result = await db.query(query, [userId]);

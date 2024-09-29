@@ -254,3 +254,37 @@ export const getReservationAttribuesUser = async () => {
         throw error;
     }
 }
+
+export const commencerCourse = async(courseId: any) => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.put(`/courses/commencer/${courseId}`, {}, { headers });   
+        return response;     
+    } catch(error: any) {
+        console.error('Erreur lors du commencement de la course :', error.message);
+        throw error;
+    }
+}
+
+export const terminerCourse = async(courseId: any) => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.put(`/courses/terminer/${courseId}`, {}, { headers });   
+        return response;     
+    } catch(error: any) {
+        console.error('Erreur lors de la finition de la course :', error.message);
+        throw error;
+    }
+}
