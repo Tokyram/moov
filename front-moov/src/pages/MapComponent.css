@@ -283,20 +283,41 @@
     position: relative;
     margin-top: -1px;
     color: var(--text-color);
+    
   }
 
   .distance-labels .label-item .label-value{
-    width: 70%;
+    width: 90%;
     display: flex;
+    align-items: center;
     justify-content: flex-end;
     font-weight: none !important;
+    i{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--text-color);
+      padding: 4px;
+      border-radius: 100px;
+      width: 25px;
+      height: 25px;
+      margin-right: 5px;
+    }
+
+    /* label{
+      display: ruby;
+      align-items: center;
+      justify-content: center;
+    } */
 
     .loc{
       width: 200px; /* Définissez une largeur appropriée pour votre cas */
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
       color: var(--primary-color);
     }
     span{
