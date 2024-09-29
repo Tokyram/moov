@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Avis.css';
 import './Header.css';
 import 'core-js/stable';
@@ -7,36 +7,72 @@ import Header from './Header';
 import Menu from './Menu';
 import '../pages/Login.css';
 import { RouteComponentProps } from 'react-router-dom';
+import { createAvis, getDecodedToken } from '../services/api';
+import { useIonRouter } from '@ionic/react';
 
 interface AvisProps extends RouteComponentProps<{}> {}
 
 const Avis: React.FC<AvisProps> = ({ location }) => {
 
+  const router = useIonRouter();
+
   const params = new URLSearchParams(location.search);
   const chauffeur_id = params.get('chauffeur_id');
+  const passager_id = params.get('passager_id');
   const course_id = params.get('course_id');
-  const prix_course = params.get('prix_course');
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [rating, setRating] = useState(0); // État pour la notation
+  const [rating, setRating] = useState(0);
+  const [commentaire, setCommentaire] = useState('');
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [role, setRole] = useState('');
+
+  useEffect(() => {
+    const getRole = async () => {
+      const decodedToken = await getDecodedToken();
+      if(decodedToken) {
+        setRole(decodedToken.role);
+      }
+    }
+
+    getRole();
+  },[])
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const handleStarClick = (index: number) => {
-    setRating(index + 1); // Mettre à jour la notation
+    if (rating === index + 1) {
+      // Si l'utilisateur clique sur l'étoile actuelle, réduire la note d'une étoile
+      setRating(index);
+    } else {
+      // Sinon, définir la note à l'index cliqué + 1
+      setRating(index + 1);
+    }
   };
 
   const handleConfirmAvis = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Empêcher le formulaire de se soumettre normalement
-    setShowSuccessPopup(true); // Afficher le popup de succès
+    e.preventDefault();
+    creationAvis();
   };
 
   const handleCloseSuccess = () => {
     setShowSuccessPopup(false);
+    router.push('/profil', 'root', 'replace');
   };
+
+  const creationAvis = async () => {
+    try {
+      var auteur = "";
+      if(role === "UTILISATEUR") auteur = 'chauffeur';
+      if(role === "CHAUFFEUR") auteur = 'passager';
+      const result = await createAvis(passager_id, chauffeur_id, rating, commentaire, course_id, auteur);
+      setShowSuccessPopup(true);
+    } catch(error: any) {
+      console.error('Erreur lors de la création d\'avis:', error);
+    }
+  }
 
   return (
     <div className="homeMap">
@@ -63,17 +99,22 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
             </div>
 
             <div className="tt">
-              <p>Votre avis sur le service ? </p>
+              <p>Votre avis sur le service du chauffeur/passager ? </p>
             </div>
           </div>
 
           <div className="flex-column">
-            <label>Commentaire </label>
+            <label>Commentaire(s) </label>
           </div>
 
           <div className="inputForm">
             <i className="bi bi-envelope-check"></i>
-            <textarea placeholder="Ecrivez votre commentaire ici" className="input" />
+            <textarea 
+              placeholder="Ecrivez votre commentaire ici" 
+              className="input"
+              value={commentaire}
+              onChange={(e) => setCommentaire(e.target.value)}
+            />
           </div>
 
           <button type="submit" className="confirmation-button4">

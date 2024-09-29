@@ -90,13 +90,14 @@ CREATE TABLE facture (
 );
 
 CREATE TABLE avis (
-    id SERIAL PRIMARY KEY,
-    passager_id INT NOT NULL, 
-    chauffeur_id INT NOT NULL, 
-    etoiles INT CHECK (etoiles >= 1 AND etoiles <= 5), 
-    commentaire TEXT,
-    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    auteur VARCHAR(255) NOT NULL 
+  id SERIAL PRIMARY KEY,
+  passager_id INT NOT NULL, 
+  chauffeur_id INT NOT NULL,
+  course_id INT NOT NULL, 
+  etoiles INT CHECK (etoiles >= 1 AND etoiles <= 5), 
+  commentaire TEXT,
+  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  auteur VARCHAR(255) NOT NULL 
 );
 
 

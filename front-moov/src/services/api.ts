@@ -288,3 +288,20 @@ export const terminerCourse = async(courseId: any) => {
         throw error;
     }
 }
+
+export const createAvis = async (passagerId: any, chauffeurId: any, etoiles: any, commentaire: any, courseId: any, auteur: any) => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.post(`/avis/creation_avis`, { passagerId, chauffeurId, etoiles, commentaire, courseId, auteur }, { headers });   
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors de la finition de la course :', error.message);
+        throw error;
+    }
+}

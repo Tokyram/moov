@@ -19,6 +19,12 @@ interface Suggestion {
   lon: string;
 }
 
+interface NavigationState {
+  chauffeur_id: any;
+  course_id: any;
+  passager_id: any;
+}
+
 const MapComponent: React.FC = () => {
 
   const router = useIonRouter();
@@ -246,6 +252,12 @@ const MapComponent: React.FC = () => {
   const handleButtonClick = async () => {
     if (!courseId) return;
 
+    const state: NavigationState = {
+      chauffeur_id: courseEnCours.chauffeur_id,
+      course_id: courseEnCours.course_id,
+      passager_id: courseEnCours.passager_id
+    };
+
     setIsCourseLoading(true);
 
     switch (buttonState) {
@@ -263,7 +275,8 @@ const MapComponent: React.FC = () => {
         try {
           const response = await terminerCourse(courseId);
           setIsCourseLoading(false);
-          // router.push('/home', 'root', 'replace');
+          const queryParams = new URLSearchParams(state as any).toString();
+          router.push(`/avis?${queryParams}`, 'root', 'replace');
         } catch (error) {
           console.error("Erreur lors de la terminaison de la course:", error);
           setIsCourseLoading(false);
