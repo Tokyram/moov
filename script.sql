@@ -1,11 +1,11 @@
 CREATE TABLE utilisateur (
   id SERIAL PRIMARY KEY,
-  nom VARCHAR(70) NOT NULL,
-  prenom VARCHAR(70) NOT NULL,
-  telephone VARCHAR(70) UNIQUE NOT NULL,
-  mail VARCHAR(70) NOT NULL,
+  nom VARCHAR(255) NOT NULL,
+  prenom VARCHAR(255) NOT NULL,
+  telephone VARCHAR(255) UNIQUE NOT NULL,
+  mail VARCHAR(255) NOT NULL,
   mdp VARCHAR(255) NOT NULL,
-  adresse VARCHAR(70) NOT NULL,
+  adresse VARCHAR(255) NOT NULL,
   photo VARCHAR(255),
   role VARCHAR(50) NOT NULL DEFAULT 'UTILISATEUR',
   date_inscription TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -26,12 +26,6 @@ CREATE TABLE voiture (
   modele VARCHAR(255) NOT NULL,
   immatriculation VARCHAR(10) UNIQUE NOT NULL,
   photo_url VARCHAR(255) 
-);
-
-CREATE TABLE photo_voiture (
-  id SERIAL PRIMARY KEY,
-  voiture_id INTEGER REFERENCES voiture(id) ON DELETE CASCADE,
-  photo_url VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE chauffeur_voiture (
@@ -102,7 +96,7 @@ CREATE TABLE avis (
     etoiles INT CHECK (etoiles >= 1 AND etoiles <= 5), 
     commentaire TEXT,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    auteur VARCHAR(10) NOT NULL 
+    auteur VARCHAR(255) NOT NULL 
 );
 
 
