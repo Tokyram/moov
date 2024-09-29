@@ -230,8 +230,8 @@ const closeModal = () => {
   return (
     <div className="ajout">
         <div className="titregraph">
-          <h3>Ajout d'un membre</h3>
-          <p>Ce tableau comporte la liste des clients avec son status, ils peuvent etre alors banni ou pas selon leur statut</p>
+          <h3>Gestion des membres du platforme (chauffeurs/administateurs)</h3>
+          <p>Ce tableau comporte la liste des chauffeurs et des administateurs présents dans le plateforme, ils peuvent etre alors banni ou non, et la possiblité d'ajout d'un nouveau membre</p>
         </div>
         {showAlert && (
         <CustomAlert message="Membre banni avec succès" onClose={closeAlert} />
@@ -434,8 +434,8 @@ const closeModal = () => {
         <div className="table">
 
         <div className="titregraph">
-          <h3>Liste des membres ajouter</h3>
-          <p>Ce tableau comporte la liste des membres avec son status comme admin ou chauffeur, ils peuvent etre alors banni ou pas </p>
+          <h3>Liste des membres</h3>
+          <p>Ce tableau comporte la liste des membres avec son rôle</p>
         </div>
         <table className="liste-table">
           <thead>
