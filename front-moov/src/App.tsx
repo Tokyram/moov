@@ -76,7 +76,6 @@ const App: React.FC = () => {
               setCourse(traite.data.enregistrement.course_id);
           } else {
               setIsLoading(false);
-              setCourse(traite.data.enregistrement.course_id);
           }
       } catch(error: any) {
           setIsLoading(false);

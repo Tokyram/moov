@@ -88,31 +88,31 @@ const Menu: React.FC = () => {
               course != 0 ? (
                 <a href={`/map/${course}`}>
                   <i className="bi bi-globe-americas"></i>
-                  <span className="link_name">Accueil*</span>
+                  <span className="link_name">Accueil</span>
                 </a>
               ) : (
                 <a href="/map">
                   <i className="bi bi-globe-americas"></i>
-                  <span className="link_name">Accueil*</span>
+                  <span className="link_name">Accueil</span>
                 </a>
               )
             }
           </li>
         )}
         
-        <li>
+        {/* <li>
           <a href="/paiement">
             <i className="bi bi-currency-exchange"></i>
             <span className="link_name">Paiement*</span>
           </a>
          
-        </li>
+        </li> */}
         {
           userRole === "UTILISATEUR" && (
             <li>
               <a href="/reservation">
                 <i className="bi bi-arrow-down-right-square-fill"></i>
-                <span className="link_name">Réservation*</span>
+                <span className="link_name">Réservations</span>
               </a>
             </li>
           )
@@ -123,7 +123,7 @@ const Menu: React.FC = () => {
             <li>
               <a href="/reservation_chauffeur">
                 <i className="bi bi-arrow-down-right-square-fill"></i>
-                <span className="link_name">Réservation chauffeur*</span>
+                <span className="link_name">Réservation chauffeur</span>
               </a>
             </li>
           )
@@ -135,7 +135,7 @@ const Menu: React.FC = () => {
               <div className="iocn-link">
                 <a href="/notification">
                     <i className="bi bi-bell-fill"></i>
-                  <span className="link_name">Notification*</span>
+                  <span className="link_name">Notifications</span>
                 </a>
               </div>
             
@@ -162,7 +162,7 @@ const Menu: React.FC = () => {
               <div className="iocn-link">
                 <a href="/facture">
                 <i className="bi bi-wallet-fill"></i>
-                  <span className="link_name">Facture*</span>
+                  <span className="link_name">Factures</span>
                 </a>
               </div>
               

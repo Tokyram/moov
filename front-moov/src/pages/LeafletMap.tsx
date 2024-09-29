@@ -86,7 +86,6 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
   const mapRef = useRef<L.Map | null>(null);
   const routingControlRef = useRef<L.Routing.Control | null>(null);
 
-  const [realTimeChauffeur, setRealTimeChauffeur] = useState<any | null>(null);
   const [userPosition, setUserPosition] = useState<[number, number] | null>(null);
 
   console.log("course", course);
@@ -229,27 +228,6 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
 
   }, [course]);
 
-  useEffect(() => {
-    // Simuler le déplacement du chauffeur en temps réel
-    const interval = setInterval(() => {
-      if (realTimeChauffeur) {
-        // Mettez à jour la position du chauffeur en ajoutant une petite variation
-        setRealTimeChauffeur((prevChauffeur: any) => {
-          if (prevChauffeur) {
-            const newPosition: [number, number] = [
-              prevChauffeur.position[0] + (Math.random() - 0.5) * 0.001, // Variation aléatoire pour la simulation
-              prevChauffeur.position[1] + (Math.random() - 0.5) * 0.001
-            ];
-            return { ...prevChauffeur, position: newPosition };
-          }
-          return null;
-        });
-      }
-    }, 5000); // Mettre à jour toutes les 5 secondes
-
-    return () => clearInterval(interval); // Nettoyer l'intervalle lors du démontage du composant
-  }, [realTimeChauffeur]);
-
   const handleCancelPoints = () => {
     if(!isCoursePlanned) {
       setStart(null);
@@ -257,7 +235,6 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ position, start, end, setDistan
       setDistance(null);
       setSelectedChauffeur(null);
       setChauffeurs(chauffeurs);
-      setRealTimeChauffeur(null); // Réinitialiser le suivi du chauffeur en temps réel
     }
   };
 
