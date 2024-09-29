@@ -283,6 +283,44 @@ class CourseController {
             });
         }
     }
+
+    static async historiqueReservationUser(req, res) {
+        const userId = req.params.userId;
+
+        try {
+            const reservations = await Course.historiqueReservationUser(userId);
+            res.json({
+                success: true,
+                data: reservations
+            })
+        } catch(error) {
+            console.error('Erreur lors de la récupération de la liste :', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Erreur serveur', 
+                error: error.message 
+            });
+        }
+    }
+
+    static async historiqueReservationChauffeur(req, res) {
+        const chauffeurId = req.params.chauffeurId;
+
+        try {
+            const reservations = await Course.historiqueReservationChauffeur(chauffeurId);
+            res.json({
+                success: true,
+                data: reservations
+            })
+        } catch(error) {
+            console.error('Erreur lors de la récupération de la liste :', error);
+            res.status(500).json({ 
+                success: false, 
+                message: 'Erreur serveur', 
+                error: error.message 
+            });
+        }
+    }
 }
 
 module.exports = CourseController;
