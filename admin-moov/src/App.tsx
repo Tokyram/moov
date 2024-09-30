@@ -11,6 +11,7 @@ import HistoriqueReservation from './components/historiqueReservation';
 import AjoutMembre from './components/ajoutMembre';
 import AjoutVoiture from './components/ajoutVoiture';
 import Loader from './components/loader';
+import Assignation from './components/Assignation';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="ajout-membre" element={<AjoutMembre />} />
           <Route path="ajout-voiture" element={<AjoutVoiture />} />
           <Route path="Loader" element={<Loader />} />
+          <Route path="assignation-chauffeur-voiture" element={<Assignation />} />
         </Route>
       </Routes>
     </Router>

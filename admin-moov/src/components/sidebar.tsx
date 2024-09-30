@@ -98,6 +98,13 @@ const Sidebar: React.FC = () => {
             <span className="material-symbols-outlined"><i className="bi bi-node-plus-fill"></i></span>Ajout voiture
           </a>
         </li>
+
+        <li>
+          <a href="/home/assignation-chauffeur-voiture">
+            <span className="material-symbols-outlined"><i className="bi bi-diagram-2-fill"></i></span>Assignation
+          </a>
+        </li>
+
         <h4>
           <span>Autre</span>
           <div className="menu-separator"></div>
