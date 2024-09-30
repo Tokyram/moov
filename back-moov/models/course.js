@@ -385,6 +385,25 @@ class Course {
         }
     }
 
+    static async getChauffeursWithCourseCount() {
+        try {
+            const result = await db.query(
+                `SELECT u.id AS chauffeur_id, 
+                        u.nom AS chauffeur_nom,
+                        COUNT(c.id) AS total_courses 
+                 FROM utilisateur u
+                 LEFT JOIN course c ON u.id = c.chauffeur_id 
+                 WHERE c.status = 'TERMINE'
+                 GROUP BY u.id, u.nom`
+            );
+    
+            return result.rows; // Retourne la liste des chauffeurs avec leur total de courses
+        } catch (error) {
+            throw new Error('Erreur lors de la récupération des chauffeurs : ' + error.message);
+        }
+    }
+    
+
     static async getTotalCourses() {
         try {
             const result = await db.query(
@@ -398,21 +417,6 @@ class Course {
         }
     }
 
-    // static async getTotalCoursesByPeriod(interval) {
-    //     try {
-    //         const result = await db.query(
-    //             `SELECT COUNT(*) AS total_courses 
-    //              FROM course 
-    //              WHERE status = $1 
-    //              AND created_at >= NOW() - INTERVAL '${interval}'`,
-    //             ['TERMINE']
-    //         );
-    //         // Convertir total_courses en entier avant de le renvoyer
-    //         return parseInt(result.rows[0].total_courses, 10);
-    //     } catch (error) {
-    //         throw new Error('Erreur lors de la récupération des courses : ' + error.message);
-    //     }
-    // }
 
     static async getTotalCoursesByPeriod(periodType) {
         try {

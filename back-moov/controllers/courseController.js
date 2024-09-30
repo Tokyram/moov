@@ -228,7 +228,7 @@ class CourseController {
         const { chauffeur_id, period } = req.params;
 
         try {
-            const totalCourses = await Course.getCoursesByChauffeurAndPeriod(chauffeur_id, period);
+            const totalCourses = await CourseService.getCoursesByChauffeurAndPeriod(chauffeur_id, period);
             res.status(200).json({ total_courses: totalCourses });
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -319,6 +319,15 @@ class CourseController {
                 message: 'Erreur serveur', 
                 error: error.message 
             });
+        }
+    }
+
+    static async getChauffeursWithCourseCount(req, res) {
+        try {
+            const chauffeurs = await Course.getChauffeursWithCourseCount();
+            return res.status(200).json(chauffeurs);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
         }
     }
 }

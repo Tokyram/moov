@@ -335,3 +335,18 @@ export const getAllHistoriqueCourse = async () => {
     throw error;
   }
 };
+
+export const getAllChauffeurCountCourse = async () => {
+  
+  try {
+    const response = await axios.get(`${API_BASE_URL}/courses/chauffeursCourseCount`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, 
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des chauffeurs cours count :', error);
+    throw error;
+  }
+};

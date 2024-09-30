@@ -5,11 +5,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './dashboard.css'; // Votre CSS personnalisé
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement, Colors } from 'chart.js';
-import { getDecodedToken, getTotalChauffeur, getTotalClient, getTotalCourses, getTotalCoursesByPeriod } from '../services/api';
+import { getAllChauffeurCountCourse, getDecodedToken, getTotalChauffeur, getTotalClient, getTotalCourses, getTotalCoursesByPeriod } from '../services/api';
 import axios from 'axios';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement);
-
+interface Chauffeur {
+  chauffeur_id: number;
+  chauffeur_nom: string;
+  total_courses: number;
+}
+interface ConduxteurCourseProps {
+  chauffeurs: Chauffeur[];
+}
 const Dashboard: React.FC = () => {
   
   const [userName, setUserName] = useState<string | null>(null);
@@ -20,8 +27,27 @@ const Dashboard: React.FC = () => {
   const [totalChauffeur, setTotalChauffeur] = useState<number | null>(null);
   const [chartData, setChartData] = useState<number[]>([]);
 
-  // Fonction pour récupérer le total des courses par période
-  
+  const [chauffeurs, setChauffeurs] = useState<Chauffeur[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchChauffeurs = async () => {
+            try {
+                const data = await getAllChauffeurCountCourse();
+                console.log(" Chauffeur course count",data);
+                setChauffeurs(data);
+            } catch (error: any) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchChauffeurs();
+    }, []);
+
+    
   
   useEffect(() => {
     const fetchUserName = async () => {
@@ -93,9 +119,12 @@ const Dashboard: React.FC = () => {
         console.error('Erreur lors de la récupération du total des Chauffeurs:', error);
       }
     };
+    
 
     fetchTotalChauffeur();
   }, []);
+
+  
 
 
   const dataByFilter = {
@@ -217,12 +246,16 @@ const Dashboard: React.FC = () => {
         
       </div>
 
+      <div className="cond">
+        
       <div className="row">
-        <div className="titregraph">
-          <h3> Tops 5 des meilleurs Conducteurs</h3>
-          <p>Seul les meilleurs conducteurs sont affichés sur cette tableau , ils pourront etre consultés pour avoir des bonus.</p>
-        </div>
-      <RecentOrders />
+       
+        <RecentOrders />
+      </div>
+      <div className="row">
+        
+        <ConduxteurCourse chauffeurs={chauffeurs}/>
+      </div>
       </div>
       
     </div>
@@ -261,11 +294,13 @@ const RecentOrders: React.FC = () => (
     <div className="col-md-12">
       <div className="card table">
         <div className="card-body">
-          <h5 className="card-title">Meilleurs conducteur</h5>
+        <div className="titregraph">
+          <h3> Tops 5 des meilleurs Conducteurs</h3>
+          <p>Seul les meilleurs conducteurs sont affichés sur cette tableau , ils pourront etre consultés pour avoir des bonus.</p>
+        </div>
           <table className="table table-striped">
             <thead>
               <tr>
-                <th>Conducteur ID</th>
                 <th>Nom du conducteur</th>
                 <th>Total courses</th>
                 <th>Total Revenus</th>
@@ -274,14 +309,12 @@ const RecentOrders: React.FC = () => (
             </thead>
             <tbody>
               <tr>
-                <td>#1234</td>
                 <td>John Doe</td>
                 <td>2023-02-15</td>
                 <td>$100</td>
                 <td><span className="badge badge-success">Delivered</span></td>
               </tr>
               <tr>
-                <td>#1235</td>
                 <td>Jane Doe</td>
                 <td>2023-02-14</td>
                 <td>$50</td>
@@ -289,6 +322,52 @@ const RecentOrders: React.FC = () => (
               </tr>
               {/* More rows */}
             </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const getTotalColor = (total: number) => {
+  if (total > 100) { // Exemple pour "élevé"
+      return "text-success"; // Vert
+  } else if (total > 50) { // Exemple pour "moyen"
+      return "text-warning"; // Jaune
+  } else { // "bas"
+      return "text-danger"; // Rouge
+  }
+};
+const ConduxteurCourse: React.FC<ConduxteurCourseProps> = ({ chauffeurs }) => (
+
+  
+  <div className="row mt-4">
+    
+    <div className="col-md-12">
+      <div className="card table">
+        <div className="card-body">
+        <div className="titregraph">
+          <h3> Liste des conducteurs avec leur nombre de course</h3>
+          <p>Seul les meilleurs conducteurs sont affichés sur cette tableau , ils pourront etre consultés pour avoir des bonus.</p>
+        </div>
+          {/* <h5 className="card-title">Liste de conducteur avec leur nombre de courses</h5> */}
+          <table className="table table-striped">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Total des Courses</th>
+          </tr>
+        </thead>
+        <tbody>
+          {chauffeurs.map(chauffeur => (
+            <tr key={chauffeur.chauffeur_id}>
+              <td>{chauffeur.chauffeur_id}</td>
+              <td>{chauffeur.chauffeur_nom}</td>
+              <td style={{fontWeight: '1000'}} className={getTotalColor(chauffeur.total_courses)}>{chauffeur.total_courses}</td>
+            </tr>
+          ))}
+        </tbody>
           </table>
         </div>
       </div>
