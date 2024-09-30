@@ -1,49 +1,57 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./historique.css";
-
+import { getAllHistoriqueCourse } from "../services/api";
+import { format } from "date-fns";
+import { fr } from 'date-fns/locale';
 interface CardProps {
-  imageUrl: string;
-  thumbUrl: string;
-  title: string;
+  id: string;
   status: string;
   destination: string;
   date: string;
-  client: string;
-  telephone: string;
+  client: {
+    nom: string;
+    telephone: string;
+  };
+  chauffeur: {
+    nom: string;
+    telephone: string;
+  };
   prix: number;
-  chauffeur: string;
-  telephoneChauffeur: string;
-  voiture: string;
+  adresseArrivee: string;
+  adresseDepart: string;
 }
 
-const Card: React.FC<CardProps> = ({ imageUrl, thumbUrl, title, status, destination, date, client, telephone,prix, chauffeur, telephoneChauffeur, voiture }) => {
+
+const Card: React.FC<CardProps> = ({ id,status, destination, date, client, chauffeur, prix, adresseArrivee, adresseDepart }) => {
   return (
     <li>
       <a href="#" className="carde">
         <div className="stats">
           <p>{status}</p>
         </div>
-        <img src={imageUrl} className="carde__image" alt={title} />
+        <img src="../v1.png" className="carde__image" alt={date} />
 
         <div className="carde__overlay">
           <div className="carde__header">
             <svg className="carde__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>
-            <img className="carde__thumb" src={thumbUrl} alt={title} />
+            <img className="carde__thumb" src="../profil.png" alt={date} />
             <div className="carde__header-text">
-              <h3 className="carde__title">{title}</h3>
+              <h3 className="carde__title">Réservation {id}</h3>
               <span className="carde__status">{destination}</span> <br />
-              <span className="carde__status" style={{ color: 'var(--primary-color)' }}>{date}</span>
+              <span className="carde__status" style={{ color: 'var(--primary-color)' }}> {format(new Date(date), 'dd MMMM yyyy, HH:mm:ss', { locale: fr })}</span>
+              <span className="carde__status" style={{ color: 'var(--primary-color)' }}>{prix}</span>
             </div>
           </div>
-          <div className="infoh">
-            <p className="carde__description"><i className="bi bi-person-fill-check"></i>{client}</p>
-            <p className="carde__description"><i className="bi bi-telephone-fill"></i>{telephone}</p>
+          <div className="infoh" >
+            <p className="carde__description"><i className="bi bi-person-fill-check"></i>{client.nom}</p>
+            <p className="carde__description"><i className="bi bi-telephone-fill"></i>{client.telephone}</p>
             <p className="carde__description"><i className="bi bi-currency-exchange"></i>{prix} Ar</p>
             <hr style={{ color: 'var(--background-color)' }} />
-            <p className="carde__description"><i className="bi bi-person-fill-check"></i>{chauffeur}</p>
-            <p className="carde__description"><i className="bi bi-telephone-fill"></i>{telephoneChauffeur}</p>
-            <p className="carde__description"><i className="bi bi-taxi-front-fill"></i>{voiture}</p>
+            <p className="carde__description"><i className="bi bi-person-fill-check"></i>{chauffeur.nom}</p>
+            <p className="carde__description"><i className="bi bi-telephone-fill"></i>{chauffeur.telephone}</p>
+            <p className="carde__description"><i className="bi bi-taxi-front-fill"></i>{adresseDepart}</p>
+            <p className="carde__description"><i className="bi bi-taxi-front-fill"></i>{adresseArrivee}</p>
           </div>
         </div>
       </a>
@@ -52,279 +60,59 @@ const Card: React.FC<CardProps> = ({ imageUrl, thumbUrl, title, status, destinat
 };
 
 const HistoriqueReservation: React.FC = () => {
-  const cardsData = [
-    {
-      imageUrl: "../v2.png",
-      thumbUrl: "../logo.png",
-      title: "Réservation",
-      status: "Payé",
-      destination: "Ivandry à Ampitatafika",
-      date: "21 septembre 2024",
-      client: "Rakoto",
-      telephone: "+261 34 34 34 34",
-      prix: 20000,
-      chauffeur: "Chauffeur 1",
-      telephoneChauffeur: "+261 34 34 34 34",
-      voiture: "524345 WWT",
-    },
-    {
-      imageUrl: "../v1.png",
-      thumbUrl: "../logo.png",
-      title: "Réservation",
-      status: "Payé",
-      destination: "Ankorondrano à Antananarivo",
-      date: "5 septembre 2024",
-      client: "Andry",
-      telephone: "+261 34 56 78 90",
-      prix: 20000,
-      chauffeur: "Chauffeur 2",
-      telephoneChauffeur: "+261 34 12 34 56",
-      voiture: "123456 ABC",
-    },
-    {
-      imageUrl: "../v3.png",
-      thumbUrl: "../logo.png",
-      title: "Réservation",
-      status: "Payé",
-      destination: "Tana à Ambohidratrimo",
-      date: "19 septembre 2024",
-      client: "Mamy",
-      telephone: "+261 34 98 76 54",
-      prix: 20000,
-      chauffeur: "Chauffeur 3",
-      telephoneChauffeur: "+261 34 11 22 33",
-      voiture: "654321 XYZ",
-    },
-    {
-        imageUrl: "../v2.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Ivandry à Ampitatafika",
-        date: "21 septembre 2024",
-        client: "Rakoto",
-        telephone: "+261 34 34 34 34",
-        prix: 20000,
-        chauffeur: "Chauffeur 1",
-        telephoneChauffeur: "+261 34 34 34 34",
-        voiture: "524345 WWT",
-      },
-      {
-        imageUrl: "../v1.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Ankorondrano à Antananarivo",
-        date: "5 septembre 2024",
-        client: "Andry",
-        telephone: "+261 34 56 78 90",
-        prix: 20000,
-        chauffeur: "Chauffeur 2",
-        telephoneChauffeur: "+261 34 12 34 56",
-        voiture: "123456 ABC",
-      },
-      {
-        imageUrl: "../v3.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Tana à Ambohidratrimo",
-        date: "19 septembre 2024",
-        client: "Mamy",
-        telephone: "+261 34 98 76 54",
-        prix: 20000,
-        chauffeur: "Chauffeur 3",
-        telephoneChauffeur: "+261 34 11 22 33",
-        voiture: "654321 XYZ",
-      },
-      {
-        imageUrl: "../v2.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Ivandry à Ampitatafika",
-        date: "21 septembre 2024",
-        client: "Rakoto",
-        telephone: "+261 34 34 34 34",
-        prix: 20000,
-        chauffeur: "Chauffeur 1",
-        telephoneChauffeur: "+261 34 34 34 34",
-        voiture: "524345 WWT",
-      },
-      {
-        imageUrl: "../v1.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Ankorondrano à Antananarivo",
-        date: "5 septembre 2024",
-        client: "Andry",
-        telephone: "+261 34 56 78 90",
-        prix: 20000,
-        chauffeur: "Chauffeur 2",
-        telephoneChauffeur: "+261 34 12 34 56",
-        voiture: "123456 ABC",
-      },
-      {
-        imageUrl: "../v3.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Tana à Ambohidratrimo",
-        date: "19 septembre 2024",
-        client: "Mamy",
-        telephone: "+261 34 98 76 54",
-        prix: 20000,
-        chauffeur: "Chauffeur 3",
-        telephoneChauffeur: "+261 34 11 22 33",
-        voiture: "654321 XYZ",
-      },
-      {
-        imageUrl: "../v2.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Ivandry à Ampitatafika",
-        date: "21 septembre 2024",
-        client: "Rakoto",
-        telephone: "+261 34 34 34 34",
-        prix: 20000,
-        chauffeur: "Chauffeur 1",
-        telephoneChauffeur: "+261 34 34 34 34",
-        voiture: "524345 WWT",
-      },
-      {
-        imageUrl: "../v1.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Ankorondrano à Antananarivo",
-        date: "5 septembre 2024",
-        client: "Andry",
-        telephone: "+261 34 56 78 90",
-        prix: 20000,
-        chauffeur: "Chauffeur 2",
-        telephoneChauffeur: "+261 34 12 34 56",
-        voiture: "123456 ABC",
-      },
-      {
-        imageUrl: "../v3.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Tana à Ambohidratrimo",
-        date: "19 septembre 2024",
-        client: "Mamy",
-        telephone: "+261 34 98 76 54",
-        prix: 20000,
-        chauffeur: "Chauffeur 3",
-        telephoneChauffeur: "+261 34 11 22 33",
-        voiture: "654321 XYZ",
-      },
-      {
-        imageUrl: "../v2.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Ivandry à Ampitatafika",
-        date: "21 septembre 2024",
-        client: "Rakoto",
-        telephone: "+261 34 34 34 34",
-        prix: 20000,
-        chauffeur: "Chauffeur 1",
-        telephoneChauffeur: "+261 34 34 34 34",
-        voiture: "524345 WWT",
-      },
-      {
-        imageUrl: "../v1.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Ankorondrano à Antananarivo",
-        date: "5 septembre 2024",
-        client: "Andry",
-        telephone: "+261 34 56 78 90",
-        prix: 20000,
-        chauffeur: "Chauffeur 2",
-        telephoneChauffeur: "+261 34 12 34 56",
-        voiture: "123456 ABC",
-      },
-      {
-        imageUrl: "../v3.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Tana à Ambohidratrimo",
-        date: "19 septembre 2024",
-        client: "Mamy",
-        telephone: "+261 34 98 76 54",
-        prix: 20000,
-        chauffeur: "Chauffeur 3",
-        telephoneChauffeur: "+261 34 11 22 33",
-        voiture: "654321 XYZ",
-      },
-      {
-        imageUrl: "../v2.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Ivandry à Ampitatafika",
-        date: "21 septembre 2024",
-        client: "Rakoto",
-        telephone: "+261 34 34 34 34",
-        prix: 20000,
-        chauffeur: "Chauffeur 1",
-        telephoneChauffeur: "+261 34 34 34 34",
-        voiture: "524345 WWT",
-      },
-      {
-        imageUrl: "../v1.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Ankorondrano à Antananarivo",
-        date: "5 septembre 2024",
-        client: "Andry",
-        telephone: "+261 34 56 78 90",
-        prix: 20000,
-        chauffeur: "Chauffeur 2",
-        telephoneChauffeur: "+261 34 12 34 56",
-        voiture: "123456 ABC",
-      },
-      {
-        imageUrl: "../v3.png",
-        thumbUrl: "../logo.png",
-        title: "Réservation",
-        status: "Payé",
-        destination: "Tana à Ambohidratrimo",
-        date: "19 septembre 2024",
-        client: "Mamy",
-        telephone: "+261 34 98 76 54",
-        prix: 20000,
-        chauffeur: "Chauffeur 3",
-        telephoneChauffeur: "+261 34 11 22 33",
-        voiture: "654321 XYZ",
-      },
-  ];
-
   const [currentPage, setCurrentPage] = useState(1);
   const [cardsPerPage] = useState(15); // Vous pouvez ajuster cela pour la pagination
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [items, setItems] = useState<CardProps[]>([]); 
+  
 
+  useEffect(() => {
+    const fetchHistorique = async () => {
+      try {
+        const historique = await getAllHistoriqueCourse();
+        
+        // Transformer les données pour correspondre à l'interface CardProps
+        const formattedData = historique.data.map((course: any) => ({
+          id: course.id,
+          status: course.status,
+          destination: course.adresse_arrivee,
+          date: course.created_at,
+          client: {
+            nom: course.passager.nom,
+            telephone: course.passager.telephone,
+          },
+          chauffeur: {
+            nom: course.chauffeur.nom,
+            telephone: course.chauffeur.telephone,
+          },
+          prix: parseFloat(course.prix),
+          adresseArrivee: course.adresse_arrivee,
+          adresseDepart: course.adresse_depart,
+        }));
+  
+        setItems(formattedData); // Mettre à jour les items avec les données formatées
+      } catch (error) {
+        console.error('Erreur lors de la récupération des historique :', error);
+      }
+    };
+    
+    fetchHistorique();
+  }, []);
+  
   // Obtenir les cartes actuelles
   const indexOfLastCard = currentPage * cardsPerPage;
   const indexOfFirstCard = indexOfLastCard - cardsPerPage;
 
-  const filteredCards = cardsData.filter((card) => {
+  const filteredCards = items.filter((card) => {
     const cardDate = new Date(card.date);
     const start = startDate ? new Date(startDate) : new Date("1970-01-01");
     const end = endDate ? new Date(endDate) : new Date();
     const matchesDate = cardDate >= start && cardDate <= end;
     const matchesSearch =
-      card.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      card.chauffeur.toLowerCase().includes(searchTerm.toLowerCase());
+      card.client.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      card.chauffeur.nom.toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesDate && matchesSearch;
   });
@@ -371,21 +159,19 @@ const HistoriqueReservation: React.FC = () => {
         {currentCards.map((card, index) => (
           <Card
             key={index}
-            imageUrl={card.imageUrl}
-            thumbUrl={card.thumbUrl}
-            title={card.title}
+            id={card.id}
             status={card.status}
             destination={card.destination}
             date={card.date}
             client={card.client}
-            telephone={card.telephone}
-            prix={card.prix}
             chauffeur={card.chauffeur}
-            telephoneChauffeur={card.telephoneChauffeur}
-            voiture={card.voiture}
+            prix={card.prix}
+            adresseArrivee={card.adresseArrivee}
+            adresseDepart={card.adresseDepart}
           />
         ))}
       </ul>
+
 
       {/* Pagination */}
       <div className="pagination">

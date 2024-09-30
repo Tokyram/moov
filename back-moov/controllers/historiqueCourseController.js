@@ -22,6 +22,28 @@ const getCompletedCoursesByChauffeur = async (req, res) => {
     }
 };
 
+const findCompletedCoursesAll = async (req, res) => {
+    try {
+        const courses = await courseService.findCompletedCoursesAll();
+
+        // Vérifier si des courses ont été trouvées
+        if (!courses || courses.length === 0) {
+            return res.status(404).json({ success: false, message: "Aucune course terminée trouvée." });
+        }
+
+        // Renvoyer les données si tout va bien
+        res.status(200).json({ success: true, data: courses });
+        
+    } catch (error) {
+        // Détail de l'erreur retournée
+        res.status(500).json({
+            success: false,
+            message: 'Erreur lors de la récupération des courses terminées',
+            error: error.message
+        });
+    }
+};
+
 const getCourseDetails = async (req, res) => {
     const courseId = req.params.id;
 
@@ -40,5 +62,6 @@ const getCourseDetails = async (req, res) => {
 module.exports = {
     getCompletedCourses,
     getCompletedCoursesByChauffeur,
-    getCourseDetails
+    getCourseDetails,
+    findCompletedCoursesAll
 };

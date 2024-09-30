@@ -137,7 +137,9 @@
     background-color: var(--text-color);
     border-radius: 20px;
     padding: 10px;
-    
+    p{
+      font-size: 12px;
+    }
   }
   
   .carde__arc path {

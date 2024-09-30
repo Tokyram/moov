@@ -304,24 +304,7 @@ export const creationChauffeurAdmin = async (voitureData: any) => {
   }
 };
 
-// export const getTotalCoursesPerPeriod = async (period: 'semaine' | 'mois' | 'annee',day: string) => {
-//   try {
-//     const response = await axios.get(`${API_BASE_URL}/courses/totalCoursesPeriode/${period}/${day}`, {
-//       headers: {
-//         Authorization: `Bearer ${getToken()}`, // Ajoute le token pour vérifier l'utilisateur
-//       },
-//     });
-//     return response.data;
-//   } catch (error) {
-//       if (axios.isAxiosError(error)) {
-//           console.error('Erreur Axios:', error.response?.data);
-//       } else {
-//           console.error('Erreur:', error);
-//       }
-// }
 
-// };
-  
 export const getTotalCoursesByPeriod = async (periodType: string) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/courses/totalCoursesPeriode/${periodType}`, {
@@ -335,5 +318,20 @@ export const getTotalCoursesByPeriod = async (periodType: string) => {
     console.error("Erreur lors de la récupération des cours :", error);
     throw error;
     // throw new Error(`Erreur lors de la récupération des cours : ${error.response?.data?.error || error.message}`);
+  }
+};
+
+export const getAllHistoriqueCourse = async () => {
+  
+  try {
+    const response = await axios.get(`${API_BASE_URL}/historique_course/AllHistoriqueCourse`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, 
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des historiques :', error);
+    throw error;
   }
 };

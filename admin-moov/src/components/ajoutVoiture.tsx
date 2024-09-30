@@ -319,7 +319,7 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((item, index) => (
+            {currentItems.map((item) => (
               <Item
                 key={item.id}
                 id={item.id}
