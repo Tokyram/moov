@@ -351,7 +351,7 @@ export const getAllChauffeurCountCourse = async () => {
   }
 };
 
-export const getTotalRevenueController = async () => {
+export const getTotalRevenue = async () => {
   
   try {
     const response = await axios.get(`${API_BASE_URL}/courses/total-revenue`, {

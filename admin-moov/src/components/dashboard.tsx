@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './dashboard.css'; // Votre CSS personnalisé
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement, Colors } from 'chart.js';
-import { getAllChauffeurCountCourse, getDecodedToken, getTotalChauffeur, getTotalClient, getTotalCourses, getTotalCoursesByPeriod } from '../services/api';
+import { getAllChauffeurCountCourse, getDecodedToken, getTotalChauffeur, getTotalClient, getTotalCourses, getTotalCoursesByPeriod, getTotalRevenue } from '../services/api';
 import axios from 'axios';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement);
@@ -23,6 +23,7 @@ const Dashboard: React.FC = () => {
   const [userPrenom, setUserPrenom] = useState<string | null>(null);
   const [filter, setFilter] = useState<'week' | 'month' | 'year'>('week');
   const [totalCourses, setTotalCourses] = useState<number | null>(null);
+  const [totalRevenue, setTotalRevenue] = useState<number | null>(null);
   const [totalClient, setTotalClient] = useState<number | null>(null);
   const [totalChauffeur, setTotalChauffeur] = useState<number | null>(null);
   const [chartData, setChartData] = useState<number[]>([]);
@@ -51,10 +52,10 @@ const Dashboard: React.FC = () => {
   
   useEffect(() => {
     const fetchUserName = async () => {
-      const decodedToken = await getDecodedToken(); // Décoder le token pour obtenir les informations de l'utilisateur
+      const decodedToken = await getDecodedToken(); 
       if (decodedToken && decodedToken.nom && decodedToken.prenom) {
-        setUserName(decodedToken.nom); // Assurez-vous que le token contient le nom de l'utilisateur
-        setUserPrenom(decodedToken.prenom); // Assurez-vous que le token contient le nom de l'utilisateur
+        setUserName(decodedToken.nom); 
+        setUserPrenom(decodedToken.prenom); 
       }
     };
     fetchUserName();
@@ -83,9 +84,9 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchTotalCourses = async () => {
       try {
-        const total = await getTotalCourses(); // Récupérer la valeur depuis l'API
-        const totalCoursesNumber = (total); // Accédez à la propriété total_courses et convertissez-la en nombre
-        setTotalCourses(Number(totalCoursesNumber.total_courses)); // Mettez à jour l'état avec le nombre
+        const total = await getTotalCourses(); 
+        const totalCoursesNumber = (total); 
+        setTotalCourses(Number(totalCoursesNumber.total_courses)); 
       } catch (error) {
         console.error('Erreur lors de la récupération du total des courses:', error);
       }
@@ -93,14 +94,28 @@ const Dashboard: React.FC = () => {
 
     fetchTotalCourses();
   }, []);
+
+  useEffect(() => {
+    const fetchTotalRevenue = async () => {
+      try {
+        const total = await getTotalRevenue(); 
+        const totalRevenueNumber = (total); 
+        setTotalRevenue(Number(totalRevenueNumber.total_revenue)); 
+      } catch (error) {
+        console.error('Erreur lors de la récupération du total des Revenue:', error);
+      }
+    };
+
+    fetchTotalRevenue();
+  }, []);
   
 
   useEffect(() => {
     const fetchTotalClient = async () => {
       try {
-        const total = await getTotalClient(); // Récupérer la valeur depuis l'API
+        const total = await getTotalClient(); 
         const totalClientCount = (total); // Accédez à la propriété total_courses et convertissez-la en nombre
-        setTotalClient(totalClientCount.passagerCount); // Mettez à jour l'état avec le nombre
+        setTotalClient(totalClientCount.passagerCount); 
       } catch (error) {
         console.error('Erreur lors de la récupération du total des clients:', error);
       }
@@ -112,9 +127,9 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchTotalChauffeur = async () => {
       try {
-        const total = await getTotalChauffeur(); // Récupérer la valeur depuis l'API
+        const total = await getTotalChauffeur(); 
         const totalChauffeurCount = (total); // Accédez à la propriété total_courses et convertissez-la en nombre
-        setTotalChauffeur(totalChauffeurCount.chauffeurCount); // Mettez à jour l'état avec le nombre
+        setTotalChauffeur(totalChauffeurCount.chauffeurCount); 
       } catch (error) {
         console.error('Erreur lors de la récupération du total des Chauffeurs:', error);
       }
@@ -193,7 +208,7 @@ const Dashboard: React.FC = () => {
         <Widget
           iconClass="bi bi-currency-exchange"
           title="Revenue total" 
-          data="281"
+          data={totalRevenue !== null ? `${totalRevenue}` : 'Chargement...'}
           subtitle={<span className="text-success"><i className="fas fa-arrow-up"></i> 3% than last month</span>}
           bgColor="bg-primary"
         />
