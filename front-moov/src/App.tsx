@@ -37,6 +37,7 @@ import { checkTraitementCourse, getDecodedToken } from './services/api';
 import PaiementFailed from './pages/PaiementFailed';
 import MapComponentChauffeur from './pages/MapComponentChauffeur';
 import LoaderPage from './components/LoaderPage';
+import ChauffeurLocationTracker from './components/ChauffeurLocalisation';
 
 setupIonicReact();
 
@@ -96,6 +97,11 @@ const App: React.FC = () => {
 
   return (
     <IonApp>
+        {
+          userRole === "CHAUFFEUR" && isLoggedIn && (
+            <ChauffeurLocationTracker/>
+          )
+        }
       <IonReactRouter>
         <IonRouterOutlet>
           {/* <Route path="/notification_push" component={NotificationComponent} exact={true} /> */}
