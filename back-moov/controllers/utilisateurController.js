@@ -63,7 +63,7 @@ class UtilisateurController {
       if (result.success) {
         res.json({ user: result.user.toJSON(), token: result.token });
       } else {
-        res.status(401).json({ message: result.message });
+        res.status(400).json({ message: result.message });
       }
     } catch (error) {
       res.status(500).json({ message: 'Erreur lors de la connexion', error: error.message });

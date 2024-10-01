@@ -7,6 +7,18 @@ const api = axios.create({
     baseURL: url_api,
 });
 
+api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      if (error.response && error.response.status === 401) {
+        // Token expiré
+        await Storage.remove({ key: 'token' });
+        window.location.href = '/home';
+      }
+      return Promise.reject(error);
+    }
+);
+
 export const login = async (username: string, password: string) => {
     try {
         const response = await api.post('/users/login', {username, password});

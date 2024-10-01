@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Login.css'; 
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Storage } from '@capacitor/storage';
@@ -14,9 +14,11 @@ const Login: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleLogin = async (username: string, password: string) => {
         setIsLoading(true);
+        setError(null);
         try {
           const response = await login(username, password);
           if (response.data.token) {
@@ -34,6 +36,7 @@ const Login: React.FC = () => {
                     }
                 } catch(error: any) {
                     setIsLoading(false);
+                    setError("Erreur de vérification du traitement de course");
                     console.error('Erreur de check', error.message);
                 }
             } else {
@@ -42,12 +45,14 @@ const Login: React.FC = () => {
           }
         } catch (error: any) {
             setIsLoading(false);
+            setError("Numéro de téléphone ou mot de passe incorrect !");
             console.error('Erreur de connexion', error.message);
         }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        e.stopPropagation();
         handleLogin(username, password);
       };
 
@@ -69,7 +74,7 @@ const Login: React.FC = () => {
             <form className="form" onSubmit={handleSubmit}>
 
                 <div className="flex-column">
-                    <label>TéléPhone </label>
+                    <label>Numéro de téléphone </label>
                 </div>
 
                 <div className="inputForm">
@@ -77,14 +82,14 @@ const Login: React.FC = () => {
                     <input 
                         value={username} 
                         onChange={(e) => setUsername(e.target.value)} 
-                        placeholder="034 00 000 00" 
+                        placeholder="+261*********" 
                         className="input" 
                         type="text"
                     />
                 </div>
         
                 <div className="flex-column">
-                    <label>Password </label>
+                    <label>Mot de passe </label>
                 </div>
 
                 <div className="inputForm">
@@ -98,30 +103,16 @@ const Login: React.FC = () => {
                     />
                     
                 </div>
+
+                {error && <div className="error-message" style={{color: 'var(--primary-color)'}}>{error}</div>}
         
                 <div className="flex-row1">
                     <div className="ratio">
-                        <label className="container">
-                        <input type="checkbox" />
-                        <div className="checkmark"></div>
-                        <svg width="50" height="50" xmlns="http://www.w3.org/2000/svg" className="celebrate">
-                            <polygon points="0,0 10,10"></polygon>
-                            <polygon points="0,25 10,25"></polygon>
-                            <polygon points="0,50 10,40"></polygon>
-                            <polygon points="50,0 40,10"></polygon>
-                            <polygon points="50,25 40,25"></polygon>
-                            <polygon points="50,50 40,40"></polygon>
-                            </svg>
-                        </label>
-                        <label>Se souvenir de moi </label>
                     </div>
-                        
-                        <p className="p"><span className="span"><a className="span" href="/mdpcode">Mot de passe oublier ?</a></span></p>
-
-                    
+                    <p className="p"><span className="span"><a className="span" href="/mdpcode">Mot de passe oublié ?</a></span></p>
                 </div>
                 
-                <button type='submit' className="confirmation-button2" disabled={isLoading}> {!isLoading ? "se connecter" :  <Loader/> }</button>
+                <button type='submit' className="confirmation-button2" disabled={isLoading}> {!isLoading ? "Se Connecter" :  <Loader/> }</button>
             </form>
 
 

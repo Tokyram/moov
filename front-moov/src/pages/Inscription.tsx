@@ -16,6 +16,7 @@ const Inscription: React.FC = () => {
     const [confirmationMdp, setConfirmationMdp] = useState('');
     const [adresse, setAdresse] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleRegister = async (inscriptionData: inscriptionData) => {
         try {
@@ -24,6 +25,7 @@ const Inscription: React.FC = () => {
             router.push('mdpcode/inscription', 'root', 'replace');
         } catch(error: any) {
             setIsLoading(false);
+            setError("Erreur lors de l'inscription");
             console.error('Erreur inscription', error.message);
             router.push('mdpcode/inscription', 'root', 'replace');
         }
@@ -32,16 +34,19 @@ const Inscription: React.FC = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if(nom == '' || prenom == '' || telephone == '' || mail == '' || mdp == '' || confirmationMdp == '' || adresse == '') {
+            setError("Données manquantes pour l'inscription");
             console.log("Données manquantes pour l'inscription");
             return;
         }
 
         if(mdp !== confirmationMdp) {
+            setError("Bien confirmer le mot de passe");
             console.log("Bien confirmer le mot de passe");
             return;
         }
 
         setIsLoading(true);
+        setError(null);
 
         const inscriptionData: inscriptionData = {
             nom: nom,
@@ -126,7 +131,7 @@ const Inscription: React.FC = () => {
                     <input 
                         placeholder="+261*********"
                         className="input" 
-                        type="number"
+                        type="text"
                         value={telephone}
                         onChange={(e) => setTelephone(e.target.value)}
                     />
@@ -176,6 +181,8 @@ const Inscription: React.FC = () => {
                         onChange={(e) => setConfirmationMdp(e.target.value)}
                     />
                 </div>
+
+                {error && <div className="error-message" style={{color: 'var(--primary-color)'}}>{error}</div>}
                 
                 <button type='submit' className="confirmation-button2" disabled={isLoading}>{!isLoading ? "S'inscrire" :  <Loader/> }</button>
             </form>
