@@ -216,7 +216,7 @@ class Course {
                     v.immatriculation,
                     
                     -- Photo voiture
-                    pv.photo_url AS voiture_photo
+                    v.photo_url AS voiture_photo
                 FROM 
                     course c
                 LEFT JOIN 
@@ -227,8 +227,6 @@ class Course {
                     chauffeur_voiture cv ON uc.id = cv.chauffeur_id
                 LEFT JOIN 
                     voiture v ON cv.voiture_id = v.id
-                LEFT JOIN 
-                    photo_voiture pv ON v.id = pv.voiture_id
                 WHERE 
                     c.id = $1
             `, [courseId]);
