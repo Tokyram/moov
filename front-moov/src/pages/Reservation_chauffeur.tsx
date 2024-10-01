@@ -4,11 +4,21 @@ import './Profil.css';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 import { Route, useHistory } from 'react-router-dom';
-import { accepterCourse, detailCourse, getReservationAttribues, listeCourseEnAttente, refuserCourse } from '../services/api';
+import { accepterCourse, detailCourse, getReservationAttribues, historiqueReservationChauffeur, listeCourseEnAttente, refuserCourse } from '../services/api';
 import Loader from '../components/Loader';
 import LoaderPage from '../components/LoaderPage';
+import { useIonRouter } from '@ionic/react';
+
+interface NavigationState {
+    chauffeur_id: any;
+    course_id: any;
+    passager_id: any;
+}
 
 const Reservation_chauffeur: React.FC = () => {
+
+    const router = useIonRouter();
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [showAnnulationPopup, setShowAnnulationPopup] = useState(false);
@@ -20,22 +30,10 @@ const Reservation_chauffeur: React.FC = () => {
     const [activeView, setActiveView] = useState<'reservations' | 'attribues' | 'historique'>('reservations');
     const [reservations, setReservations] = useState<any[]>([]);
     const [attribues, setAttribues] = useState<any[]>([]);
+    const [historique, setHistorique] = useState<any[]>([]);
     const [reservation, setReservation] = useState<any>(null);
     const [confirmationLoading, setConfirmationLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
-    const historique = [
-        {
-            id: 1,
-            price: "20 000Ar",
-            carImg: "assets/v1.png",
-            taxiNumber: "458203 TBA",
-            reservationNumber: "N°01",
-            date: "02 juillet",
-            time: "9h 00",
-            destination: "Ambohijatovo à Antanimena"
-        }
-    ];
 
     useEffect(() => {
         setIsVisible(true);
@@ -51,6 +49,11 @@ const Reservation_chauffeur: React.FC = () => {
         if(activeView === "attribues") {
             const response = await getReservationAttribues();
             setAttribues(Array.isArray(response.data.data) ? response.data.data : []);
+            setIsLoading(false);
+        }
+        if(activeView === "historique") {
+            const response = await historiqueReservationChauffeur();
+            setHistorique(Array.isArray(response.data.data) ? response.data.data : []);
             setIsLoading(false);
         }
     }
@@ -170,6 +173,17 @@ const Reservation_chauffeur: React.FC = () => {
             setShowConfirmeCoursePopup(false);
             console.log('Erreur lors de la confirmation d\'une réservation ', error.message);
         }
+    }
+
+    const handleGoToAvis = (course: any) => {
+        const state: NavigationState = {
+            chauffeur_id: course.chauffeur_id,
+            course_id: course.course_id,
+            passager_id: course.passager_id
+        };
+
+        const queryParams = new URLSearchParams(state as any).toString();
+        router.push(`/avis?${queryParams}`, 'root', 'replace');
     }
 
     return (
@@ -293,27 +307,28 @@ const Reservation_chauffeur: React.FC = () => {
 
                     {activeView === 'historique' && (
                         historique.map(historique => (
-                            <div className="reservations" key={historique.id}>
+                            <div className="reservations" key={historique.course_id}>
                                 <div className="statut-reservation">
                                     <div className="ico-stat">
                                         <i className="bi bi-car-front-fill"></i>
-                                        <p>Historique</p>
+                                        <p>HISTORIQUE</p>
                                     </div>
                                     <div className="ico-stat2">
-                                        <p>{historique.price}</p>
+                                        <p>{historique.prix}Ar</p>
                                     </div>
                                 </div>
-                                <div className="fond-reservation" onClick={() => handleConfirmClickDetail(historique.id)}>
-                                    <img src={historique.carImg} alt="car" />
+                                <div className="fond-reservation" onClick={() => handleConfirmClickDetail(historique.course_id)}>
+                                    <img src="assets/v1.png" alt="car" />
                                 </div>
                                 <div className="info-reservation">
                                     <div className="taxi">
-                                        <h4>{historique.taxiNumber}</h4>
-                                        <h1>{historique.reservationNumber}</h1>
+                                        <h4>{historique.voiture_immatriculation}</h4>
+                                        <h1>N°{historique.course_id}</h1>
                                     </div>
                                     <div className="info-course">
-                                        <p>Date : <span>{historique.date}</span> à <span>{historique.time}</span></p>
-                                        <p>Destination : <span>{historique.destination}</span></p>
+                                        <p>Date : <span>{splitDateTime(historique.date_heure_depart).date}</span> à <span>{splitDateTime(historique.date_heure_depart).time}</span></p>
+                                        <p>Destination : <span>{splitPlace(historique.adresse_depart)}</span> à <span>{splitPlace(historique.adresse_arrivee)}</span></p>
+                                        <p>Distance : <span>{historique.kilometre}</span> km</p>
                                     </div>
                                 </div>
                             </div>
@@ -352,6 +367,14 @@ const Reservation_chauffeur: React.FC = () => {
                                             {/* <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i> */}
                                             Voir sur map <i className="bi bi-arrow-right-short" style={{ fontSize: '1.5rem', display:'flex', alignItems:'center', justifyContent:'center' }}></i>
                                         </a>
+                                    )
+                                }
+                                {
+                                    activeView === 'historique' && (
+                                        <div className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center', cursor: "pointer"}} onClick={() => handleGoToAvis(reservation)}>
+                                            {/* <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i> */}
+                                            Donnez votre avis sur la qualité du service du passager <i className="bi bi-arrow-right-short" style={{ fontSize: '1.5rem', display:'flex', alignItems:'center', justifyContent:'center' }}></i>
+                                        </div>
                                     )
                                 }
                                 </div>

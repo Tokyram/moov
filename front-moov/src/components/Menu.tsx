@@ -170,16 +170,6 @@ const Menu: React.FC = () => {
           )
         }
         
-        
-        <li>
-          <div className="iocn-link">
-            <a href="/avis">
-            <i className="bi bi-wallet-fill"></i>
-              <span className="link_name">Avis*</span>
-            </a>
-          </div>
-        </li>
-       
        
           <div className="profile-details2">
           <div className={`a ${isVisible ? 'show' : ''}`}>
