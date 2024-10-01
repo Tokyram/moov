@@ -3,19 +3,20 @@ import React, { useEffect, useState } from "react";
 import '../pages/login.css';
 import './ajout.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { BannirChauffeurAdmin, creationChauffeurAdmin, getChauffeurAdmin, getUserById, modifierUser, supprimerChauffeurAdmin } from "../services/api";
+import {   creatAssignationVoitureChauffeur, getAllVoiture, getChauffeurs } from "../services/api";
 import CustomAlert from "./CustomAlertProps";
 interface ItemProps {
   id:number;
   nom: string;
   prenom: string;
-  voiture: string;
+  immatriculation: string;
+  marque : string;
   photo: string; 
   onDelete: () => void;
   onEdit: () => void;
 
 }
-  const Item: React.FC<ItemProps> = ({id, nom, prenom, voiture, photo ,onDelete, onEdit }) => {
+  const Item: React.FC<ItemProps> = ({id, nom,marque, prenom, immatriculation, photo ,onDelete, onEdit }) => {
     return (
       <tr>
         <td>
@@ -24,7 +25,9 @@ interface ItemProps {
           </div>
         </td>
         <td>{nom}</td>
-        <td>{voiture}</td>
+        <td>{prenom}</td>
+        <td>{marque}</td>
+        <td>{immatriculation}</td>
         
         <td>
           <div className="actions">
@@ -44,7 +47,9 @@ const Assignation: React.FC = () => {
     const [filterStatus, setFilterStatus] = useState<string>(''); 
     const [currentPage, setCurrentPage] = useState<number>(1); // Page actuelle
     const itemsPerPage = 8; // Nombre d'éléments par page
-    const [items, setItems] = useState<ItemProps[]>([]);
+    // const [items, setItems] = useState<ItemProps[]>([]);
+    const [itemsChauffeur, setItemsChauffeur] = useState<ItemProps[]>([]);
+    const [itemsVoiture, setItemsVoiture] = useState<ItemProps[]>([]);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [showAlert, setShowAlert] = useState(false);
     const [editingUserId, setEditingUserId] = useState<number | null>(null);
@@ -53,20 +58,54 @@ const Assignation: React.FC = () => {
       chauffeur: "",
       voiture: "",
     });
-  useEffect(() => {
-    // Charger la liste des chauffeurs au chargement du composant
-    const fetchChauffeurAdmin = async () => {
-      try {
-        const chauffeurAdmin = await getChauffeurAdmin();
-        console.log(chauffeurAdmin); 
-        setItems(chauffeurAdmin.data); // Mettre à jour la liste des chauffeurs
-      } catch (error) {
-        console.error('Erreur lors de la récupération des chauffeurs et admins :', error);
-      }
-    };
+    useEffect(() => {
+      const fetchChauffeurs = async () => {
+        try {
+          const chauffeurs = await getChauffeurs();
+          console.log(chauffeurs); 
+          setItemsChauffeur(chauffeurs.data); 
+        } catch (error) {
+          console.error('Erreur lors de la récupération des chauffeurs :', error);
+        }
+      };
+      
+      fetchChauffeurs();
+    }, []);
+
+    useEffect(() => {
+      
+      const fetchVoiture = async () => {
+        try {
+          const voitures = await getAllVoiture();
+          console.log(voitures); 
+          setItemsVoiture(voitures); 
+        } catch (error) {
+          console.error('Erreur lors de la récupération des voiture :', error);
+        }
+      };
+      
+      fetchVoiture();
+    }, []);
+
     
-    fetchChauffeurAdmin();
-  }, []);
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (formData.chauffeur && formData.voiture) {
+          try {
+              const assignationData = {
+                idChauffeur: Number(formData.chauffeur),  // Id du chauffeur sélectionné
+                idVoiture: Number(formData.voiture)
+              };
+              await creatAssignationVoitureChauffeur(assignationData);
+              setShowAlert(true);
+              setFormData({ chauffeur: "", voiture: "" }); // Réinitialiser le formulaire
+          } catch (error) {
+              console.error("Erreur lors de l'assignation :", error);
+          }
+      } else {
+          console.error("Chauffeur ou voiture non sélectionné");
+      }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -76,11 +115,6 @@ const Assignation: React.FC = () => {
     }));
   };
   
-
-  
-
-
-
   
   const closeAlert = () => {
     setShowAlert(false); // Fermer l'alerte
@@ -93,8 +127,8 @@ const closeModal = () => {
 
   // Filtrer les items en fonction du statut sélectionné
   const filteredItems: ItemProps[] = filterStatus
-  ? items.filter(item => item.nom === filterStatus)
-  : items;
+  ? itemsChauffeur.filter(item => item.nom === filterStatus)
+  : itemsChauffeur;
 
   // Pagination : Détermine les clients à afficher sur la page actuelle
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -120,32 +154,32 @@ const closeModal = () => {
           {/* <p>Ce tableau comporte la liste des chauffeurs et des administateurs présents dans le plateforme, ils peuvent etre alors banni ou non, et la possiblité d'ajout d'un nouveau membre</p> */}
         </div>
         {showAlert && (
-        <CustomAlert message="Membre banni avec succès" onClose={closeAlert} />
+        <CustomAlert message="Assignation avec effectuée" onClose={closeAlert} />
         )}
-        {/* Filtre par statut avec des boutons */}
         
         <div className="ajoutliste">
-        <form className="form" >
+        <form className="form" onSubmit={handleSubmit}>
         
 
         <div className="flex-column">
             <label>Chauffeur </label>
         </div>
         <div className="inputForm">
-            
-            
             <i className="bi bi-person-add"></i>
             <select
-                className="input"
-                name="role"
-                value={formData.chauffeur}
-                onChange={handleChange} // Ajoutez un gestionnaire d'événements pour mettre à jour formData.role
+              className="input"
+              name="chauffeur"
+              value={formData.chauffeur}
+              onChange={handleChange} // Mettre à jour formData.chauffeur
             >
-                <option value="">-- Sélectionnez un chauffeur --</option> {/* Valeur par défaut vide */}
-                <option value="ADMIN">ADMIN</option> {/* Met à jour formData.role avec "ADMIN" */}
-                <option value="CHAUFFEUR">CHAUFFEUR</option> {/* Met à jour formData.role avec "CHAUFFEUR" */}
+              <option value="">-- Sélectionnez un chauffeur --</option>
+              {itemsChauffeur.map((chauffeur) => (
+                <option key={chauffeur.id} value={chauffeur.id}>
+                  {chauffeur.nom} 
+                </option>
+              ))}
             </select>
-        </div>
+          </div>
 
         <div className="flex-column">
             <label>Voiture </label>
@@ -153,16 +187,19 @@ const closeModal = () => {
         <div className="inputForm">
             
             
-            <i className="bi bi-person-add"></i>
+            <i className="bi bi-car-front"></i>
             <select
                 className="input"
-                name="role"
+                name="voiture"
                 value={formData.voiture}
                 onChange={handleChange} // Ajoutez un gestionnaire d'événements pour mettre à jour formData.role
             >
                 <option value="">-- Sélectionnez une voiture --</option> {/* Valeur par défaut vide */}
-                <option value="ADMIN">ADMIN</option> {/* Met à jour formData.role avec "ADMIN" */}
-                <option value="CHAUFFEUR">CHAUFFEUR</option> {/* Met à jour formData.role avec "CHAUFFEUR" */}
+                  {itemsVoiture.map((voiture) => (
+                  <option key={voiture.id} value={voiture.id}>
+                    {voiture.immatriculation} 
+                  </option>
+              ))}
             </select>
         </div>
 
@@ -183,7 +220,8 @@ const closeModal = () => {
               <th>Image</th>
               <th>Nom</th>
               <th>Prénom</th>
-              <th>Voiture</th>
+              <th>Marque voiture</th>
+              <th>Immatriculation voiture</th>
               <th>Modifier</th>
               <th>Bannir</th>
             </tr>
@@ -196,7 +234,8 @@ const closeModal = () => {
                 nom={item.nom}
                 prenom={item.prenom}
                 photo={item.photo}
-                voiture={item.voiture}
+                marque={item.marque}
+                immatriculation={item.immatriculation}
                 onDelete={() => handleDeleteClick(item.id)}
                 onEdit={() => handleDeleteClick(item.id)}
               />

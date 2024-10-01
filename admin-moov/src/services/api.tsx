@@ -290,6 +290,19 @@ export const creationVoiture = async (voitureData: any) => {
   }
 };
 
+export const creatAssignationVoitureChauffeur = async (asssignationData: any) => {
+  try {
+      const response = await axios.post(`${API_BASE_URL}/cars_driver/assignation`, asssignationData, {
+          headers: {
+              Authorization: `Bearer ${getToken()}`
+          }
+      });
+      return response.data;
+  } catch (error) {
+        
+      }
+}
+
 export const creationChauffeurAdmin = async (voitureData: any) => {
   try {
       const response = await axios.post(`${API_BASE_URL}/users/insertionChauffeurAdmin`, voitureData, {
