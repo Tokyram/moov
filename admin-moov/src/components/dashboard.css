@@ -201,4 +201,20 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
+
+    /* .cart-body{
+        margin: 10px;
+    } */
   }
+
+  .graph{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-right: 50px;
+  }
+
+  /* .c{
+    margin: 10px;
+  } */

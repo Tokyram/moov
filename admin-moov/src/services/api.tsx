@@ -238,7 +238,7 @@ export const supprimerVoiture = async (id: number) => {
   try {
     const response = await axios.delete(`${API_BASE_URL}/voiture/SupprimerVoiture/${id}`, {
       headers: {
-        'Authorization': `Bearer ${getToken()}`, // Ajoute le token pour vérifier l'utilisateur
+        'Authorization': `Bearer ${getToken()}`, 
       },
     });
     return response.data;
@@ -252,7 +252,7 @@ export const supprimerChauffeurAdmin = async (id: number) => {
   try {
     const response = await axios.delete(`${API_BASE_URL}/users/SupprimerChauffeurAdmin/${id}`, {
       headers: {
-        'Authorization': `Bearer ${getToken()}`, // Ajoute le token pour vérifier l'utilisateur
+        'Authorization': `Bearer ${getToken()}`, 
       },
     });
     return response.data;
@@ -266,7 +266,7 @@ export const BannirChauffeurAdmin = async (userId: number,  updatedData: any) =>
   try {
     const response = await axios.put(`${API_BASE_URL}/users/bannir/${userId}`, updatedData, {
       headers: {
-        Authorization: `Bearer ${getToken()}`, // Ajoute le token pour vérifier l'utilisateur
+        Authorization: `Bearer ${getToken()}`, 
       },
     });
     return response.data;
@@ -309,15 +309,27 @@ export const getTotalCoursesByPeriod = async (periodType: string) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/courses/totalCoursesPeriode/${periodType}`, {
       headers: {
-        'Authorization': `Bearer ${getToken()}`, // Ajoute le token pour vérifier l'utilisateur
+        Authorization: `Bearer ${getToken()}`, 
       },
     });
     return response.data; // Retourne les données récupérées
   } catch (error) {
-    // Gérer les erreurs de manière appropriée
     console.error("Erreur lors de la récupération des cours :", error);
     throw error;
-    // throw new Error(`Erreur lors de la récupération des cours : ${error.response?.data?.error || error.message}`);
+  }
+};
+
+export const getTotalRevenueByPeriod = async (periodType: string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/courses/totalRevenuePeriode/${periodType}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, 
+      },
+    });
+    return response.data; 
+  } catch (error) {
+    console.error("Erreur lors de la récupération des revenues :", error);
+    throw error;
   }
 };
 

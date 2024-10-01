@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './dashboard.css'; // Votre CSS personnalisé
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement, Colors } from 'chart.js';
-import { getAllChauffeurCountCourse, getDecodedToken, getTotalChauffeur, getTotalClient, getTotalCourses, getTotalCoursesByPeriod, getTotalRevenue } from '../services/api';
+import { getAllChauffeurCountCourse, getDecodedToken, getTotalChauffeur, getTotalClient, getTotalCourses, getTotalCoursesByPeriod, getTotalRevenue, getTotalRevenueByPeriod } from '../services/api';
 import axios from 'axios';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement);
@@ -27,6 +27,7 @@ const Dashboard: React.FC = () => {
   const [totalClient, setTotalClient] = useState<number | null>(null);
   const [totalChauffeur, setTotalChauffeur] = useState<number | null>(null);
   const [chartData, setChartData] = useState<number[]>([]);
+  const [chartDataRevenu, setChartDataRevenu] = useState<number[]>([]);
 
   const [chauffeurs, setChauffeurs] = useState<Chauffeur[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -77,6 +78,25 @@ const Dashboard: React.FC = () => {
       }
     };
     fetchChartData();
+  }, [filter]);
+
+  useEffect(() => {
+    const fetchChartDataRevenu = async () => {
+      try {
+        const data = await getTotalRevenueByPeriod(filter);
+        if (Array.isArray(data)) {
+          // Extraire uniquement les valeurs de total_courses et les convertir en nombres avec parseFloat
+          const totalCoursesData = data.map(item => parseFloat(item.total_revenu));
+          console.log("revenux", totalCoursesData); // Ici, vous aurez des nombres et non des chaînes
+          setChartDataRevenu(totalCoursesData);
+        } else {
+          console.error('Les données du graphique ne sont pas au format tableau :', data);
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données du graphique:', error);
+      }
+    };
+    fetchChartDataRevenu();
   }, [filter]);
   
   
@@ -178,18 +198,55 @@ const Dashboard: React.FC = () => {
     },
   };
   
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: `Revenus (${filter === 'week' ? 'Semaine' : filter === 'month' ? 'Mois' : 'Année'})`,
-      },
+
+  const dataByFilterRevenu = {
+    week: {
+      labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+      datasets: [{
+        label: 'Revenus (Semaine)',
+        data: chartDataRevenu,
+        backgroundColor: 'rgb(24, 24, 24)',
+        borderColor: 'rgb(24, 24, 24)',
+        borderWidth: 1,
+        borderRadius: 20
+      }],
+    },
+    month: {
+      labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
+      datasets: [{
+        label: 'Revenus (Mois)',
+        data: chartDataRevenu,
+        backgroundColor: 'rgb(24, 24, 24)',
+        borderColor: 'rgb(24, 24, 24)',
+        borderWidth: 1,
+        borderRadius: 20
+      }],
+    },
+    year: {
+      labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
+      datasets: [{
+        label: 'Revenus (Année)',
+        data: chartDataRevenu,
+        backgroundColor: 'rgb(24, 24, 24)',
+        borderColor: 'rgb(24, 24, 24)',
+        borderWidth: 1,
+        borderRadius: 20
+      }],
     },
   };
+  
+  // const options = {
+  //   responsive: true,
+  //   plugins: {
+  //     legend: {
+  //       position: 'top' as const,
+  //     },
+  //     title: {
+  //       display: true,
+  //       text: `Revenus (${filter === 'week' ? 'Semaine' : filter === 'month' ? 'Mois' : 'Année'})`,
+  //     },
+  //   },
+  // };
   console.log('Données utilisées pour le graphique:', dataByFilter[filter]);
 
    // Fonction pour changer le filtre
@@ -238,7 +295,7 @@ const Dashboard: React.FC = () => {
       </div>
       <div className="row">
         <div className="titregraph">
-          <h3>Graphique sur le total de course</h3>
+          <h3>Graphique sur les Revenus et le total des courses</h3>
           <p>Les revenues sont affichés par Semaine , mois, années dans le graphique</p>
         </div>
 
@@ -254,11 +311,18 @@ const Dashboard: React.FC = () => {
               className={`buttonChart ${filter === 'year' ? 'active' : ''}`}
               onClick={() => handleFilterChange('year')}>Année</button>
           </div>
-        {/* <ChartCard title="Website Views" chart={<Line data={websiteViewsData} />} subtitle="Campaign sent 2 days ago" /> */}
-        {/* <ChartCard title="Graphique de revenus" chart={<Bar data={dataByFilter[filter]} options={options} />} subtitle="Updated 4 min ago" /> */}
-        <ChartCard title="Graphique des courses" chart={<Bar data={dataByFilter[filter]} options={options} />} subtitle={''} />
-        {/* <ChartCard title="Completed Tasks" chart={<Pie data={completedTasksData} />} subtitle="Just updated" /> */}
-        
+
+          
+      </div>
+      <div className="cond">
+      <div className="row">
+     
+            <ChartCard title="Graphique des revenus" chart={<Line data={dataByFilterRevenu[filter]} />} subtitle={''} />
+      </div>
+      <div className="row">
+     
+            <ChartCard title="Graphique des courses" chart={<Bar data={dataByFilter[filter]} />} subtitle={''} />
+      </div>
       </div>
 
       <div className="cond">
@@ -293,6 +357,7 @@ const Widget: React.FC<{ iconClass: string, title: string, data: string, subtitl
 );
 
 const ChartCard: React.FC<{ title: string, chart: React.ReactNode, subtitle: string }> = ({ title, chart, subtitle }) => (
+  <div className="c">
   <div className="col-md-12">
     <div className="card chart">
       <div className="card-body">
@@ -302,17 +367,19 @@ const ChartCard: React.FC<{ title: string, chart: React.ReactNode, subtitle: str
       </div>
     </div>
   </div>
+  </div>
 );
 
 const RecentOrders: React.FC = () => (
-  <div className="row mt-4">
+  <div className="c">
     <div className="col-md-12">
-      <div className="card table">
-        <div className="card-body">
-        <div className="titregraph">
+      <div className="titregraph">
           <h3> Tops 5 des meilleurs Conducteurs</h3>
           <p>Seul les meilleurs conducteurs sont affichés sur cette tableau , ils pourront etre consultés pour avoir des bonus.</p>
         </div>
+      <div className="card table">
+        <div className="card-body">
+        
           <table className="table table-striped">
             <thead>
               <tr>
@@ -341,7 +408,7 @@ const RecentOrders: React.FC = () => (
         </div>
       </div>
     </div>
-  </div>
+    </div>
 );
 
 const getTotalColor = (total: number) => {
@@ -356,15 +423,15 @@ const getTotalColor = (total: number) => {
 const ConduxteurCourse: React.FC<ConduxteurCourseProps> = ({ chauffeurs }) => (
 
   
-  <div className="row mt-4">
-    
+    <div className="c">
     <div className="col-md-12">
-      <div className="card table">
-        <div className="card-body">
-        <div className="titregraph">
+      <div className="titregraph">
           <h3> Liste des conducteurs avec leur nombre de course</h3>
           <p>Seul les meilleurs conducteurs sont affichés sur cette tableau , ils pourront etre consultés pour avoir des bonus.</p>
         </div>
+      <div className="card table">
+        <div className="card-body">
+        
           {/* <h5 className="card-title">Liste de conducteur avec leur nombre de courses</h5> */}
           <table className="table table-striped">
           <thead>
@@ -386,7 +453,7 @@ const ConduxteurCourse: React.FC<ConduxteurCourseProps> = ({ chauffeurs }) => (
           </table>
         </div>
       </div>
-    </div>
+      </div>
   </div>
 );
 

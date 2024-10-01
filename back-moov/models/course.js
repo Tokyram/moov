@@ -470,6 +470,58 @@ class Course {
             throw new Error('Erreur lors de la récupération des courses : ' + error.message);
         }
     }
+
+    static async getTotalRevenueByPeriod(periodType) {
+        try {
+            let query;
+    
+            if (periodType === 'day') {
+                query = `
+                    SELECT DATE(date_heure_depart) AS date, SUM(prix) AS total_revenu
+                    FROM course
+                    WHERE status = 'TERMINE'
+                    GROUP BY DATE(date_heure_depart)
+                    ORDER BY DATE(date_heure_depart) ASC
+                `;
+            } else if (periodType === 'week') {
+                query = `
+                    SELECT DATE_TRUNC('week', date_heure_depart) AS week, SUM(prix) AS total_revenu
+                    FROM course
+                    WHERE status = 'TERMINE'
+                    GROUP BY week
+                    ORDER BY week ASC
+                `;
+            } else if (periodType === 'month') {
+                query = `
+                    SELECT DATE_TRUNC('month', date_heure_depart) AS month, SUM(prix) AS total_revenu
+                    FROM course
+                    WHERE status = 'TERMINE'
+                    GROUP BY month
+                    ORDER BY month ASC
+                `;
+            } else if (periodType === 'year') {
+                query = `
+                    SELECT DATE_TRUNC('year', date_heure_depart) AS year, SUM(prix) AS total_revenu
+                    FROM course
+                    WHERE status = 'TERMINE'
+                    GROUP BY year
+                    ORDER BY year ASC
+                `;
+            } else {
+                throw new Error('Type de période invalide');
+            }
+    
+            const result = await db.query(query);
+    
+            return result.rows.map(row => ({
+                ...row,
+                total_revenue: parseInt(row.total_revenu)
+            }));
+    
+        } catch (error) {
+            throw new Error('Erreur lors de la récupération des courses : ' + error.message);
+        }
+    }
     
 
     static async listeReservationAttribueesUser(userId) {
@@ -599,7 +651,7 @@ class Course {
         }
       };
 
-      
+
 }
 
 

@@ -244,22 +244,24 @@ class CourseController {
         }
     }
 
-    // static async getCoursesByPeriod(req, res) {
-    //     const { period, type } = req.params; // Type peut être 'jour', 'mois', ou 'annee'
-    
-    //     try {
-    //         const totalCourses = await CourseService.getTotalCoursesByPeriod(period, type);
-    //         res.status(200).json(totalCourses); // Renvoyer directement les résultats groupés
-    //     } catch (error) {
-    //         res.status(500).json({ error: error.message });
-    //     }
-    // }
+   
     static async getTotalCoursesByPeriod (req, res){
         const periodType = req.params.periodType; // Assurez-vous que cette ligne est bien présente
     
         try {
             const totalCourses = await Course.getTotalCoursesByPeriod(periodType);
             return res.status(200).json(totalCourses);
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
+    };
+
+    static async getTotalRevenueByPeriod (req, res){
+        const periodType = req.params.periodType; // Assurez-vous que cette ligne est bien présente
+    
+        try {
+            const totalRevenue = await Course.getTotalRevenueByPeriod(periodType);
+            return res.status(200).json(totalRevenue);
         } catch (error) {
             return res.status(500).json({ error: error.message });
         }
