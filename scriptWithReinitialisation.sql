@@ -155,3 +155,61 @@ CREATE TABLE IF NOT EXISTS tarifs (
   id SERIAL PRIMARY KEY,
   tarif_par_km DECIMAL(10, 2) NOT NULL
 );
+
+
+
+
+
+
+
+
+
+
+
+
+-------- SCRIPT POUR REINITIALISER LA BASE ( A NE PAS UTILISER SAUF EN CAS DE BESOIN) -------------------
+
+-- Désactiver temporairement les contraintes de clé étrangère
+SET session_replication_role = 'replica';
+
+-- Obtenir la liste de toutes les tables de la base de données
+CREATE OR REPLACE FUNCTION clean_tables() RETURNS void AS $$
+DECLARE
+    row record;
+BEGIN
+    FOR row IN 
+        SELECT tablename 
+        FROM pg_tables 
+        WHERE schemaname = 'public' 
+          AND tablename NOT IN ('utilisateur', 'voiture', 'chauffeur_voiture', 'photo_voiture', 'position_chauffeur')
+    LOOP
+        EXECUTE 'TRUNCATE TABLE ' || quote_ident(row.tablename) || ' CASCADE';
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Exécuter la fonction
+SELECT clean_tables();
+
+-- Réactiver les contraintes de clé étrangère
+SET session_replication_role = 'origin';
+
+-- Réinitialiser les séquences pour les tables vidées
+DO $$
+DECLARE
+    row record;
+BEGIN
+    FOR row IN 
+        SELECT sequence_name 
+        FROM information_schema.sequences 
+        WHERE sequence_schema = 'public' 
+          AND sequence_name NOT LIKE '%utilisateur%'
+          AND sequence_name NOT LIKE '%voiture%'
+          AND sequence_name NOT LIKE '%chauffeur_voiture%'
+          AND sequence_name NOT LIKE '%photo_voiture%'
+          AND sequence_name NOT LIKE '%position_chauffeur%'
+    LOOP
+        EXECUTE 'ALTER SEQUENCE ' || quote_ident(row.sequence_name) || ' RESTART WITH 1';
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;

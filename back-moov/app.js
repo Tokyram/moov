@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const https = require('https');
 const fs = require('fs');
+const db = require('./db');
 
 const indexRouter = require('./routes/index');
 const utilisateurRouter = require('./routes/utilisateurRoute');
@@ -85,10 +86,20 @@ app.use((req, res, next) => {
   res.status(404).send('Page non trouvée');
 });
 
-
-app.listen(port, () => {
-  console.log(`Serveur en cours d'exécution sur http://localhost:${port}`);
-});
+// Appeler initDb avant de démarrer le serveur
+db.initDb()
+  .then(() => {
+    console.log('Base de données initialisée avec succès');
+    
+    // Démarrage du serveur après l'initialisation de la base de données
+    app.listen(port, () => {
+      console.log(`Serveur en cours d'exécution sur http://localhost:${port}`);
+    });
+  })
+  .catch(err => {
+    console.error('Erreur lors de l\'initialisation de la base de données:', err);
+    process.exit(1); // Quitter en cas d'erreur critique d'initialisation
+  });
 
 module.exports = app;
 
