@@ -589,6 +589,17 @@ class Course {
         const result = await db.query(query, [chauffeurId]);
         return result.rows;
     }
+
+    static async getTotalRevenue() {
+        try {
+          const result = await db.query(`SELECT SUM(prix) AS total_revenue FROM course WHERE status = 'TERMINE'`);
+          return result.rows[0].total_revenue;
+        } catch (err) {
+          throw new Error('Erreur lors de la récupération du total des revenus : ' + err.message);
+        }
+      };
+
+      
 }
 
 

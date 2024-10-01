@@ -330,6 +330,15 @@ class CourseController {
             return res.status(500).json({ message: error.message });
         }
     }
+
+    static async getTotalRevenueController(req, res) {
+        try {
+          const totalRevenue = await Course.getTotalRevenue();
+          res.status(200).json({ total_revenue: totalRevenue });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      };
 }
 
 module.exports = CourseController;

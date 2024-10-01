@@ -350,3 +350,18 @@ export const getAllChauffeurCountCourse = async () => {
     throw error;
   }
 };
+
+export const getTotalRevenueController = async () => {
+  
+  try {
+    const response = await axios.get(`${API_BASE_URL}/courses/total-revenue`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, 
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des total de revenue :', error);
+    throw error;
+  }
+};

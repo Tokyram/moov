@@ -29,4 +29,6 @@ router.get('/totalCoursesPeriode/:periodType', authMiddleware,CourseController.g
 router.get('/historique-user/:userId', authMiddleware,CourseController.historiqueReservationUser);
 router.get('/historique-chauffeur/:chauffeurId', authMiddleware,CourseController.historiqueReservationChauffeur);
 
+
+router.get('/total-revenue',authMiddleware, CourseController.getTotalRevenueController);
 module.exports = router;
