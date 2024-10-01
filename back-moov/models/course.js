@@ -516,7 +516,7 @@ class Course {
         return result.rows[0];
     }
 
-    static async historiqueReservationUser(userId) {
+    static async historiqueReservationChauffeur(userId) {
         const query = `
             SELECT 
                 c.id AS course_id,
@@ -553,7 +553,7 @@ class Course {
         return result.rows;
     }
 
-    static async historiqueReservationChauffeur(chauffeurId) {
+    static async historiqueReservationUser(chauffeurId) {
         const query = `
             SELECT 
                 c.id AS course_id,

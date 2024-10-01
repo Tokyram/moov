@@ -305,3 +305,41 @@ export const createAvis = async (passagerId: any, chauffeurId: any, etoiles: any
         throw error;
     }
 }
+
+export const historiqueReservationUser = async () => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const decodedToken = await getDecodedToken();
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.get(`/courses/historique-user/${decodedToken.id}`, { headers });
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors de la récupération la liste des historiques réservation utilisateur :', error.message);
+        throw error;
+    }
+}
+
+export const historiqueReservationChauffeur = async () => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const decodedToken = await getDecodedToken();
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.get(`/courses/historique-chauffeur/${decodedToken.id}`, { headers });
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors de la récupération la liste des historiques réservation utilisateur :', error.message);
+        throw error;
+    }
+}

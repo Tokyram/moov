@@ -99,7 +99,7 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
             </div>
 
             <div className="tt">
-              <p>Votre avis sur le service du chauffeur/passager ? </p>
+              <p>Votre avis sur la qualité du service du chauffeur/passager ? </p>
             </div>
           </div>
 
