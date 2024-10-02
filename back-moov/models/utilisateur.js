@@ -137,7 +137,8 @@ class Utilisateur {
       const jsonUserData = JSON.stringify(user);
 
       const verifCode = await VerificationCode.create(jsonUserData);
-      const smsSent = await SMSService.sendVerificationCode(telephone, verifCode.code);
+      const content = `Your Moov verification code is : ${verifCode.code}`;
+      const smsSent = await SMSService.sendSMS(telephone, content);
 
       if(smsSent) {
         return { success: true, message: 'Code de vérification envoyé', verificationId: verifCode.id, code: verifCode.code }

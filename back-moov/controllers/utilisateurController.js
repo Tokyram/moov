@@ -37,7 +37,9 @@ class UtilisateurController {
         console.log('JSON UserData:', jsonUserData);
         
         const verifCode = await VerificationCode.create(jsonUserData);
-        const smsSent = await SMSService.sendVerificationCode(telephone, verifCode.code);
+        const content = `Your Moov verification code is : ${verifCode.code}`;
+        const smsSent = await SMSService.sendSMS(telephone, content);
+
         console.log('CODE:', verifCode.code);
         if (smsSent) {
           res.status(201).json({ 
