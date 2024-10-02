@@ -155,3 +155,15 @@ CREATE TABLE IF NOT EXISTS tarifs (
   id SERIAL PRIMARY KEY,
   tarif_par_km DECIMAL(10, 2) NOT NULL
 );
+
+CREATE OR REPLACE FUNCTION upsert_tarif(nouveau_tarif DECIMAL(10, 2))
+RETURNS void AS $$
+BEGIN
+    INSERT INTO tarifs (id, tarif_par_km)
+    VALUES (1, nouveau_tarif)
+    ON CONFLICT (id)
+    DO UPDATE SET tarif_par_km = EXCLUDED.tarif_par_km;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT upsert_tarif(3000);

@@ -1,5 +1,5 @@
 // const Panne = require('../models/panne');
-const Panne = require('../models/Panne');
+const Panne = require('../models/panne');
 
 const insertPanne = async (utilisateur_id, type_panne_id, commentaire) => {
     try {
