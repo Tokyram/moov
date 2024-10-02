@@ -4,8 +4,11 @@ import './Profil.css';
 import Header from '../components/Header';
 import Menu from '../components/Menu';
 import { factureReservationUser } from '../services/api'; // Assurez-vous que le chemin est correct
+import { format } from "date-fns";
+import { fr } from 'date-fns/locale';
 
 interface FactureData {
+    facture_id: number;
     id: number;
     montant_facture: number;
     date_facture: string;
@@ -25,14 +28,14 @@ const Facture: React.FC = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [currentFactureId, setCurrentFactureId] = useState<number | null>(null);
     const [showDetailPopup, setShowDetailPopup] = useState(false);
-    const [factures, setFactures] = useState<FactureData[]>([]); // État pour stocker les factures
+    const [factures, setFactures] = useState<any[]>([]); // État pour stocker les factures
 
     useEffect(() => {
         const fetchFactures = async () => {
             try {
                 const response = await factureReservationUser(); 
                 console.log(response.data);
-                setFactures(response.data); 
+                setFactures(response.data.data); 
                 setIsVisible(true);
             } catch (error) {
                 console.error("Erreur lors de la récupération des factures :", error);
@@ -75,11 +78,11 @@ const Facture: React.FC = () => {
                 </div>
 
                 {factures.map(facture => (
-                    <div className="facture" key={facture.id} onClick={() => handleConfirmClickDetail(facture.id)}>
+                    <div className="facture" key={facture.facture_id} onClick={() => handleConfirmClickDetail(facture.facture_id)}>
                         <div className="info-facture">
                             <div className="taxi">
                                 <h4>{facture.immatriculation}</h4>
-                                <h1>{facture.id}</h1> {/* Utilisez facture.id ou facture.facture_id en fonction des données */}
+                                <h1 style={{fontWeight: '1000'}}>N°{facture.facture_id}</h1> {/* Utilisez facture.id ou facture.facture_id en fonction des données */}
                             </div>
                         </div>
 
@@ -94,7 +97,7 @@ const Facture: React.FC = () => {
                                 </div>
                             </div>
                             <div className="info-course">
-                                <p>Paiement effectué le <span>{new Date(facture.date_facture).toLocaleDateString()}</span></p>
+                                <p>Paiement effectué le <span>{format(new Date(facture.date_facture) ,'dd MMMM yyyy', { locale: fr })}</span></p>
                             </div>
                         </div>
                     </div>
@@ -113,13 +116,21 @@ const Facture: React.FC = () => {
                                         <h4>Détails de votre facture</h4>
                                     </div>
                                     <div className="numero">
-                                        <h4>{factures.find(f => f.id === currentFactureId)?.id}</h4>
+                                        <h4>N° {factures.find(f => f.facture_id === currentFactureId)?.facture_id}</h4>
                                     </div>
                                 </div>
                                 <div className="info-detail">
-                                    <p>{factures.find(f => f.id === currentFactureId)?.immatriculation}</p>
-                                    <h1>{factures.find(f => f.id === currentFactureId)?.montant_facture} Ar</h1>
-                                    {/* <p><span>{new Date(factures.find(f => f.id === currentFactureId)?.date_facture).toLocaleDateString()}</span> à <span>{factures.find(f => f.id === currentFactureId)?.date_heure_depart}</span></p> */}
+                                    <p><i className="bi bi-pip-fill"></i> <b>Immatriculation: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.immatriculation}</span></p>
+                                    <p><i className="bi bi-calendar-check-fill"></i><b>Date facture: </b><span>{format(new Date(factures.find(f => f.facture_id === currentFactureId)?.date_facture || ''), 'dd MMMM yyyy', { locale: fr })}</span></p>
+                                    <p><i className="bi bi-currency-exchange"></i><b>Montant: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.montant_facture} Ar</span></p>
+                                    
+                                    <h5>Détails du voyage</h5>
+                                    <p><i className="bi bi-calendar-plus-fill"></i><b>Date de départ: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.date_heure_depart}</span></p>
+                                    <p><i className="bi bi-geo-fill"></i><b>Adresse de départ: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.adresse_depart}</span></p>
+                                    <p><i className="bi bi-geo-fill"></i><b>Adresse d'arrivée: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.adresse_arrivee}</span></p>
+                                    <p><i className="bi bi-asterisk"></i><b>Kilomètres parcourus: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.kilometre} km</span></p>
+                                    <p><i className="bi bi-car-front-fill"></i><b>Marque: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.marque}</span></p>
+                                    <p><i className="bi bi-patch-check-fill"></i><b>Modèle: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.modele}</span></p>
                                 </div>
                             </div>
                             <div className="titrepopupMerci">
@@ -129,6 +140,7 @@ const Facture: React.FC = () => {
                         </div>
                     </div>
                 )}
+
             </div>
         </div>
     );
