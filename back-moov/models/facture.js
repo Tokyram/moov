@@ -39,6 +39,8 @@ class Facture {
                 JOIN course c ON p.course_id = c.id
                 JOIN chauffeur_voiture cv ON c.chauffeur_id = cv.chauffeur_id
                 JOIN voiture v ON cv.voiture_id = v.id
+            WHERE
+                c.passager_id = $1
             ORDER BY 
                 f.date_facture DESC;
         `;

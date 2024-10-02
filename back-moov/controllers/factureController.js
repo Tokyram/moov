@@ -3,6 +3,7 @@ const Facture = require("../models/facture");
 
 class FactureController {
     static async getListeFacture(req, res) {
+        const facture = req.params.id
         try {
             const factures = await Facture.getListeFacture();
             res.json({
