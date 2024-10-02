@@ -218,4 +218,24 @@
   }
   
 
-  
+  .info-detail{
+
+    p{
+        i{
+            margin: 5px;
+            color: var(--primary-color);
+        }
+    }
+    b{
+        font-weight: 1000;
+
+    }
+
+    h5{
+        color: var(--primary-color);
+    }
+
+    span{
+        font-weight: normal;
+    }
+  }
