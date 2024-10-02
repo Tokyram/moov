@@ -61,6 +61,26 @@ class Chauffeur {
           throw new Error("Coordonnées invalides");
         }
     }
+
+    static async getKilometresByChauffeur(chauffeur_id) {
+        const query = `
+            SELECT 
+                chauffeur_id, 
+                SUM(kilometre) AS total_kilometres
+            FROM 
+                course
+            WHERE 
+                chauffeur_id = $1
+            GROUP BY 
+                chauffeur_id;
+        `;
+
+        const result = await db.query(query, [chauffeur_id]);
+        if (result.rows.length === 0) {
+            return null;
+        }
+        return result.rows[0];
+    }
 }
 
 module.exports = Chauffeur;

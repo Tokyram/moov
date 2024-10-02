@@ -41,6 +41,19 @@ class ChauffeurController {
           }
         }
     }
+
+    static async getKilometresByChauffeur(req, res) {
+      const chauffeur_id = req.params.chauffeur_id
+      try {
+          const chauffeurKilometre = await Chauffeur.getKilometresByChauffeur(chauffeur_id);
+          res.json({
+              success: true,
+              data: chauffeurKilometre
+          });
+      } catch (error) {
+          res.status(500).json({ error: error.message });
+      }
+  }
 }
 
 module.exports = ChauffeurController;
