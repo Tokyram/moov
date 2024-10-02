@@ -130,7 +130,7 @@ const MapComponent: React.FC = () => {
   useEffect(() => {
     const getTarif = async () => {
       const response = await getTarifKm();
-      setTarifCourse(Number(response.data.tarif));
+      setTarifCourse(response.data.tarif);
     }
     getTarif();
   },[])

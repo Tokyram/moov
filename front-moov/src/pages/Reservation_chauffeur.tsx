@@ -69,10 +69,12 @@ const Reservation_chauffeur: React.FC = () => {
         // Format the date (YYYY-MM-DD)
         const date = dateObj.toISOString().split('T')[0];
       
-        // Format the time (HH:MM)
-        const hours = String(dateObj.getUTCHours()).padStart(2, '0');
+        // Format the time (HH:MM AM/PM)
+        const hours = dateObj.getUTCHours();
         const minutes = String(dateObj.getUTCMinutes()).padStart(2, '0');
-        const time = `${hours}:${minutes}`;
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12; // Convert to 12-hour format
+        const time = `${String(formattedHours).padStart(2, '0')}:${minutes} ${ampm}`;
       
         return { date, time };
     }
