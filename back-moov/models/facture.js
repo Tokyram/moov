@@ -18,34 +18,34 @@ class Facture {
         return result.rows[0];
     }
 
-    static async getListeFacture() {
+    static async getListeFacture(passager_id) {
         const query = `
             SELECT 
-                f.id AS facture_id,
-                f.montant AS montant_facture,
-                f.date_facture,
-                c.id AS course_id,
-                c.date_heure_depart,
-                c.adresse_depart,
-                c.adresse_arrivee,
-                c.prix AS prix_course,
-                c.kilometre,
-                v.marque,
-                v.modele,
-                v.immatriculation
-            FROM 
-                facture f
-                JOIN paiement p ON f.paiement_id = p.id
-                JOIN course c ON p.course_id = c.id
-                JOIN chauffeur_voiture cv ON c.chauffeur_id = cv.chauffeur_id
-                JOIN voiture v ON cv.voiture_id = v.id
-            WHERE
-                c.passager_id = $1
-            ORDER BY 
-                f.date_facture DESC;
+                    f.id AS facture_id,
+                    f.montant AS montant_facture,
+                    f.date_facture,
+                    c.id AS course_id,
+                    c.date_heure_depart,
+                    c.adresse_depart,
+                    c.adresse_arrivee,
+                    c.prix AS prix_course,
+                    c.kilometre,
+                    v.marque,
+                    v.modele,
+                    v.immatriculation
+                FROM 
+                    facture f
+                    JOIN paiement p ON f.paiement_id = p.id
+                    JOIN course c ON p.course_id = c.id
+                    JOIN chauffeur_voiture cv ON c.chauffeur_id = cv.chauffeur_id
+                    JOIN voiture v ON cv.voiture_id = v.id
+                WHERE
+                    c.passager_id = $1  
+                ORDER BY 
+                    f.date_facture DESC;
         `;
 
-        const result = await db.query(query);
+        const result = await db.query(query, [passager_id]);
         return result.rows;
     }
 

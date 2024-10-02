@@ -3,9 +3,9 @@ const Facture = require("../models/facture");
 
 class FactureController {
     static async getListeFacture(req, res) {
-        const facture = req.params.id
+        const passager_id = req.params.id
         try {
-            const factures = await Facture.getListeFacture();
+            const factures = await Facture.getListeFacture(passager_id);
             res.json({
                 success: true,
                 data: factures

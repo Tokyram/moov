@@ -5,7 +5,7 @@ const { route } = require('./courseRoute');
 
 const router = express.Router();
 
-router.get('/', authMiddleware, FactureController.getListeFacture);
+router.get('/:passager_id', authMiddleware, FactureController.getListeFacture);
 router.get('/:factureId', authMiddleware, FactureController.getDetailFacture);
 
 module.exports = router;
