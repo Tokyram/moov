@@ -1,16 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import './Login.css'; 
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { useParams } from 'react-router-dom';
+import Loader from '../components/Loader';
+import { applyResetPassword } from '../services/api';
+import { useIonRouter } from '@ionic/react';
+
 const Mot_de_passe_oublie: React.FC = () => {
+
+    const router = useIonRouter();
+    
+    const { userId } = useParams<{ userId: string }>();
+    
     const [isVisible, setIsVisible] = useState(false);
+    const [mdp, setMdp] = useState('');
+    const [confirmationMdp, setConfirmationMdp] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
     useEffect(() => {
         setIsVisible(true);
     }, []);
 
+    const handleResetPassword = async () => {
+        try {
+            const response = await applyResetPassword(userId, mdp);
+            setIsLoading(false);
+            router.push('/home', 'root', 'replace');
+        } catch(error: any) {
+            setIsLoading(false);
+            setError('Réinitialisation du mot de passe échoué ! Veuillez réessayer !')
+        }
+    }
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if(mdp == '' || confirmationMdp == '') {
+            setError('Données manquantes ! Veuillez entrer votre mot de passe et confirmez la');
+            return;
+        }
+
+        setIsLoading(true);
+        setError(null);
+        handleResetPassword();
+    }
+
   return (
     <div className="home">
-      
-
         
         <div className="confirmation-bar2">
             <div className="login">
@@ -24,7 +60,7 @@ const Mot_de_passe_oublie: React.FC = () => {
 
             </div>
 
-            <form className="form" action='/home'>
+            <form className="form" onSubmit={handleSubmit}>
 
                 <div className="flex-column">
                     <label>Nouveau </label>
@@ -32,7 +68,13 @@ const Mot_de_passe_oublie: React.FC = () => {
 
                 <div className="inputForm">
                     <i className="bi bi-key"></i>
-                    <input placeholder="***************" className="input" type="password"/>
+                    <input 
+                        placeholder="***************" 
+                        className="input" 
+                        type="password"
+                        value={mdp}
+                        onChange={(e) => setMdp(e.target.value)}
+                    />
                 </div>
         
                 <div className="flex-column">
@@ -41,10 +83,17 @@ const Mot_de_passe_oublie: React.FC = () => {
 
                 <div className="inputForm">
                     <i className="bi bi-key"></i>
-                    <input placeholder="***************" className="input" type="password"/>
+                    <input 
+                        placeholder="***************" 
+                        className="input" 
+                        type="password"
+                        value={confirmationMdp}
+                        onChange={(e) => setConfirmationMdp(e.target.value)}
+                    />
                 </div>
+                {error && <div className="error-message" style={{color: 'var(--primary-color)'}}>{error}</div>}
         
-                <button type='submit' className="confirmation-button2">Confirmer</button>
+                <button type='submit' className="confirmation-button2" disabled={isLoading}>{!isLoading ? "Confirmer" :  <Loader/> }</button>
             </form>
 
             <div className="banner">

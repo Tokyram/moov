@@ -38,6 +38,7 @@ import PaiementFailed from './pages/PaiementFailed';
 import MapComponentChauffeur from './pages/MapComponentChauffeur';
 import LoaderPage from './components/LoaderPage';
 import ChauffeurLocationTracker from './components/ChauffeurLocalisation';
+import Init_Mot_de_passe from './pages/Init_Mot_de_passe';
 
 setupIonicReact();
 
@@ -127,7 +128,8 @@ const App: React.FC = () => {
           <Route path="/notification_chauffeur" component={Notification_chauffeur} exact={true} />
           <Route path="/facture" component={Facture} exact={true} />
           <Route path="/mdpcode/:type" component={Mdp_code} exact={true} />
-          <Route path="/mdpo" component={Mot_de_passe_oublie} exact={true} />
+          <Route path="/mdpo/:userId" component={Mot_de_passe_oublie} exact={true} />
+          <Route path="/mdp_oublie" component={Init_Mot_de_passe} exact={true} />
           <Route path="/mapChauffeur/:courseId" component={MapComponentChauffeur} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>
