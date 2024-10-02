@@ -9,6 +9,7 @@ import '../pages/Login.css';
 import { RouteComponentProps } from 'react-router-dom';
 import { createAvis, getDecodedToken } from '../services/api';
 import { useIonRouter } from '@ionic/react';
+import Loader from './Loader';
 
 interface AvisProps extends RouteComponentProps<{}> {}
 
@@ -20,7 +21,7 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
   const chauffeur_id = params.get('chauffeur_id');
   const passager_id = params.get('passager_id');
   const course_id = params.get('course_id');
-
+  const [isLoading, setIsLoading] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [commentaire, setCommentaire] = useState('');
@@ -63,13 +64,16 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
   };
 
   const creationAvis = async () => {
+    setIsLoading(true);
     try {
       var auteur = "";
       if(role === "UTILISATEUR") auteur = 'chauffeur';
       if(role === "CHAUFFEUR") auteur = 'passager';
       const result = await createAvis(passager_id, chauffeur_id, rating, commentaire, course_id, auteur);
+      setIsLoading(false);
       setShowSuccessPopup(true);
     } catch(error: any) {
+      setIsLoading(false);
       console.error('Erreur lors de la création d\'avis:', error);
     }
   }
@@ -117,9 +121,10 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
             />
           </div>
 
-          <button type="submit" className="confirmation-button4">
-              Envoyer 
-            <i className="bi bi-check-circle-fill"></i>
+          <button type="submit" className="confirmation-button4"  disabled={isLoading}>
+              <div  style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',width: '100%' }}>             
+                {!isLoading ? "Envoyer" :  <Loader/> } <i className="bi bi-check-circle-fill"></i>
+              </div>
           </button>
         </form>
       </div>

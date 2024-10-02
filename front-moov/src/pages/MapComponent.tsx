@@ -12,6 +12,7 @@ import Loader from '../components/Loader';
 import { useIonRouter } from '@ionic/react';
 import { Storage } from '@capacitor/storage';
 import { useParams } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 interface Suggestion {
   display_name: string;
@@ -105,13 +106,21 @@ const MapComponent: React.FC = () => {
             setCourseStart([response.data.course.adresse_depart_latitude, response.data.course.adresse_depart_longitude]);
             setCourseEnd([response.data.course.adresse_arrivee_latitude, response.data.course.adresse_arrivee_longitude]);
 
-            const now = new Date();
-            const departDate = new Date(response.data.course.date_heure_depart);
-            if (response.data.course.course_status === "ATTRIBUEE" && now >= departDate) {
+            const now = dayjs();
+            console.log("Date actuelle :", now.format('YYYY-MM-DD HH:mm:ss'));
+
+            const departDateString = response.data.course.date_heure_depart;
+            const departDate = dayjs(departDateString).subtract(3, 'hour');
+            console.log("Date départ ajustée (moins 3 heures) :", departDate.format('YYYY-MM-DD HH:mm:ss'));
+
+            // Comparaison
+            console.log("Vérification :", now.isAfter(departDate));
+
+            if (response.data.course.course_status === "ATTRIBUEE" && now.isAfter(departDate)) {
               setButtonState('COMMENCER');
             } else if (response.data.course.course_status === "EN COURS") {
               setButtonState('TERMINER');
-            } else if (response.data.course.course_status === "ATTRIBUEE" && now < departDate) {
+            } else if (response.data.course.course_status === "ATTRIBUEE" && now.isBefore(departDate)) {
               setButtonState('ATTRIBUER');
             } else {
               setButtonState('EN_ATTENTE');

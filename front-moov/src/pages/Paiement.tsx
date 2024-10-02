@@ -164,10 +164,10 @@ const PaiementForm: React.FC<{ montant: number | null, courseId: string | null, 
             processing ? (
               <Loader/>
             ) : (
-              <>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',width: '100%' }}>
                 Payer
                 <i className="bi bi-check-circle-fill"></i>
-              </>
+              </div>
             )
           }
           
@@ -176,7 +176,7 @@ const PaiementForm: React.FC<{ montant: number | null, courseId: string | null, 
       {error && <div className="error-message">{error}</div>}
 
       {showPaiementPopup && (
-        <div className="popup-overlay">
+        <div className="popup-overlay" style={{borderRadius: '20px'}}>
           <div className="popup-content">
 
             <div className="titrepopup">
