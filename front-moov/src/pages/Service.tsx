@@ -45,7 +45,7 @@ const Service: React.FC = () => {
 
                     <div className="name-job">
                         <div className="job"><p>
-                        lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever</p></div>
+                        Aidez-nous à améliorer votre expérience ! Décrivez précisément les problèmes rencontrés afin que nous puissions les résoudre rapidement et vous offrir un service de qualité optimale.</p></div>
                     </div>
                 </div>
             </div>
@@ -71,9 +71,9 @@ const Service: React.FC = () => {
                     <label>Commentaire </label>
                 </div>
 
-                <div className="inputForm">
+                <div className="inputForm" style={{height: '100px', borderRadius: '20px'}}>
                     <i className="bi bi-envelope-check"></i>
-                    <textarea placeholder="Ecrivez votre commentaire ici" className="input" />
+                    <textarea placeholder="Ecrivez votre commentaire ici" className="input" style={{height: '90px'}}/>
                 </div>
 
                 <button type="submit" className="confirmation-button4">

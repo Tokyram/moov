@@ -92,10 +92,10 @@ const Notification_chauffeur: React.FC = () => {
                             <img src="assets/logo.png" alt="profileImg" />
                         </div>
                         <div className="name-job1">
-                            <div className="job"><h4>RESERVEZ POUR AVOIR DES BONUS CADEAUX</h4></div>
+                            <div className="job"><h4>GAGNEZ PLUS DE COURSES ET RECEVEZ UNE PRIME.</h4></div>
                         </div>
                         <div className="name-job">
-                            <div className="job"><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever.</p></div>
+                            <div className="job"><p>Augmentez vos opportunités de courses et boostez vos gains ! Plus vous réalisez de courses, plus vous êtes éligible à une prime exclusive. Ne laissez pas passer cette chance de maximiser vos revenus !</p></div>
                         </div>
                     </div>
                 </div>

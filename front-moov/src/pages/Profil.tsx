@@ -154,7 +154,7 @@ const Profil: React.FC = () => {
 
                     <div className="avis-stat">
                         <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum sociis quos dolorem ipsum quia. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Votre score d'étoiles élevé vous garantit un cadeau exclusif ! En revanche, un score bas peut entraîner des sanctions, voire un bannissement pour comportement inapproprié. Soyez respectueux et profitez des récompenses !
                         </p>
                     </div>
 
