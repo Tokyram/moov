@@ -125,7 +125,7 @@ const Mdp_code: React.FC = () => {
                             <div className="job"><h4>UN CODE DE CONFIRMATION VOUS EST ENVOYE PAR SMS</h4></div>
                         </div>
                         <div className="name-job">
-                            <div className="job"><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever.</p></div>
+                            <div className="job"><p>Pour sécuriser votre compte, un code de confirmation vous est envoyé par SMS. Saisissez-le rapidement pour valider votre action en toute sécurité.</p></div>
                         </div>
                     </div>
                 </div>

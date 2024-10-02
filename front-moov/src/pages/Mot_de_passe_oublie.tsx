@@ -102,10 +102,10 @@ const Mot_de_passe_oublie: React.FC = () => {
                             <img src="assets/logo.png" alt="profileImg" />
                         </div>
                         <div className="name-job1">
-                            <div className="job"><h4>UN MOT DE PASSE AVEC PLUSIEUR CARACTERE EST PLUS EFFICACE</h4></div>
+                            <div className="job"><h4>UN MOT DE PASSE AVEC PLUSIEURS CARACTERES EST PLUS EFFICACE</h4></div>
                         </div>
                         <div className="name-job">
-                            <div className="job"><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever.</p></div>
+                            <div className="job"><p>Protégez vos informations en choisissant un mot de passe long et complexe. Plus il contient de caractères, plus il est difficile à pirater, renforçant ainsi la sécurité de vos données.</p></div>
                         </div>
                     </div>
                 </div>
