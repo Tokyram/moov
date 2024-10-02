@@ -109,7 +109,7 @@ const Login: React.FC = () => {
                 <div className="flex-row1">
                     <div className="ratio">
                     </div>
-                    <p className="p"><span className="span"><a className="span" href="/mdpcode">Mot de passe oublié ?</a></span></p>
+                    <p className="p"><span className="span"><a className="span" href="/mdp_oublie">Mot de passe oublié ?</a></span></p>
                 </div>
                 
                 <button type='submit' className="confirmation-button2" disabled={isLoading}> {!isLoading ? "Se Connecter" :  <Loader/> }</button>

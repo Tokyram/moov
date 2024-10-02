@@ -58,6 +58,23 @@ const Facture: React.FC = () => {
         setShowDetailPopup(false);
     };
 
+    function splitDateTime(dateTimeString: string) {
+        // Parse the input string into a Date object
+        const dateObj = new Date(dateTimeString);
+      
+        // Format the date (YYYY-MM-DD)
+        const date = dateObj.toISOString().split('T')[0];
+      
+        // Format the time (HH:MM AM/PM)
+        const hours = dateObj.getUTCHours();
+        const minutes = String(dateObj.getUTCMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12; // Convert to 12-hour format
+        const time = `${String(formattedHours).padStart(2, '0')}:${minutes} ${ampm}`;
+      
+        return { date, time };
+    }
+
     return (
         <div className="homeMap">
             <Header toggleMenu={toggleMenu} />
@@ -125,7 +142,7 @@ const Facture: React.FC = () => {
                                     <p><i className="bi bi-currency-exchange"></i><b>Montant: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.montant_facture} Ar</span></p>
                                     
                                     <h5>Détails du voyage</h5>
-                                    <p><i className="bi bi-calendar-plus-fill"></i><b>Date de départ: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.date_heure_depart}</span></p>
+                                    <p><i className="bi bi-calendar-plus-fill"></i><b>Date de départ: </b><span>{splitDateTime(factures.find(f => f.facture_id === currentFactureId)?.date_heure_depart).date}</span> à <span>{splitDateTime(factures.find(f => f.facture_id === currentFactureId)?.date_heure_depart).time}</span></p>
                                     <p><i className="bi bi-geo-fill"></i><b>Adresse de départ: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.adresse_depart}</span></p>
                                     <p><i className="bi bi-geo-fill"></i><b>Adresse d'arrivée: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.adresse_arrivee}</span></p>
                                     <p><i className="bi bi-asterisk"></i><b>Kilomètres parcourus: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.kilometre} km</span></p>

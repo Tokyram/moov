@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './Login.css'; 
 import { useParams } from 'react-router-dom';
-import { verifyRegistration } from '../services/api';
+import { verifyRegistration, verifyResetPassword } from '../services/api';
 import { Storage } from '@capacitor/storage';
 import { useIonRouter } from '@ionic/react';
+import Loader from '../components/Loader';
 
 const Mdp_code: React.FC = () => {
 
@@ -12,6 +13,8 @@ const Mdp_code: React.FC = () => {
 
     const [isVisible, setIsVisible] = useState(false);
     const [code, setCode] = useState(['', '', '', '', '', '']);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         setIsVisible(true);
@@ -31,6 +34,9 @@ const Mdp_code: React.FC = () => {
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsLoading(true);
+        setError(null);
+
         const confirmationCode = code.join('');
         console.log('Code de confirmation:', confirmationCode);
         // Ici, vous pouvez ajouter la logique pour envoyer le code au serveur
@@ -42,9 +48,23 @@ const Mdp_code: React.FC = () => {
         if(type === 'inscription') {
             try {
                 const response = await verifyRegistration(Number(confirmationCode));
+                setIsLoading(false);
                 await Storage.set({ key: 'token', value: response.data.token });
                 router.push('/map', 'root', 'replace');
             } catch(error: any) {
+                setIsLoading(false);
+                setError('Code de confirmation invalide ou expiré !')
+                console.error('Erreur récupération code', error.message);
+            }
+        } 
+        if(type === 'mdp') {
+            try {
+                const response = await verifyResetPassword(Number(confirmationCode));
+                setIsLoading(false);
+                router.push(`/mdpo/${response.data.user_id}`, 'root', 'replace');
+            } catch(error: any) {
+                setIsLoading(false);
+                setError('Code de confirmation invalide ou expiré !')
                 console.error('Erreur récupération code', error.message);
             }
         }
@@ -90,13 +110,10 @@ const Mdp_code: React.FC = () => {
                     />
                     ))}
                 </div>
-                {/* <div className="inputForm">
-                    <i className="bi bi-key"></i>
-                    <input placeholder="Saisir le code de confirmation" className="input" type="password"/>
-                    
-                </div> */}
+                {error && <div className="error-message" style={{color: 'var(--primary-color)'}}>{error}</div>}
+
                 
-                <button type='submit' className="confirmation-button2">Envoyer</button>
+                <button type='submit' className="confirmation-button2" disabled={isLoading}>{!isLoading ? "Envoyer" :  <Loader/> }</button>
             </form>
 
                 <div className="banner">
