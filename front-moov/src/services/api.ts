@@ -374,3 +374,40 @@ export const factureReservationUser = async () => {
         throw error;
     }
 }
+
+export const getKilometresByChauffeur = async () => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const decodedToken = await getDecodedToken();
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.get(`/chauffeur/kilometre/${decodedToken.id}`, { headers });
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors de la récupération du nombre de kilomètre du chauffeur :', error.message);
+        throw error;
+    }
+}
+export const getKilometresByPassager = async () => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const decodedToken = await getDecodedToken();
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.get(`/chauffeur/kilometrePassager/${decodedToken.id}`, { headers });
+        return response;
+    } catch (error: any) {
+        console.error('Erreur lors de la récupération du nombre de kilomètres du passager :', error.message);
+        throw error;
+    }
+};

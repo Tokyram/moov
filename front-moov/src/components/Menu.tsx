@@ -123,7 +123,7 @@ const Menu: React.FC = () => {
             <li>
               <a href="/reservation_chauffeur">
                 <i className="bi bi-arrow-down-right-square-fill"></i>
-                <span className="link_name">Réservation chauffeur</span>
+                <span className="link_name">Réservations</span>
               </a>
             </li>
           )
@@ -149,7 +149,7 @@ const Menu: React.FC = () => {
               <div className="iocn-link">
                 <a href="/notification_chauffeur">
                     <i className="bi bi-bell-fill"></i>
-                  <span className="link_name">Notification chauffeur*</span>
+                  <span className="link_name">Notifications</span>
                 </a>
               </div>
             </li>

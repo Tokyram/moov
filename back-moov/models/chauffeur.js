@@ -81,6 +81,26 @@ class Chauffeur {
         }
         return result.rows[0];
     }
+
+    static async getKilometresByPassager(passager_id) {
+        const query = `
+            SELECT 
+                passager_id, 
+                SUM(kilometre) AS total_kilometres
+            FROM 
+                course
+            WHERE 
+                passager_id = $1
+            GROUP BY 
+                passager_id;
+        `;
+
+        const result = await db.query(query, [passager_id]);
+        if (result.rows.length === 0) {
+            return null;
+        }
+        return result.rows[0];
+    }
 }
 
 module.exports = Chauffeur;

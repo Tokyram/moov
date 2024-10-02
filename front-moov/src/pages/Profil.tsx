@@ -8,6 +8,7 @@ import Menu from '../components/Menu';
 import './MapComponent.css';
 import { Route, useHistory } from 'react-router-dom';
 import PopupModificationProfil from '../components/PopupModificationProfil';
+import { getDecodedToken, getKilometresByChauffeur, getKilometresByPassager } from '../services/api';
 const Profil: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -18,12 +19,39 @@ const Profil: React.FC = () => {
   const [selectedEmail, setSelectedEmail] = useState<string>('');
   const [selectedPhoto, setSelectedPhoto] = useState<string>('');
   const history = useHistory();
+  const [totalKilometres, setTotalKilometres] = useState<number | null>(null);
+  const [role, setRole] = useState<string | null>(null); // Pour stocker le rôle
   const handleConfirmClick = () => {
     setShowModificationPopup(true);
   };
   useEffect(() => {
     // Ajouter la classe 'show' après le montage du composant
     setIsVisible(true);
+
+    // Récupérer le rôle de l'utilisateur au montage du composant
+    const fetchRoleAndKilometres = async () => {
+      try {
+        
+        const decodedToken = await getDecodedToken();
+
+        if ( decodedToken.role === 'CHAUFFEUR') {
+
+            const response = await getKilometresByChauffeur();
+            console.log("kilometre chauffeur", response.data);
+            setTotalKilometres(response.data.data.total_kilometres);
+
+        } else if (decodedToken.role === 'UTILISATEUR') {
+
+            const response = await getKilometresByPassager();
+            console.log("kilometre passager", response.data);
+            setTotalKilometres(response.data.data.total_kilometres);
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des kilomètres ou du rôle:', error);
+      }
+    };
+
+    fetchRoleAndKilometres(); // Appeler la fonction
   }, []);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -81,7 +109,7 @@ const Profil: React.FC = () => {
                             <p>Total <br />distances</p>
                         </div>
                         <div className="ttt">
-                            <h1>140</h1>
+                            <h1>{totalKilometres}</h1>
                             <h4>Km</h4>
                         </div>
                         
