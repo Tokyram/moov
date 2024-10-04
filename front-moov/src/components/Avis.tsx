@@ -27,6 +27,7 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
   const [commentaire, setCommentaire] = useState('');
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [role, setRole] = useState('');
+  const [erreur, setErreur] = useState<string|null>(null);
 
   useEffect(() => {
     const getRole = async () => {
@@ -45,10 +46,8 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
 
   const handleStarClick = (index: number) => {
     if (rating === index + 1) {
-      // Si l'utilisateur clique sur l'étoile actuelle, réduire la note d'une étoile
       setRating(index);
     } else {
-      // Sinon, définir la note à l'index cliqué + 1
       setRating(index + 1);
     }
   };
@@ -58,13 +57,22 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
     creationAvis();
   };
 
+  const handlePassAvis = () => {
+    router.push('/profil', 'root', 'replace');
+  };
+  
   const handleCloseSuccess = () => {
     setShowSuccessPopup(false);
     router.push('/profil', 'root', 'replace');
   };
 
   const creationAvis = async () => {
+    if(rating === 0) {
+      setErreur("Une étoile minimum lorsqu'on donne un avis !");
+      return;
+    }
     setIsLoading(true);
+    setErreur(null);
     try {
       var auteur = "";
       if(role === "UTILISATEUR") auteur = 'chauffeur';
@@ -74,6 +82,7 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
       setShowSuccessPopup(true);
     } catch(error: any) {
       setIsLoading(false);
+      setErreur('Erreur lors de l\'envoi de votre avis ! Veuillez réessayer !');
       console.error('Erreur lors de la création d\'avis:', error);
     }
   }
@@ -121,11 +130,21 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
             />
           </div>
 
-          <button type="submit" className="confirmation-button4"  disabled={isLoading}>
+          {erreur && <div className="error-message" style={{color: 'var(--primary-color)'}}>{erreur}</div>}
+
+          {/* <button type="submit" className="confirmation-button4"  disabled={isLoading}>
+            <div  style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',width: '100%' }}>             
+              {!isLoading ? "Envoyer" :  <Loader/> } <i className="bi bi-check-circle-fill"></i>
+            </div>
+          </button> */}
+          <div className="popup-buttons">
+            <button type="submit" className="confirmation-button4"  disabled={isLoading}>
               <div  style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',width: '100%' }}>             
                 {!isLoading ? "Envoyer" :  <Loader/> } <i className="bi bi-check-circle-fill"></i>
               </div>
-          </button>
+            </button>
+            <button style={{ borderRadius: '25px', backgroundColor: 'var(--grey-color)' }} className="btn btn-secondary"onClick={handlePassAvis}>Passer</button>
+          </div>
         </form>
       </div>
 
