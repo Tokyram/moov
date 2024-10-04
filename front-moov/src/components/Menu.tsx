@@ -169,6 +169,17 @@ const Menu: React.FC = () => {
             </li>
           )
         }
+
+
+            <li>
+              <div className="iocn-link">
+                <a href="/accueil">
+                <i className="bi bi-wallet-fill"></i>
+                  <span className="link_name">Accueill be</span>
+                </a>
+              </div>
+              
+            </li>
         
        
           <div className="profile-details2">

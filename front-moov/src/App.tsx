@@ -39,6 +39,7 @@ import MapComponentChauffeur from './pages/MapComponentChauffeur';
 import LoaderPage from './components/LoaderPage';
 import ChauffeurLocationTracker from './components/ChauffeurLocalisation';
 import Init_Mot_de_passe from './pages/Init_Mot_de_passe';
+import Accueil from './pages/Accueil';
 
 setupIonicReact();
 
@@ -131,6 +132,7 @@ const App: React.FC = () => {
           <Route path="/mdpo/:userId" component={Mot_de_passe_oublie} exact={true} />
           <Route path="/mdp_oublie" component={Init_Mot_de_passe} exact={true} />
           <Route path="/mapChauffeur/:courseId" component={MapComponentChauffeur} exact={true} />
+          <Route path="/accueil" component={Accueil} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
