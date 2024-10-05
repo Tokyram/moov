@@ -25,7 +25,7 @@ class TokenDeviceUser {
             const result = db.query(query, [token_device, utilisateur_id]);
             return result.rows[0];
         } catch(error) {
-            throw new Error('Erreur lors de la récupération du token device : ' + error.message);
+            throw new Error('Erreur lors de l\'insertion du token device : ' + error.message);
         }
     }
 }
