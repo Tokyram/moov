@@ -6,7 +6,7 @@ class TokenDeviceUser {
     static async findToken(utilisateur_id) {
         try {
             const result = await db.query('SELECT token_device FROM token_device_user WHERE utilisateur_id = $1', [utilisateur_id]);
-            return result.rows[0].token_device;
+            return result.rows[0];
         } catch(error) {
             throw new Error('Erreur lors de la récupération du token device : ' + error.message);
         }
