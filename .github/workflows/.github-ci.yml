@@ -37,4 +37,4 @@ jobs:
         curl -X POST https://api.render.com/v1/deploys \
           -H "Authorization: Bearer $RENDER_API_KEY" \
           -H "Content-Type: application/json" \
-          -d '{"serviceName": "admin-moov"}'
+          -d '{"serviceId": "srv-cs052hjv2p9s73d3baq0"}'
