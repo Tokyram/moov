@@ -173,3 +173,13 @@ CREATE TABLE IF NOT EXISTS token_device_user (
   token_device TEXT,
   utilisateur_id INT
 );
+
+CREATE TABLE IF NOT EXISTS notification (
+  id SERIAL PRIMARY KEY,
+  utilisateur_id INT,
+  contenu TEXT,
+  date_heure_notification TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  lu BOOLEAN DEFAULT false,
+  type_notif VARCHAR(255),
+  entity_id INT
+);

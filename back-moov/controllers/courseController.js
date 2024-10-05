@@ -1,11 +1,27 @@
 const Course = require('../models/course');
+const Notification = require('../models/notification');
+const TokenDeviceUser = require('../models/tokenDeviceUser');
+const Utilisateur = require('../models/utilisateur');
 const { param } = require('../routes/courseRoute');
 const CourseService = require('../services/course_service');
+const firebaseService = require("../services/firebaseService");
+
 class CourseController {
     static async reserver(req, res) {
         try {
             const courseData = req.body;
             const nouvelleCourse = await Course.reserver(courseData);
+
+            const chauffeurs = await Utilisateur.findAllChauffeur();
+
+            const notificationTitle = 'Nouvelle course disponible';
+            const notificationBody = 'Une nouvelle course est disponible. Un utilisateur du plateforme a ajouté une nouvelle réservation !';
+
+            for(chauffeur of chauffeurs) {
+                const notif = await Notification.createNotification({utilisateur_id: chauffeur.id, contenu: notificationBody, type_notif: 'RESERVATION', entity_id: nouvelleCourse.id});
+                const tokenNotif = await TokenDeviceUser.findToken(chauffeur.id);
+                const sendNotif = await firebaseService.sendNotification(tokenNotif.token_device, notificationTitle, notificationBody);
+            }
 
             res.status(201).json({
                 success: true,
