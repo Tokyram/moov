@@ -40,6 +40,7 @@ import LoaderPage from './components/LoaderPage';
 import ChauffeurLocationTracker from './components/ChauffeurLocalisation';
 import Init_Mot_de_passe from './pages/Init_Mot_de_passe';
 import Accueil from './pages/Accueil';
+import { requestPushNotificationsPermission } from '../pushNotifications';
 
 setupIonicReact();
 
@@ -70,6 +71,8 @@ const App: React.FC = () => {
       const decodedToken = await getDecodedToken();
       setIsLoggedIn(true);
       setUserRole(decodedToken.role);
+      requestPushNotificationsPermission();
+
       if(decodedToken.role === "UTILISATEUR") {
         try {
           const traite = await checkTraitementCourse(decodedToken.id);
@@ -80,10 +83,10 @@ const App: React.FC = () => {
           } else {
               setIsLoading(false);
           }
-      } catch(error: any) {
-          setIsLoading(false);
-          console.error('Erreur de check', error.message);
-      }
+        } catch(error: any) {
+            setIsLoading(false);
+            console.error('Erreur de check', error.message);
+        }
       }
     }
     setIsLoading(false);

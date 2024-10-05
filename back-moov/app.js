@@ -19,6 +19,7 @@ const panneRoutes = require('./routes/panneRoute');
 const traitementCourseRoute = require('./routes/traitementCourseRoute');
 const tarifRoute = require('./routes/tarifsRoute');
 const factureRoute = require('./routes/factureRoute');
+const tokenDeviceUserRoute = require('./routes/tokenDeviceUserRoute');
 
 const cors = require('cors');
 const app = express();
@@ -65,22 +66,8 @@ app.use('/api/panne', panneRoutes);
 app.use('/api/traitementCourse', traitementCourseRoute);
 app.use('/api/tarifs', tarifRoute);
 app.use('/api/factures', factureRoute);
+app.use('/api/token-device', tokenDeviceUserRoute);
 
-// Endpoint pour recevoir et enregistrer le token FCM
-app.post('/api/save-token', (req, res) => {
-  const { token } = req.body;
-  
-  if (token) {
-    // Affiche le token dans la console
-    console.log('Token reçu du client:', token);
-    
-    // Réponse de succès
-    res.status(200).send('Token reçu avec succès');
-  } else {
-    console.error('Aucun token reçu');
-    res.status(400).send('Erreur : Aucun token envoyé');
-  }
-});
 // Gestion des erreurs 404
 app.use((req, res, next) => {
   res.status(404).send('Page non trouvée');

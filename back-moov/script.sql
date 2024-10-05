@@ -167,3 +167,9 @@ END;
 $$ LANGUAGE plpgsql;
 
 SELECT upsert_tarif(3000);
+
+CREATE TABLE IF NOT EXISTS token_device_user (
+  id SERIAL PRIMARY KEY,
+  token_device TEXT,
+  utilisateur_id INT
+);

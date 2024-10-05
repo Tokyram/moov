@@ -2,6 +2,7 @@ import { PushNotifications, PushNotificationSchema } from '@capacitor/push-notif
 import { FirebaseMessaging } from '@capacitor-firebase/messaging';
 import { useEffect } from 'react';
 import url_api from './src/constante';
+import { getDecodedToken } from './src/services/api';
 
 // Demander la permission pour les notifications push
 export const requestPushNotificationsPermission = async () => {
@@ -16,13 +17,16 @@ export const requestPushNotificationsPermission = async () => {
       const token = await FirebaseMessaging.getToken();
       console.log('Token FCM :', token.token);
 
+      // Récupérer utilisateur_id 
+      const utilisateur = await getDecodedToken();
+
       // Envoi du token au backend pour l'associer à l'utilisateur ou à l'appareil
-      await fetch(`${url_api}/save-token`, {
+      await fetch(`${url_api}/token-device/save-token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ token: token.token }),
+        body: JSON.stringify({ token: token.token, utilisateur_id: utilisateur.id }),
       })
       .then(response => {
         if (response.ok) {

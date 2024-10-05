@@ -6,6 +6,7 @@ import { checkTraitementCourse, login } from '../services/api';
 import { useHistory } from 'react-router-dom';
 import { useIonRouter } from '@ionic/react';
 import Loader from '../components/Loader';
+import { requestPushNotificationsPermission } from '../../pushNotifications';
 
 const Login: React.FC = () => {
 
@@ -25,6 +26,7 @@ const Login: React.FC = () => {
             await Storage.set({ key: 'token', value: response.data.token });
             if(response.data.user.role === "UTILISATEUR") {
                 try {
+                    requestPushNotificationsPermission();
                     const traite = await checkTraitementCourse(response.data.user.id);
                     if(traite.data.enregistrement) {
                         await Storage.set({ key: 'course', value: traite.data.enregistrement.course_id });
