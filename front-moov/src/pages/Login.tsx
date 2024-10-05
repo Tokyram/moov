@@ -24,9 +24,9 @@ const Login: React.FC = () => {
           const response = await login(username, password);
           if (response.data.token) {
             await Storage.set({ key: 'token', value: response.data.token });
+            requestPushNotificationsPermission();
             if(response.data.user.role === "UTILISATEUR") {
                 try {
-                    requestPushNotificationsPermission();
                     const traite = await checkTraitementCourse(response.data.user.id);
                     if(traite.data.enregistrement) {
                         await Storage.set({ key: 'course', value: traite.data.enregistrement.course_id });
