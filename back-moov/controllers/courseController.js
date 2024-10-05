@@ -70,7 +70,14 @@ class CourseController {
                 res.status(400).json({ success: false, message: 'Vous avez déjà accepté cette course' });
             }
 
+            const notificationTitle = 'Chauffeur disponible';
+            const notificationBody = 'Un chauffeur a accepté votre demande de réservation !';
+
             const confirmation = await Course.confirmationCourseChauffeur(courseId, chauffeurId, 'ACCEPTE');
+            const notif = await Notification.createNotification({utilisateur_id: confirmation.passager_id, contenu: notificationBody, type_notif: 'ACCEPTATION', entity_id: confirmation.id});
+            const tokenNotif = await TokenDeviceUser.findToken(confirmation.passager_id);
+            const sendNotif = await firebaseService.sendNotification(tokenNotif.token_device, notificationTitle, notificationBody);
+
             res.json({
                 success: true,
                 message: 'Course acceptée avec succès',
