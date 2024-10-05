@@ -16,10 +16,16 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '20.10.0'
-    - run: npm ci
-    - run: npm install
-    - run: npm run build
-    - run: npm test
+    - name: Install dependencies and build
+      run: |
+        cd admin-moov
+        npm ci
+        npm install
+        npm run build
+    - name: Run tests
+      run: |
+        cd admin-moov
+        npm test
     
   deploy:
     needs: build
