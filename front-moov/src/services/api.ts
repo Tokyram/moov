@@ -465,3 +465,38 @@ export const applyResetPassword = async (userId: any, mdp: any) => {
         throw error;
     }
 };
+
+export const getAllTypePanne = async () => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.get(`/panne/getTypesPanne`, { headers });
+        return response;
+    } catch (error: any) {
+        console.error('Erreur lors de la recuperation des types panne :', error.message);
+        throw error;
+    }
+};
+
+export const createPanne = async (utilisateur_id: any, type_panne_id: any,  commentaire: any) => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.post(`/panne/CreationSignalerPanne`, { utilisateur_id, type_panne_id, commentaire }, { headers });   
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors l\'insertion de panne:', error.message);
+        throw error;
+    }
+}
