@@ -465,3 +465,21 @@ export const applyResetPassword = async (userId: any, mdp: any) => {
         throw error;
     }
 };
+
+export const getAllTypePanne = async (userId: any, mdp: any) => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.post(`/panne/getTypesPanne`, { userId, mdp }, { headers });
+        return response;
+    } catch (error: any) {
+        console.error('Erreur vérification reset mot de passe :', error.message);
+        throw error;
+    }
+};
