@@ -16,13 +16,13 @@ class TokenDeviceUser {
         try {
             var query = '';
             const findUserToken = await this.findToken(utilisateur_id);
-            if(findUserToken) {
+            if (findUserToken) {
                 query = 'UPDATE token_device_user SET token_device = $1 WHERE utilisateur_id = $2 RETURNING * ';
             } else {
                 query = 'INSERT INTO token_device_user (token_device, utilisateur_id) VALUES ($1, $2) RETURNING * ';
             }
 
-            const result = db.query(query, [token_device, utilisateur_id]);
+            const result = await db.query(query, [token_device, utilisateur_id]);
             return result.rows[0];
         } catch(error) {
             throw new Error('Erreur lors de l\'insertion du token device : ' + error.message);
