@@ -25,7 +25,7 @@ jobs:
     - name: Run tests
       run: |
         cd admin-moov
-        npm test
+        npm test -- --watchAll=false --detectOpenHandles
     
   deploy:
     needs: build
