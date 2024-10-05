@@ -17,7 +17,7 @@ class CourseController {
             const notificationTitle = 'Nouvelle course disponible';
             const notificationBody = 'Une nouvelle course est disponible. Un utilisateur du plateforme a ajouté une nouvelle réservation !';
 
-            for(chauffeur of chauffeurs) {
+            for(const chauffeur of chauffeurs) {
                 const notif = await Notification.createNotification({utilisateur_id: chauffeur.id, contenu: notificationBody, type_notif: 'RESERVATION', entity_id: nouvelleCourse.id});
                 const tokenNotif = await TokenDeviceUser.findToken(chauffeur.id);
                 const sendNotif = await firebaseService.sendNotification(tokenNotif.token_device, notificationTitle, notificationBody);
