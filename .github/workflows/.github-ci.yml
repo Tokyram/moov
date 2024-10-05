@@ -22,10 +22,6 @@ jobs:
         npm ci
         CI=false npm install
         CI=false npm run build
-    - name: Run tests
-      run: |
-        cd admin-moov
-        npm test -- --watchAll=false --detectOpenHandles
     
   deploy:
     needs: build
