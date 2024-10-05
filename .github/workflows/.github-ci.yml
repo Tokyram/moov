@@ -34,7 +34,7 @@ jobs:
       env:
         RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
       run: |
-        curl -X POST https://api.render.com/deploy/srv-cs052hjv2p9s73d3baq0?key=V56zzgvaJBw \
+        curl -X POST https://api.render.com/deploy/srv-cs0bgq23esus738vipng?key=88CyG-vwgU8 \
           -H "Authorization: Bearer $RENDER_API_KEY" \
           -H "Content-Type: application/json" \
-          -d '{"serviceId": "srv-cs052hjv2p9s73d3baq0"}'
+          -d '{"serviceId": "srv-cs0bgq23esus738vipng"}'
