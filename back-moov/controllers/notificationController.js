@@ -15,6 +15,7 @@ exports.sendPushNotification = async (req, res) => {
 
 exports.countNotificationNonLu = async (req, res) => {
   const user_id = req.params.userId;
+  console.log("user", user_id);
   try {
     const result = await Notification.countNonLuNotification(user_id);
     res.status(200).json({ success: true, message: 'Notifications non lus', data: result });
