@@ -3,7 +3,10 @@ const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const Course = require('../models/course');
 const Paiement = require('../models/paiement');
 const Facture = require('../models/facture');
+const Notification = require('../models/notification');
 const TraitementCourseUtilisateur = require('../models/traitementCourseUtilisateur');
+const TokenDeviceUser = require('../models/tokenDeviceUser');
+const firebaseService = require("../services/firebaseService");
 
 const TAUX_CHANGE_EUR_MGA = 5000; // 1 EUR = 5000 MGA
 
@@ -61,11 +64,17 @@ class PaiementController {
                     montant: paiement.montant
                 });
 
+                const notificationTitle = 'Attribution d\'une course';
+                const notificationBody = 'Une course vous a été attribuée par un utilisateur. Vous pouvez maintenant la commencer !';
+
                 // Attribuer la course au chauffeur
                 await Course.attribuerChauffeur(courseId, chauffeurId);
                 const suppressionTraitement = TraitementCourseUtilisateur.suppressionTraitementCourse(courseId);
                 const suppressionConfirmation = Course.suppressionCourseChauffeur(courseId);
-                
+                const notif = await Notification.createNotification({utilisateur_id: chauffeurId, contenu: notificationBody, type_notif: 'ASSIGNATION', entity_id: courseId});
+                const tokenNotif = await TokenDeviceUser.findToken(chauffeurId);
+                const sendNotif = await firebaseService.sendNotification(tokenNotif.token_device, notificationTitle, notificationBody);
+
                 res.status(200).json({
                     success: true,
                     message: 'Paiement confirmé et course attribuée',
