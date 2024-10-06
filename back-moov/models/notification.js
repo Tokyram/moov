@@ -11,6 +11,15 @@ class Notification {
         const result = await db.query(query, values);
         return result.rows[0];
     }
+
+    static async countNonLuNotification(utilisateur_id) {
+        const result = await db.query(
+            `SELECT COUNT(*) FROM notification WHERE utilisateur_id = $1 AND lu is false`,
+            [utilisateur_id]
+        );
+
+        return parseInt(result.rows[0].count);
+    }
 }
 
 module.exports = Notification;
