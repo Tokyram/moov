@@ -519,3 +519,22 @@ export const getNbNotifNonLus = async () => {
         throw error;
     }
 }
+
+export const getListeNotificationsUser = async () => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const decodedToken = await getDecodedToken();
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.get(`/notifications/${decodedToken.id}`, { headers });   
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors de la récupération de la liste des notifs :', error.message);
+        throw error;
+    }
+}
