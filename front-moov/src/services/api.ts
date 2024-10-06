@@ -500,3 +500,22 @@ export const createPanne = async (utilisateur_id: any, type_panne_id: any,  comm
         throw error;
     }
 }
+
+export const getNbNotifNonLus = async () => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const decodedToken = await getDecodedToken();
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response = await api.get(`/notifications/non-lu/${decodedToken.id}`, { headers });   
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors de la récupération des nb notifs :', error.message);
+        throw error;
+    }
+}
