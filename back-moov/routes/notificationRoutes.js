@@ -6,5 +6,6 @@ const authMiddleware = require('../middleware/auth');
 
 router.post("/send-notification", notificationController.sendPushNotification);
 router.get("/non-lu/:userId", authMiddleware, notificationController.countNotificationNonLu);
+router.get("/:userId", authMiddleware, notificationController.getNotifsUser);
 
 module.exports = router;

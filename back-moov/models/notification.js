@@ -20,6 +20,14 @@ class Notification {
 
         return parseInt(result.rows[0].count);
     }
+
+    static async getNotificationsUser(utilisateur_id) {
+        const query = `
+            SELECT * FROM notification WHERE utilisateur_id = $1
+        `;
+        const result = await db.query(query, [utilisateur_id]);
+        return result.rows;
+    }
 }
 
 module.exports = Notification;

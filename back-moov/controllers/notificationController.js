@@ -24,3 +24,14 @@ exports.countNotificationNonLu = async (req, res) => {
     res.status(500).json({ success: false, message: 'Erreur serveur', error: error.message });
   }
 };
+
+exports.getNotifsUser = async (req, res) => {
+  const user_id = req.params.userId;
+  try {
+    const result = await Notification.getNotificationsUser(user_id);
+    res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    console.error('Erreur lors de la récupération de la liste des notifs :', error);
+    res.status(500).json({ success: false, message: 'Erreur serveur', error: error.message });
+  }
+};
