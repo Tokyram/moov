@@ -171,7 +171,7 @@ const Menu: React.FC = () => {
         }
 
 
-            <li>
+            {/* <li>
               <div className="iocn-link">
                 <a href="/accueil">
                 <i className="bi bi-wallet-fill"></i>
@@ -179,7 +179,7 @@ const Menu: React.FC = () => {
                 </a>
               </div>
               
-            </li>
+            </li> */}
         
        
           <div className="profile-details2">
