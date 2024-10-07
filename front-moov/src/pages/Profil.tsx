@@ -148,7 +148,7 @@ const Profil: React.FC = () => {
                 <div className="stat-avis">
                     <div className="titre-stat">
                         <i className="bi bi-asterisk"></i>
-                            <p>Avis global sur votre qualité de service</p>
+                            <p>Votre avis globale</p>
                         <div className="ico-stat2">
                             <i className="bi bi-check-circle-fill"></i>
                         </div>
