@@ -26,6 +26,8 @@ const Profil: React.FC = () => {
 
   const history = useHistory();
   const [totalKilometres, setTotalKilometres] = useState<number | null>(null);
+  const [totalReservations, setTotalReservations] = useState<number | null>(null);
+
   const [role, setRole] = useState<string | null>(null); // Pour stocker le rôle
 
   const handleConfirmClick = () => {
@@ -49,12 +51,14 @@ const Profil: React.FC = () => {
             const response = await getKilometresByChauffeur();
             console.log("kilometre chauffeur", response.data);
             setTotalKilometres(response.data.data.total_kilometres);
+            setTotalReservations(response.data.data.total_course);
 
         } else if (decodedToken.role === 'UTILISATEUR') {
 
             const response = await getKilometresByPassager();
             console.log("kilometre passager", response.data);
             setTotalKilometres(response.data.data.total_kilometres);
+            setTotalReservations(response.data.data.total_course);
         }
       } catch (error) {
         console.error('Erreur lors de la récupération des kilomètres ou du rôle:', error);
@@ -127,13 +131,13 @@ const Profil: React.FC = () => {
                     <div className={`stat-number2 ${isVisible ? 'show' : ''}`}>
                         <div className="titre-stat">
                                 <i className="bi bi-arrow-down-right-square-fill"></i>
-                                <p>Total <br /> Réservation</p>
+                                <p>Total <br /> Réservations</p>
                             <div className="ico-stat">
                                 <i className="bi bi-car-front-fill"></i>
                             </div>
                         </div>
                         <div className="ttt">
-                            <h1>50</h1>
+                            <h1>{totalReservations}</h1>
 
                             <div className="bouton-reservation">
                                 <button className='btn' onClick={handleConfirm}>

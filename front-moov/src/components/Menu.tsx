@@ -73,7 +73,7 @@ const Menu: React.FC = () => {
             </div>
             <div className="name-job">
               <div className="profile_name">{username}</div>
-              <div className="job">voir votre profil</div>
+              <div className="job">Voir votre profil</div>
             </div>
             </a>
           </div>
