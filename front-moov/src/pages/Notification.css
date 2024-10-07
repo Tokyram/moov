@@ -17,8 +17,8 @@
         flex-direction: column;
         font-size: var(--text12);
         border-radius: 20px;
-        gap: 15px;
-        width: 70%;
+        /* gap: 15px; */
+        width: 100%;
         .info-course{
 
             line-height: 0rem;
@@ -62,7 +62,7 @@
             }
             p{
                 /* box-shadow: 0 0px 15px rgba(0, 0, 0, 0.1); */
-                width: 70px;
+                width: 100%;
                 display: flex;
                 justify-content: flex-end;
                 align-items: center;
@@ -70,11 +70,11 @@
         }
         .ico-stat2{
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             color: var(--text-color);
             gap: 20px;
-
+            width: 100%;
             i{
                 /* box-shadow: 0 0px 15px rgba(0, 0, 0, 0.1); */
                 /* width: 30px; */

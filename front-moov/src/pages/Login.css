@@ -1,7 +1,7 @@
 @import url('Main.css');
 
 .confirmation-button2{
-    background-color: var(--primary-color);
+    background-color: var(--text-color);
     width: 100%;
     padding: 15px;
     border-radius: 50px;

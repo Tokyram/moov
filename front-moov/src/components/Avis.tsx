@@ -138,12 +138,13 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
             </div>
           </button> */}
           <div className="popup-buttons">
+            <button style={{ borderRadius: '25px', backgroundColor: 'var(--grey-color)' }} className="btn btn-secondary"onClick={handlePassAvis}>Passer</button>
+
             <button type="submit" className="confirmation-button4"  disabled={isLoading}>
               <div  style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',width: '100%' }}>             
                 {!isLoading ? "Envoyer" :  <Loader/> } <i className="bi bi-check-circle-fill"></i>
               </div>
             </button>
-            <button style={{ borderRadius: '25px', backgroundColor: 'var(--grey-color)' }} className="btn btn-secondary"onClick={handlePassAvis}>Passer</button>
           </div>
         </form>
       </div>
