@@ -3,6 +3,7 @@ import './Login.css';
 import { inscription, inscriptionData } from '../services/api';
 import Loader from '../components/Loader';
 import { useIonRouter } from '@ionic/react';
+import Retour from '../components/Retour';
 
 const Inscription: React.FC = () => {
     
@@ -64,6 +65,9 @@ const Inscription: React.FC = () => {
     <div className="home">
 
         <div className="confirmation-bar2">
+            
+            <Retour/>
+
             <div className="login">
                 <div className="logo-login">
                 {/* <img src="assets/logo.png" alt="Logo" className="logo" /> */}

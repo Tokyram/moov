@@ -13,6 +13,7 @@ const PaiementSuccess: React.FC = () => {
         // Ajouter la classe 'show' après le montage du composant
         setIsVisible(true);
       }, []);
+
       const handleConfirm = () => {
         history.push('/map');
       };
@@ -27,7 +28,51 @@ const PaiementSuccess: React.FC = () => {
 
       <div className="confirmation-bar4">
         <div className="reussi">
-          <i className="bi bi-check-circle-fill"></i>
+        <svg
+                    width="115px"
+                    height="115px"
+                    viewBox="0 0 133 133"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    
+                >
+                    <g
+                        id="check-group"
+                        stroke="none"
+                        stroke-width="1"
+                        fill="none"
+                        fill-rule="evenodd"
+                    >
+                            <circle
+                            id="filled-circle"
+                            fill="var(--win-color)"
+                            cx="66.5"
+                            cy="66.5"
+                            r="54.5"
+                        />
+                        <circle
+                            id="white-circle"
+                            fill="var(--background-color)"
+                            cx="66.5"
+                            cy="66.5"
+                            r="55.5"
+                        />
+                        <circle
+                            id="outline"
+                            stroke="var(--win-color)"
+                            stroke-width="4"
+                            cx="66.5"
+                            cy="66.5"
+                            r="54.5"
+                        />
+                        <polyline
+                            id="check"
+                            stroke="var(--background-color)"
+                            stroke-width="5.5"
+                            points="41 70 56 85 92 49"
+                        />
+                    </g>
+                </svg>
           <h2>PAIEMENT REUSSI</h2>
         </div>
 

@@ -4,6 +4,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { initResetPassword } from '../services/api';
 import { useIonRouter } from '@ionic/react';
 import Loader from '../components/Loader';
+import Retour from '../components/Retour';
 const Init_Mot_de_passe: React.FC = () => {
 
     const router = useIonRouter();
@@ -43,6 +44,7 @@ const Init_Mot_de_passe: React.FC = () => {
   return (
     <div className="home"> 
         <div className="confirmation-bar2">
+            <Retour/>
             <div className="login">
                 <div className="logo-login">
                 {/* <img src="assets/logo.png" alt="Logo" className="logo" /> */}

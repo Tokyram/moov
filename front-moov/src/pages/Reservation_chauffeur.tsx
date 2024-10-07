@@ -365,7 +365,7 @@ const Reservation_chauffeur: React.FC = () => {
                                 </div>
                                 {
                                     activeView === "attribues" && (
-                                        <a href={`/mapChauffeur/${reservation.course_id}`} className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center'}}>
+                                        <a href={`/mapChauffeur/${reservation.course_id}`} className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center',backgroundColor: 'var(--primary-color)' }}>
                                             {/* <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i> */}
                                             Voir sur map <i className="bi bi-arrow-right-short" style={{ fontSize: '1.5rem', display:'flex', alignItems:'center', justifyContent:'center' }}></i>
                                         </a>
@@ -373,7 +373,7 @@ const Reservation_chauffeur: React.FC = () => {
                                 }
                                 {
                                     activeView === 'historique' && (
-                                        <div className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center', cursor: "pointer"}} onClick={() => handleGoToAvis(reservation)}>
+                                        <div className='confirmation-button2' style={{marginTop:'10px', padding:'10px', textDecoration:'none',display:'flex', alignItems:'center', justifyContent:'center', cursor: "pointer", backgroundColor: 'var(--primary-color)'}} onClick={() => handleGoToAvis(reservation)}>
                                             {/* <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', position: 'relative' }}></i> */}
                                             Donnez votre avis sur la qualité du service du passager <i className="bi bi-arrow-right-short" style={{ fontSize: '1.5rem', display:'flex', alignItems:'center', justifyContent:'center' }}></i>
                                         </div>

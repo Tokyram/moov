@@ -94,7 +94,52 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
 
       <div className="confirmation-bar4">
         <div className="reussi">
-          <i className="bi bi-check-circle-fill"></i>
+          {/* <i className="bi bi-check-circle-fill"></i> */}
+          <svg
+                    width="115px"
+                    height="115px"
+                    viewBox="0 0 133 133"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    
+                >
+                    <g
+                        id="check-group"
+                        stroke="none"
+                        stroke-width="1"
+                        fill="none"
+                        fill-rule="evenodd"
+                    >
+                            <circle
+                            id="filled-circle"
+                            fill="var(--win-color)"
+                            cx="66.5"
+                            cy="66.5"
+                            r="54.5"
+                        />
+                        <circle
+                            id="white-circle"
+                            fill="var(--background-color)"
+                            cx="66.5"
+                            cy="66.5"
+                            r="55.5"
+                        />
+                        <circle
+                            id="outline"
+                            stroke="var(--win-color)"
+                            stroke-width="4"
+                            cx="66.5"
+                            cy="66.5"
+                            r="54.5"
+                        />
+                        <polyline
+                            id="check"
+                            stroke="var(--background-color)"
+                            stroke-width="5.5"
+                            points="41 70 56 85 92 49"
+                        />
+                    </g>
+                </svg>
           <h2>ARRIVEE A DESTINATION</h2>
         </div>
 
@@ -138,7 +183,7 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
             </div>
           </button> */}
           <div className="popup-buttons">
-            <button style={{ borderRadius: '25px', backgroundColor: 'var(--grey-color)' }} className="btn btn-secondary"onClick={handlePassAvis}>Passer</button>
+            <button style={{ borderRadius: '50px', backgroundColor: 'var(--background-color)' , color: 'var(--text-color)', height: '55px', border: '1px solid var(--text-color)'}} className="btn btn-secondary"onClick={handlePassAvis}>Passer</button>
 
             <button type="submit" className="confirmation-button4"  disabled={isLoading}>
               <div  style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',width: '100%' }}>             
@@ -154,7 +199,52 @@ const Avis: React.FC<AvisProps> = ({ location }) => {
         <div className="popup-overlay">
           <div className="popup-content">
             <div className="titrepopup2">
-              <i className="bi bi-check-circle-fill"></i>
+              {/* <i className="bi bi-check-circle-fill"></i> */}
+              <svg
+                    width="115px"
+                    height="115px"
+                    viewBox="0 0 133 133"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    
+                >
+                    <g
+                        id="check-group"
+                        stroke="none"
+                        stroke-width="1"
+                        fill="none"
+                        fill-rule="evenodd"
+                    >
+                            <circle
+                            id="filled-circle"
+                            fill="var(--win-color)"
+                            cx="66.5"
+                            cy="66.5"
+                            r="54.5"
+                        />
+                        <circle
+                            id="white-circle"
+                            fill="#FFFFFF"
+                            cx="66.5"
+                            cy="66.5"
+                            r="55.5"
+                        />
+                        <circle
+                            id="outline"
+                            stroke="var(--win-color)"
+                            stroke-width="4"
+                            cx="66.5"
+                            cy="66.5"
+                            r="54.5"
+                        />
+                        <polyline
+                            id="check"
+                            stroke="#FFFFFF"
+                            stroke-width="5.5"
+                            points="41 70 56 85 92 49"
+                        />
+                    </g>
+                </svg>
               <h4>Envoi réussi</h4>
             </div>
 

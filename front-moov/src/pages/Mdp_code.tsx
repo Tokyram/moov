@@ -5,6 +5,7 @@ import { verifyRegistration, verifyResetPassword } from '../services/api';
 import { Storage } from '@capacitor/storage';
 import { useIonRouter } from '@ionic/react';
 import Loader from '../components/Loader';
+import Retour from '../components/Retour';
 
 const Mdp_code: React.FC = () => {
 
@@ -76,6 +77,7 @@ const Mdp_code: React.FC = () => {
 
         
         <div className="confirmation-bar2">
+            <Retour/>
             <div className="login">
                 <div className="logo-login">
                 {/* <img src="assets/logo.png" alt="Logo" className="logo" /> */}
