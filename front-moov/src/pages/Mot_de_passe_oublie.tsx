@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import Loader from '../components/Loader';
 import { applyResetPassword } from '../services/api';
 import { useIonRouter } from '@ionic/react';
+import Retour from '../components/Retour';
 
 const Mot_de_passe_oublie: React.FC = () => {
 
@@ -49,6 +50,7 @@ const Mot_de_passe_oublie: React.FC = () => {
     <div className="home">
         
         <div className="confirmation-bar2">
+            <Retour/>
             <div className="login">
                 <div className="logo-login">
                 {/* <img src="assets/logo.png" alt="Logo" className="logo" /> */}

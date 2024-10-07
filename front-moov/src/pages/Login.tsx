@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import { useIonRouter } from '@ionic/react';
 import Loader from '../components/Loader';
 import { requestPushNotificationsPermission } from '../../pushNotifications';
+import Retour from '../components/Retour';
 
 const Login: React.FC<any> = ({ type }) => {
 
@@ -79,6 +80,7 @@ const Login: React.FC<any> = ({ type }) => {
     <div className="home">
         
         <div className="confirmation-bar2">
+            <Retour/>
             <div className="login">
                 <div className="logo-login">
                     <svg width="346" height="252" viewBox="0 0 346 252" fill="none" xmlns="http://www.w3.org/2000/svg">
