@@ -11,6 +11,11 @@ import PopupModificationProfil from '../components/PopupModificationProfil';
 import { getDecodedToken, getKilometresByChauffeur, getKilometresByPassager } from '../services/api';
 const Profil: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [telephone, setTelephone] = useState('');
+
   const [isVisible, setIsVisible] = useState(false);
   const [showModificationPopup, setShowModificationPopup] = useState(false);
   const [selectedNom, setSelectedNom] = useState<string>('');
@@ -18,9 +23,11 @@ const Profil: React.FC = () => {
   const [selectedTelephone, setSelectedTelephone] = useState<number | null>(null);
   const [selectedEmail, setSelectedEmail] = useState<string>('');
   const [selectedPhoto, setSelectedPhoto] = useState<string>('');
+
   const history = useHistory();
   const [totalKilometres, setTotalKilometres] = useState<number | null>(null);
   const [role, setRole] = useState<string | null>(null); // Pour stocker le rôle
+
   const handleConfirmClick = () => {
     setShowModificationPopup(true);
   };
@@ -33,6 +40,9 @@ const Profil: React.FC = () => {
       try {
         
         const decodedToken = await getDecodedToken();
+        setUsername(decodedToken.nom + " " + decodedToken.prenom);
+        setEmail(decodedToken.mail);
+        setTelephone(decodedToken.telephone);
 
         if ( decodedToken.role === 'CHAUFFEUR') {
 
@@ -77,7 +87,7 @@ const Profil: React.FC = () => {
                         </button>
                     </div>
                 </div>
-                <h4>@nom de l'utilisateur</h4>
+                <h4>@{username}</h4>
             </div>
             {showModificationPopup && (
             <PopupModificationProfil
@@ -96,8 +106,8 @@ const Profil: React.FC = () => {
             )}
             <div className="information">
                 <div className="label-info">
-                    <label className="info">votre-email@gmail.com</label>
-                    <label className="info">034 00 000 00</label>
+                    <label className="info">{email}</label>
+                    <label className="info">{telephone}</label>
                 </div>
                 
             </div>
@@ -138,7 +148,7 @@ const Profil: React.FC = () => {
                 <div className="stat-avis">
                     <div className="titre-stat">
                         <i className="bi bi-asterisk"></i>
-                            <p>Vos Avis globle</p>
+                            <p>Avis global sur votre qualité de service</p>
                         <div className="ico-stat2">
                             <i className="bi bi-check-circle-fill"></i>
                         </div>
