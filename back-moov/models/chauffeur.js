@@ -66,11 +66,14 @@ class Chauffeur {
         const query = `
             SELECT 
                 chauffeur_id, 
-                SUM(kilometre) AS total_kilometres
+                SUM(kilometre) AS total_kilometres,
+                COUNT(id) AS total_course
             FROM 
                 course
             WHERE 
                 chauffeur_id = $1
+            AND 
+                status = 'TERMINE'
             GROUP BY 
                 chauffeur_id;
         `;
@@ -86,11 +89,14 @@ class Chauffeur {
         const query = `
             SELECT 
                 passager_id, 
-                SUM(kilometre) AS total_kilometres
+                SUM(kilometre) AS total_kilometres,
+                COUNT(id) AS total_course
             FROM 
                 course
             WHERE 
                 passager_id = $1
+            AND 
+                status = 'TERMINE'
             GROUP BY 
                 passager_id;
         `;
