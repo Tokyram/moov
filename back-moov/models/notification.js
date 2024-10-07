@@ -14,7 +14,7 @@ class Notification {
 
     static async countNonLuNotification(utilisateur_id) {
         const result = await db.query(
-            `SELECT COUNT(*) FROM notification WHERE utilisateur_id = $1 AND lu is false`,
+            `SELECT COUNT(*) FROM notification WHERE utilisateur_id = $1 AND lu is false `,
             [utilisateur_id]
         );
 
@@ -23,7 +23,7 @@ class Notification {
 
     static async getNotificationsUser(utilisateur_id) {
         const query = `
-            SELECT * FROM notification WHERE utilisateur_id = $1
+            SELECT * FROM notification WHERE utilisateur_id = $1 ORDER BY date_heure_notification DESC
         `;
         const result = await db.query(query, [utilisateur_id]);
         return result.rows;

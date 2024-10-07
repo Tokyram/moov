@@ -3,6 +3,7 @@ const AvisService = require('../services/avis_service');
 const Notification = require('../models/notification');
 const TokenDeviceUser = require('../models/tokenDeviceUser');
 const firebaseService = require("../services/firebaseService");
+const Avis = require('../models/avis');
 
 class AvisController {
     static async createAvis(req, res) {
@@ -57,6 +58,26 @@ class AvisController {
             const avis = await AvisService.getAvisByCourse(courseId);
             res.status(200).json(avis);
         } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    static async getAvisMoyenPassager(req, res) {
+        const { passagerId } = req.params;
+        try {
+            const result = await Avis.getMoyenneAvisPassager(passagerId);
+            res.status(200).json(result);
+        } catch(error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    static async getAvisMoyenChauffeur(req, res) {
+        const { chauffeurId } = req.params;
+        try {
+            const result = await Avis.getMoyenneAvisChauffeur(chauffeurId);
+            res.status(200).json(result);
+        } catch(error) {
             res.status(500).json({ error: error.message });
         }
     }

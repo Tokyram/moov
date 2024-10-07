@@ -63,6 +63,38 @@ class Avis {
             throw new Error('Erreur lors de la récupération des avis pour la course : ' + error.message);
         }
     }
+
+    static async getMoyenneAvisPassager(passagerId) {
+        try {
+            const query = `
+                SELECT ROUND(AVG(etoiles)) AS moyenne_etoiles_passager
+                FROM avis
+                WHERE passager_id = $1
+                AND auteur = 'chauffeur';
+
+            `;
+            const result = await db.query(query, [passagerId]);
+            return result.rows[0];
+        } catch(error) {
+            throw new Error('Erreur lors de la récupération de la moyenne des avis : ' + error.message);
+        }
+    }
+
+    static async getMoyenneAvisChauffeur(chauffeurId) {
+        try {
+            const query = `
+                SELECT ROUND(AVG(etoiles)) AS moyenne_etoiles_chauffeur
+                FROM avis
+                WHERE chauffeur_id = $1
+                AND auteur = 'passager';
+
+            `;
+            const result = await db.query(query, [chauffeurId]);
+            return result.rows[0];
+        } catch(error) {
+            throw new Error('Erreur lors de la récupération de la moyenne des avis : ' + error.message);
+        }
+    }
 }
 
 module.exports = Avis;
