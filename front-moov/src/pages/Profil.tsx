@@ -8,7 +8,7 @@ import Menu from '../components/Menu';
 import './MapComponent.css';
 import { Route, useHistory } from 'react-router-dom';
 import PopupModificationProfil from '../components/PopupModificationProfil';
-import { getDecodedToken, getKilometresByChauffeur, getKilometresByPassager } from '../services/api';
+import { getDecodedToken, getKilometresByChauffeur, getKilometresByPassager, getMoyenneAvisChauffeur, getMoyenneAvisPassager } from '../services/api';
 const Profil: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -27,6 +27,7 @@ const Profil: React.FC = () => {
   const history = useHistory();
   const [totalKilometres, setTotalKilometres] = useState<number | null>(null);
   const [totalReservations, setTotalReservations] = useState<number | null>(null);
+  const [etoile, setEtoile] = useState<number | null>(null);
 
   const [role, setRole] = useState<string | null>(null); // Pour stocker le rôle
 
@@ -53,12 +54,18 @@ const Profil: React.FC = () => {
             setTotalKilometres(response.data.data.total_kilometres);
             setTotalReservations(response.data.data.total_course);
 
+            const reponse = await getMoyenneAvisChauffeur();
+            setEtoile(reponse.data.moyenne_etoiles_chauffeur);
+
         } else if (decodedToken.role === 'UTILISATEUR') {
 
             const response = await getKilometresByPassager();
             console.log("kilometre passager", response.data);
             setTotalKilometres(response.data.data.total_kilometres);
             setTotalReservations(response.data.data.total_course);
+
+            const reponse = await getMoyenneAvisPassager();
+            setEtoile(reponse.data.moyenne_etoiles_passager);
         }
       } catch (error) {
         console.error('Erreur lors de la récupération des kilomètres ou du rôle:', error);
@@ -152,18 +159,20 @@ const Profil: React.FC = () => {
                 <div className="stat-avis">
                     <div className="titre-stat">
                         <i className="bi bi-asterisk"></i>
-                            <p>Votre avis globale</p>
+                            <p>Votre avis global</p>
                         <div className="ico-stat2">
                             <i className="bi bi-check-circle-fill"></i>
                         </div>
                     </div>
 
                     <div className="start-avis-stat">
-                        <i className="bi bi-star-fill"></i>
-                        <i className="bi bi-star-fill"></i>
-                        <i className="bi bi-star-fill"></i>
-                        <i className="bi bi-star-fill"></i>
-                        <i className="bi bi-star-fill"></i>
+                        {[...Array(5)].map((_, index) => (
+                            <i
+                            key={index}
+                            className={`bi bi-star${etoile && etoile > index ? '-fill' : ''}`}
+                            style={{ cursor: 'pointer' }}
+                            ></i>
+                        ))}
                     </div>
 
                     <div className="avis-stat">
@@ -173,7 +182,7 @@ const Profil: React.FC = () => {
                     </div>
 
                     <div className="statu">
-                        <b>Statut :</b><span> Avis positif</span>
+                        <b>Statut :</b><span> {etoile && etoile > 3 ? "Avis positif" : etoile && etoile == 3 ? "Avis moyen" : "Avis mauvais"}</span>
                     </div>
                 </div>
             </div>

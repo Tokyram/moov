@@ -538,3 +538,43 @@ export const getListeNotificationsUser = async () => {
         throw error;
     }
 }
+
+export const getMoyenneAvisPassager = async () => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const decodedToken = await getDecodedToken();
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+        
+        const response = await api.get(`/avis/moyenne-passager/${decodedToken.id}`, { headers });   
+        return response;
+
+    } catch(error: any) {
+        console.error('Erreur lors de la récupération de la moyenne avis passager :', error.message);
+        throw error;
+    }
+}
+
+export const getMoyenneAvisChauffeur = async () => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const decodedToken = await getDecodedToken();
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+        
+        const response = await api.get(`/avis/moyenne-chauffeur/${decodedToken.id}`, { headers });   
+        return response;
+
+    } catch(error: any) {
+        console.error('Erreur lors de la récupération de la moyenne avis chauffeur :', error.message);
+        throw error;
+    }
+}
