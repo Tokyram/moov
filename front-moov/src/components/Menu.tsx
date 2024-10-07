@@ -49,7 +49,7 @@ const Menu: React.FC = () => {
     try {
         // Suppression du token du storage
         await Storage.remove({ key: 'token' });
-        router.push('/home', 'root', 'replace');
+        router.push('/accueil', 'root', 'replace');
 
     } catch (error: any) {
         console.error('Erreur lors de la déconnexion', error.message);

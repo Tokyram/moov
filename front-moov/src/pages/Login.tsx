@@ -8,8 +8,10 @@ import { useIonRouter } from '@ionic/react';
 import Loader from '../components/Loader';
 import { requestPushNotificationsPermission } from '../../pushNotifications';
 
-const Login: React.FC = () => {
+const Login: React.FC<any> = ({ type }) => {
 
+    console.log("type login", type);
+    
     const router = useIonRouter();
     
     const [username, setUsername] = useState('');
@@ -21,30 +23,45 @@ const Login: React.FC = () => {
         setIsLoading(true);
         setError(null);
         try {
-          const response = await login(username, password);
-          if (response.data.token) {
-            await Storage.set({ key: 'token', value: response.data.token });
-            requestPushNotificationsPermission();
-            if(response.data.user.role === "UTILISATEUR") {
-                try {
-                    const traite = await checkTraitementCourse(response.data.user.id);
-                    if(traite.data.enregistrement) {
-                        await Storage.set({ key: 'course', value: traite.data.enregistrement.course_id });
-                        setIsLoading(false);
-                        router.push(`map/${traite.data.enregistrement.course_id}`, 'root', 'replace');
-                    } else {
-                        setIsLoading(false);
-                        router.push('map', 'root', 'replace');
-                    }
-                } catch(error: any) {
+            const response = await login(username, password);
+            if (response.data.token) {
+
+                if(response.data.user.role === "UTILISATEUR" && type === 'chauffeur') {
+                    setError("Numéro de téléphone ou mot de passe incorrect !");
                     setIsLoading(false);
-                    setError("Erreur de vérification du traitement de course");
-                    console.error('Erreur de check', error.message);
+                    return;
+                } else if(response.data.user.role === "CHAUFFEUR" && type === 'utilisateur') {
+                    setError("Numéro de téléphone ou mot de passe incorrect !");
+                    setIsLoading(false);
+                    return;
+                } else if(type === '' || !type) {
+                    setError("Veuillez choisir avec quel type d'utilisateur voulez vous vous connecter !");
+                    setIsLoading(false);
+                    return;
+                } else {
+                    await Storage.set({ key: 'token', value: response.data.token });
+                    requestPushNotificationsPermission();
+                    if(response.data.user.role === "UTILISATEUR") {
+                        try {
+                            const traite = await checkTraitementCourse(response.data.user.id);
+                            if(traite.data.enregistrement) {
+                                await Storage.set({ key: 'course', value: traite.data.enregistrement.course_id });
+                                setIsLoading(false);
+                                router.push(`map/${traite.data.enregistrement.course_id}`, 'root', 'replace');
+                            } else {
+                                setIsLoading(false);
+                                router.push('map', 'root', 'replace');
+                            }
+                        } catch(error: any) {
+                            setIsLoading(false);
+                            setError("Erreur de vérification du traitement de course");
+                            console.error('Erreur de check', error.message);
+                        }
+                    } else {
+                        router.push('reservation_chauffeur', 'root', 'replace');
+                    }
                 }
-            } else {
-                router.push('reservation_chauffeur', 'root', 'replace');
             }
-          }
         } catch (error: any) {
             setIsLoading(false);
             setError("Numéro de téléphone ou mot de passe incorrect !");
@@ -117,7 +134,7 @@ const Login: React.FC = () => {
             </form>
 
 
-            <p className="p">Vouz n'avez pas de compte? <span className="span"><a className="span" href="/inscription">S'inscrire</a></span></p>
+            { type === 'utilisateur' && <p className="p">Vouz n'avez pas de compte? <span className="span"><a className="span" href="/inscription">S'inscrire</a></span></p>}
 
         </div>
       

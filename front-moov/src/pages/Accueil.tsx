@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './Accueil.css'; // Si vous avez un fichier CSS pour les styles
+import { useIonRouter } from '@ionic/react';
 
 const Accueil: React.FC = () => {
+
+  const router = useIonRouter();
+
   const pictitleRef = useRef<HTMLDivElement | null>(null);
   const [index, setIndex] = useState(0);
   const scrollWidth = 150; // Largeur d'une image + espacement
@@ -52,6 +56,14 @@ const Accueil: React.FC = () => {
     }
   };
 
+  const goToLogin = (type: any) => {
+    const state = {
+      type
+    }
+    const queryParams = new URLSearchParams(state as any).toString();
+    router.push(`/home?${queryParams}`, 'root', 'replace');
+  }
+
   return (
     <div className='custom-body'>
         <div className="page">
@@ -98,7 +110,7 @@ const Accueil: React.FC = () => {
                     <h4>Choisissez sur quel compte vous voulez vous connecter.</h4>
                 </div>
                 <div className="voir">
-                    <a href="" className="client">
+                    <a href="javascript::" className="client" onClick={() => goToLogin('utilisateur')}>
                         <svg style={{marginLeft: '15px'}} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-person-fill-check" viewBox="0 0 16 16">
                             <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m1.679-4.493-1.335 2.226a.75.75 0 0 1-1.174.144l-.774-.773a.5.5 0 0 1 .708-.708l.547.548 1.17-1.951a.5.5 0 1 1 .858.514M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                             <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
@@ -111,7 +123,7 @@ const Accueil: React.FC = () => {
                         </span>
 
                     </a>
-                    <a href="" className="conducteur">
+                    <a href="javascript::" className="conducteur" onClick={() => goToLogin('chauffeur')}>
                         <svg style={{marginLeft: '15px'}}  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-person-fill-up" viewBox="0 0 16 16">
                             <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.354-5.854 1.5 1.5a.5.5 0 0 1-.708.708L13 11.707V14.5a.5.5 0 0 1-1 0v-2.793l-.646.647a.5.5 0 0 1-.708-.708l1.5-1.5a.5.5 0 0 1 .708 0M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                             <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>

@@ -13,7 +13,7 @@ api.interceptors.response.use(
       if (error.response && error.response.status === 401) {
         // Token expiré
         await Storage.remove({ key: 'token' });
-        window.location.href = '/home';
+        window.location.href = '/accueil';
       }
       return Promise.reject(error);
     }

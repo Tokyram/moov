@@ -117,8 +117,9 @@
         h1{
             color: var(--background-color);
             margin: 0;
-            font-size: var(--titre42);
-            line-height: 2.5rem;
+            font-size: 60px;
+            font-weight: 1000;
+            line-height: 3rem;
             span{
                 color: var(--primary-color);
             }

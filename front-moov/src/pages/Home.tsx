@@ -4,12 +4,18 @@ import './Home.css';
 import Login from './Login';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+import { RouteComponentProps } from 'react-router-dom';
 
-const Home: React.FC = () => {
+interface HomeProps extends RouteComponentProps<{}> {}
+
+  const Home: React.FC<HomeProps> = ({ location }) => {
+  const params = new URLSearchParams(location.search);
+  const type = params.get('type');
+  
   return (
      
      
-      <Login />
+      <Login type={type} />
       
   );
 };
