@@ -106,7 +106,7 @@
     align-items: center;
     font-size: var(--text16);
     padding: 20px;
-    background-image: url("assets/flour.png");
+    background-image: url("../assets/flour.png");
     background-repeat: no-repeat;
     background-position-y: 100%;
     background-attachment: fixed;
