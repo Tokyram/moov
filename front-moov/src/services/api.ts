@@ -3,6 +3,8 @@ import url_api from "../constante";
 import { Storage } from '@capacitor/storage';
 import { jwtDecode } from 'jwt-decode';
 
+export const DEFAULT_USER_PIC = "assets/user.png";
+
 const api = axios.create({
     baseURL: url_api,
 });
@@ -575,6 +577,16 @@ export const getMoyenneAvisChauffeur = async () => {
 
     } catch(error: any) {
         console.error('Erreur lors de la récupération de la moyenne avis chauffeur :', error.message);
+        throw error;
+    }
+}
+
+export const getPhotoUser = async (photo: any) => {
+    try {
+        const response =  await api.get(`/users/photo/${photo}`, {responseType: 'blob'});   
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors de la récupération de la photo :', error.message);
         throw error;
     }
 }

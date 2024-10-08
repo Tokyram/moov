@@ -113,18 +113,16 @@ const Notification: React.FC = () => {
     //     }
     // };
 
-    const getNotifsIcone = (typeNotif: any) => {
-        var icone = '';
+    const getNotifsIcone = (typeNotif: string): string => {
         switch(typeNotif) {
-            case "RESERVATION":
-            case "ACCEPTATION":
-                icone = "bi bi-car-front-fill";
-            case "AVIS":
-                icone = "bi bi-star-fill";
+            case 'RESERVATION':
+            case 'ACCEPTATION':
+                return 'bi bi-car-front-fill';
+            case 'AVIS':
+                return 'bi bi-star-fill';
             default:
-                icone = "bi bi-car-front-fill";
+                return 'bi bi-bell-fill';
         }
-        return icone;
     }
 
     const getRelativeTime = (timestamp: string) => {

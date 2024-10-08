@@ -4,7 +4,7 @@ import './Menu.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useIonRouter } from '@ionic/react';
 import { Storage } from '@capacitor/storage';
-import { getDecodedToken } from '../services/api';
+import { DEFAULT_USER_PIC, getDecodedToken, getPhotoUser } from '../services/api';
 import ChauffeurLocationTracker from './ChauffeurLocalisation';
 
 const Menu: React.FC = () => {
@@ -16,6 +16,7 @@ const Menu: React.FC = () => {
   const [username, setUsername] = useState('');
   const [course, setCourse] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [photoUrl, setPhotoUrl] = useState<string>(DEFAULT_USER_PIC);
 
   useEffect(() => {
     // Ajouter la classe 'show' après le montage du composant
@@ -33,6 +34,17 @@ const Menu: React.FC = () => {
         if (decodedToken) {
           setUserRole(decodedToken.role);
           setUsername(decodedToken.nom + " " + decodedToken.prenom);
+          if (decodedToken.photo && decodedToken.photo !== '') {
+            try {
+              const photoResponse = await getPhotoUser(decodedToken.photo);
+
+              const blob = new Blob([photoResponse.data], { type: photoResponse.headers['content-type'] });
+              const objectUrl = URL.createObjectURL(blob);
+              setPhotoUrl(objectUrl);
+            } catch (photoError) {
+              console.error('Erreur lors de la récupération de la photo:', photoError);
+            }
+          }
         } else {
           console.error('Token non valide ou non trouvé');
           // Gérer le cas où le token n'est pas valide (redirection vers la page de connexion, par exemple)
@@ -43,6 +55,13 @@ const Menu: React.FC = () => {
     }
 
     initUser();
+
+    return () => {
+      if (photoUrl !== 'assets/user.png') {
+        URL.revokeObjectURL(photoUrl);
+      }
+    };
+
   }, []);
 
   const logout = async () => {
@@ -69,7 +88,7 @@ const Menu: React.FC = () => {
           <div className="profile-details">
           <a href="/profil">
             <div className="profile-content">
-              <img src="assets/user.png" alt="profileImg" />
+              <img src={photoUrl} alt="profileImg" />
             </div>
             <div className="name-job">
               <div className="profile_name">{username}</div>

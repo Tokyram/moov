@@ -8,13 +8,14 @@ import Menu from '../components/Menu';
 import './MapComponent.css';
 import { Route, useHistory } from 'react-router-dom';
 import PopupModificationProfil from '../components/PopupModificationProfil';
-import { getDecodedToken, getKilometresByChauffeur, getKilometresByPassager, getMoyenneAvisChauffeur, getMoyenneAvisPassager } from '../services/api';
+import { DEFAULT_USER_PIC, getDecodedToken, getKilometresByChauffeur, getKilometresByPassager, getMoyenneAvisChauffeur, getMoyenneAvisPassager, getPhotoUser } from '../services/api';
 const Profil: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [telephone, setTelephone] = useState('');
+  const [photoUrl, setPhotoUrl] = useState<string>(DEFAULT_USER_PIC);
 
   const [isVisible, setIsVisible] = useState(false);
   const [showModificationPopup, setShowModificationPopup] = useState(false);
@@ -47,6 +48,19 @@ const Profil: React.FC = () => {
         setEmail(decodedToken.mail);
         setTelephone(decodedToken.telephone);
 
+        if (decodedToken.photo && decodedToken.photo !== '') {
+            try {
+              const photoResponse = await getPhotoUser(decodedToken.photo);
+
+              const blob = new Blob([photoResponse.data], { type: photoResponse.headers['content-type'] });
+              const objectUrl = URL.createObjectURL(blob);
+              setPhotoUrl(objectUrl);
+            } catch (photoError) {
+              console.error('Erreur lors de la récupération de la photo:', photoError);
+            }
+        }
+  
+
         if ( decodedToken.role === 'CHAUFFEUR') {
 
             const response = await getKilometresByChauffeur();
@@ -72,7 +86,14 @@ const Profil: React.FC = () => {
       }
     };
 
-    fetchRoleAndKilometres(); // Appeler la fonction
+    fetchRoleAndKilometres();
+
+    return () => {
+        if (photoUrl !== 'assets/user.png') {
+          URL.revokeObjectURL(photoUrl);
+        }
+    };
+
   }, []);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -90,7 +111,7 @@ const Profil: React.FC = () => {
         <div className="content-profil">
             <div className="profil">
                 <div className="image">
-                    <img src="assets/user.png" alt="" />
+                    <img src={photoUrl} alt="" />
                     <div className="modification-info">
                         <button className='bouton-modification' onClick={handleConfirmClick}>
                             
