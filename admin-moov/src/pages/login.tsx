@@ -121,7 +121,7 @@ const LoginForm: React.FC = () => {
                 <div className="card" >
                   <div className="row g-0">
                     <div className="col-md-6 col-lg-5 d-none d-md-block">
-                      <img src="../p11.png"alt="login form" className="img-fluid" style={{ bottom: '0', width: '55%', height: 'auto', objectFit: 'cover' , position: 'absolute'}}/>
+                      <img src="../p11.png"alt="login form" className="img-fluid" style={{ bottom: '0', width: '45%', height: 'auto', objectFit: 'cover' , position: 'absolute'}}/>
                     </div>
                     <div className="col-md-6 col-lg-7 d-flex align-items-center">
                       <div className="card-body p-4 p-lg-5 text-black">
@@ -140,7 +140,6 @@ const LoginForm: React.FC = () => {
 
                           <div data-mdb-input-init className="form-outline mb-4">
                             <label className="form-label" htmlFor="form2Example17">Numero Téléphone</label>
-
                             <input type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}  id="form2Example17" className="form-control form-control-lg" placeholder="+261 ** ** *** **" style={{borderRadius: '50px'}}/>
                           </div>
 
