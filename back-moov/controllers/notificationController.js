@@ -35,3 +35,14 @@ exports.getNotifsUser = async (req, res) => {
     res.status(500).json({ success: false, message: 'Erreur serveur', error: error.message });
   }
 };
+
+exports.seeNotification = async (req, res) => {
+  const notification_id = req.params.notification_id;
+  try {
+    const result = await Notification.seeNotifications(notification_id);
+    res.status(200).json({ success: true, data: result });
+  } catch(error) {
+    console.error('Erreur lors de la vue des notifs :', error);
+    res.status(500).json({ success: false, message: 'Erreur serveur', error: error.message });
+  }
+};

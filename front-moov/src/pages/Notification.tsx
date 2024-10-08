@@ -8,8 +8,12 @@ import { getListeNotificationsUser } from '../services/api';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { toZonedTime } from 'date-fns-tz';
+import { useIonRouter } from '@ionic/react';
 
 const Notification: React.FC = () => {
+    
+  const router = useIonRouter();
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [showAnnulationPopup, setShowAnnulationPopup] = useState(false);
@@ -78,10 +82,18 @@ const Notification: React.FC = () => {
     };
 
 
-    const handleConfirmClickDetail = (notificationId: number) => {
-      setCurrentNotificationId(notificationId);
-      setShowDetailPopup(true);
-  };
+    const handleConfirmClickDetail = (notification: any) => {
+     console.log("type", notification.type_notif);
+        if(notification.type_notif === "RESERVATION") {
+            router.push('/reservation_chauffeur', 'root', 'replace');
+        } else if(notification.type_notif === "ACCEPTATION") {
+            router.push('/reservation', 'root', 'replace');
+        } else if(notification.type_notif === "ASSIGNATION") {
+            router.push('/reservation_chauffeur', 'root', 'replace');
+        } else if(notification.type_notif === "AVIS") {
+            router.push('/profil', 'root', 'replace');
+        }
+    };
 
     const handleCloseSuccess = () => {
         setShowSuccessPopup(false);
@@ -157,7 +169,7 @@ const Notification: React.FC = () => {
                 </div>
 
                 {notifications.map(notification => (
-                    <div className="notifications" key={notification.id} onClick={() => handleConfirmClickDetail(notification.id)}>
+                    <div className="notifications" key={notification.id} onClick={() => handleConfirmClickDetail(notification)} style={notification.lu ? {backgroundColor: 'rgb(235 235 235)'} : {}}>
                         {/* <div className="info-notifications">
                                 <div className="taxi">
                                     <h4>{notification.taxiNumber}</h4>
@@ -183,6 +195,32 @@ const Notification: React.FC = () => {
                         
                     </div>
                 ))}
+
+                    <div className="notifications" style={{backgroundColor: 'rgb(235 235 235)'}}>
+                        {/* <div className="info-notifications">
+                                <div className="taxi">
+                                    <h4>{notification.taxiNumber}</h4>
+                                    <h1>{notification.notificationNumber}</h1>
+                                </div>
+                        </div> */}
+
+                        <div className="statut-notifications">
+                            <div className="prim">
+                                <div className="ico-stat">
+                                    <i className=""></i>
+                                    <p>hiy_hètgj</p>
+                                </div>
+                                <div className="ico-stat2">
+                                    <p>in_ytbèt</p>
+                                </div>
+                            </div>
+                            <div className="info-course">
+                            <p>gfbyyjyukyuk</p>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
 
 
                 {showAnnulationPopup && (

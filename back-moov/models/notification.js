@@ -28,6 +28,14 @@ class Notification {
         const result = await db.query(query, [utilisateur_id]);
         return result.rows;
     }
+
+    static async seeNotifications(notification_id) {
+        const query = `
+            UPDATE notification SET lu = true WHERE id = $1
+        `;
+        const result = await db.query(query, [notification_id]);
+        return result.rows[0];
+    }
 }
 
 module.exports = Notification;

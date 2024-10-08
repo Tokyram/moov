@@ -9,6 +9,7 @@ import './MapComponent.css';
 import { Route, useHistory } from 'react-router-dom';
 import PopupModificationProfil from '../components/PopupModificationProfil';
 import { DEFAULT_USER_PIC, getDecodedToken, getKilometresByChauffeur, getKilometresByPassager, getMoyenneAvisChauffeur, getMoyenneAvisPassager, getPhotoUser } from '../services/api';
+
 const Profil: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
