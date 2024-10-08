@@ -590,3 +590,13 @@ export const getPhotoUser = async (photo: any) => {
         throw error;
     }
 }
+
+export const seeNotification = async (notificationId: any) => {
+    try {
+        const response =  await api.put(`/notifications/see/${notificationId}`, {responseType: 'blob'});   
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors de la vue de notif :', error.message);
+        throw error;
+    }
+}
