@@ -593,7 +593,15 @@ export const getPhotoUser = async (photo: any) => {
 
 export const seeNotification = async (notificationId: any) => {
     try {
-        const response =  await api.put(`/notifications/see/${notificationId}`, {responseType: 'blob'});   
+        const { value: token } = await Storage.get({ key: 'token' });
+        
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response =  await api.put(`/notifications/see/${notificationId}`, {}, { headers });   
         return response;
     } catch(error: any) {
         console.error('Erreur lors de la vue de notif :', error.message);
