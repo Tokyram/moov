@@ -36,22 +36,23 @@ const Card: React.FC<CardProps> = ({ id,status, destination, date, client, chauf
           <div className="carde__header">
             <svg className="carde__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>
             <img className="carde__thumb" src="../profil.png" alt={date} />
-            <div className="carde__header-text">
+            <div className="carde__header-text" style={{lineHeight: '16px'}}>
               <h3 className="carde__title">Réservation {id}</h3>
-              <span className="carde__status">{destination}</span> <br />
-              <span className="carde__status" style={{ color: 'var(--primary-color)' }}> {format(new Date(date), 'dd MMMM yyyy, HH:mm:ss', { locale: fr })}</span>
+              <span className="carde__status">client : {client.nom}</span> <br />
+              <span className="carde__status">Conducteur : {chauffeur.nom}</span> <br />
+              <span className="carde__status" style={{ color: 'var(--primary-color)', fontSize: '10px' }}> {format(new Date(date), 'dd MMMM yyyy, HH:mm:ss', { locale: fr })}</span>
               <span className="carde__status" style={{ color: 'var(--primary-color)' }}>{prix}</span>
             </div>
           </div>
-          <div className="infoh" >
-            <p className="carde__description"><i className="bi bi-person-fill-check"></i>{client.nom}</p>
-            <p className="carde__description"><i className="bi bi-telephone-fill"></i>{client.telephone}</p>
-            <p className="carde__description"><i className="bi bi-currency-exchange"></i>{prix} Ar</p>
+          <div  className="infoh" >
+            <p className="carde__description" style={{fontSize: '9px'}}><i className="bi bi-person-fill-check"></i>{client.nom}</p>
+            <p className="carde__description" style={{fontSize: '9px'}}><i className="bi bi-telephone-fill"></i>{client.telephone}</p>
+            <p className="carde__description" style={{fontSize: '9px'}}><i className="bi bi-currency-exchange"></i>{prix} Ar</p>
             <hr style={{ color: 'var(--background-color)' }} />
-            <p className="carde__description"><i className="bi bi-person-fill-check"></i>{chauffeur.nom}</p>
-            <p className="carde__description"><i className="bi bi-telephone-fill"></i>{chauffeur.telephone}</p>
-            <p className="carde__description"><i className="bi bi-taxi-front-fill"></i>{adresseDepart}</p>
-            <p className="carde__description"><i className="bi bi-taxi-front-fill"></i>{adresseArrivee}</p>
+            <p className="carde__description" style={{fontSize: '9px'}}><i className="bi bi-person-fill-check"></i>{chauffeur.nom}</p>
+            <p className="carde__description" style={{fontSize: '9px'}}><i className="bi bi-telephone-fill"></i>{chauffeur.telephone}</p>
+            <p className="carde__description" style={{fontSize: '9px'}}><i className="bi bi-taxi-front-fill"></i>{adresseDepart}</p>
+            <p className="carde__description" style={{fontSize: '9px'}}><i className="bi bi-taxi-front-fill"></i>{adresseArrivee}</p>
           </div>
         </div>
       </a>

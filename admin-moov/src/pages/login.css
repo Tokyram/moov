@@ -1,14 +1,16 @@
 /* From Uiverse.io by mahiatlinux */ 
-body .login-form{
+/* body .login-form{
   display: flex;
   align-items: center;
   justify-content: center;
-}
+} */
+
+@import '../Style.css';
 .form {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background-color: #1f1f1f;
+    background-color: var(--text-color);
     padding: 30px;
     width: 450px;
     border-radius: 20px;
@@ -21,6 +23,8 @@ body .login-form{
         width: 100%;
         height: auto;
       }
+
+     
   }
 
   .login{
