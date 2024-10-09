@@ -114,13 +114,9 @@ const PopupModificationProfil: React.FC<PopupModificationProfilProps> = ({
     }
   };
 
-  const handleClosePhoto = () => {
-    setPreviewPhoto(null);
-  };
-
   return (
     <div className="popup-overlay">
-      <div className="popup-content">
+      <div className="popup-content" style={{ maxHeight: '80%', overflowY: 'scroll' }}>
         <div className="titrepopup">
           <img src="assets/logo.png" alt="logo" />
           <h4>Modifier vos informations</h4>
@@ -193,19 +189,13 @@ const PopupModificationProfil: React.FC<PopupModificationProfilProps> = ({
         </label>
 
           {previewPhoto && (
-            <div  className="popup-overlay" style={{ display: 'flex',gap: '10px', flexDirection: 'column',alignItems: 'center', justifyContent: 'center'}}>
-              {selectedFile && <p style={{ color: 'var(--background-color)' }} className="selected-file-name">{selectedFile.name}</p>}
-
-              <img style={{ width: '60%', height: 'auto',borderRadius: '20px' }} src={previewPhoto} alt="Preview" className="preview-image" />
-              <button onClick={handleClosePhoto} style={{ width: '200px' }} className="confirmation-button2">
-                Choisir
+            <div className="preview-image-container">
+              <img style={{ width: '50%', height: 'auto' }} src={previewPhoto} alt="Preview" className="preview-image" />
+              <button onClick={handleRemovePhoto} style={{ width: '10px', height: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="confirmation-button2">
+                <i className="bi bi-trash3-fill"></i>
               </button>
-              <button onClick={handleRemovePhoto} style={{ width: '200px', backgroundColor: 'var(--primary-color)' }} className="confirmation-button2">
-                Supprimer
-              </button>
-              
+              {selectedFile && <p className="selected-file-name">{selectedFile.name}</p>}
             </div>
-            
           )}
 
         <div className="popup-buttons">
