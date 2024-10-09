@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post('/register', UtilisateurController.register);
 router.post('/login', UtilisateurController.login);
-router.get('/profile', authMiddleware, UtilisateurController.getProfile);
+router.get('/profile/:userId', authMiddleware, UtilisateurController.getProfile);
 router.post('/verify-registration', UtilisateurController.verifyRegistration);
 router.post('/initiate-reset-password', UtilisateurController.initiateresetPassword);
 router.post('/verify-reset-password', UtilisateurController.verifyResetPassword);

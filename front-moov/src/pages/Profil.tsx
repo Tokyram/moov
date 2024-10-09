@@ -22,9 +22,10 @@ const Profil: React.FC = () => {
   const [showModificationPopup, setShowModificationPopup] = useState(false);
   const [selectedNom, setSelectedNom] = useState<string>('');
   const [selectedPrenom, setSelectedPrenom] = useState<string>('');
-  const [selectedTelephone, setSelectedTelephone] = useState<number | null>(null);
+  const [selectedTelephone, setSelectedTelephone] = useState<string>('');
   const [selectedEmail, setSelectedEmail] = useState<string>('');
-  const [selectedPhoto, setSelectedPhoto] = useState<string>('');
+  const [selectedAdresse, setSelectedAdresse] = useState<string>('');
+  const [userId, setUserId] = useState<number>(0);
 
   const history = useHistory();
   const [totalKilometres, setTotalKilometres] = useState<number | null>(null);
@@ -45,9 +46,15 @@ const Profil: React.FC = () => {
       try {
         
         const decodedToken = await getDecodedToken();
+        setUserId(decodedToken.id);
         setUsername(decodedToken.nom + " " + decodedToken.prenom);
         setEmail(decodedToken.mail);
         setTelephone(decodedToken.telephone);
+        setSelectedNom(decodedToken.nom);
+        setSelectedPrenom(decodedToken.prenom);
+        setSelectedEmail(decodedToken.mail);
+        setSelectedTelephone(decodedToken.telephone);
+        setSelectedAdresse(decodedToken.adresse);
 
         if (decodedToken.photo && decodedToken.photo !== '') {
             try {
@@ -124,17 +131,16 @@ const Profil: React.FC = () => {
             </div>
             {showModificationPopup && (
             <PopupModificationProfil
+                userId={userId}
                 selectedNom={selectedNom}
                 setSelectedNom={setSelectedNom}
                 selectedPrenom={selectedPrenom}
                 setSelectedPrenom={setSelectedPrenom}
                 selectedTelephone={selectedTelephone}
-                setSelectedTelephone={setSelectedTelephone}
                 selectedEmail={selectedEmail}
-                setSelectedEmail={setSelectedEmail}
-                selectedPhoto={selectedPhoto}
-                setSelectedPhoto={setSelectedPhoto}
                 setShowModificationPopup={setShowModificationPopup}
+                selectedAdresse={selectedAdresse}
+                setSelectedAdresse={setSelectedAdresse}
                 />
             )}
             <div className="information">

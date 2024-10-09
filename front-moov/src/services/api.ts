@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 
 export const DEFAULT_USER_PIC = "assets/user.png";
 
-const api = axios.create({
+export const api = axios.create({
     baseURL: url_api,
 });
 
@@ -605,6 +605,44 @@ export const seeNotification = async (notificationId: any) => {
         return response;
     } catch(error: any) {
         console.error('Erreur lors de la vue de notif :', error.message);
+        throw error;
+    }
+}
+
+export const getProfil = async () => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        const decodedToken = await getDecodedToken();
+        
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response =  await api.get(`/users/profil/${decodedToken.id}`, { headers });   
+        return response;
+
+    } catch(error: any) {
+        console.error('Erreur lors de la vue de notif :', error.message);
+        throw error;
+    }
+}
+
+export const modificationProfil = async (formData: any) => {
+    try {
+        const { value: token } = await Storage.get({ key: 'token' });
+        
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+            'ngrok-skip-browser-warning': '1'
+        };
+
+        const response =  await api.put('/users/profile', formData, { headers });   
+        return response;
+    } catch(error: any) {
+        console.error('Erreur lors de la modification profil :', error.message);
         throw error;
     }
 }

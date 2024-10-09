@@ -1,20 +1,26 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import '../pages/MapComponent.css';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+import { IonToast } from '@ionic/react';
+import Loader from './Loader';
+import { se } from 'date-fns/locale';
+import axios from 'axios';
+import { api, modificationProfil } from '../services/api';
+import { Storage } from '@capacitor/storage';
 
 interface PopupModificationProfilProps {
   selectedNom: string;
   setSelectedNom: React.Dispatch<React.SetStateAction<string>>;
   selectedPrenom: string;
   setSelectedPrenom: React.Dispatch<React.SetStateAction<string>>;
-  selectedTelephone: number | null;
-  setSelectedTelephone: React.Dispatch<React.SetStateAction<number | null>>;
+  selectedTelephone: string;
   selectedEmail: string;
-  setSelectedEmail: React.Dispatch<React.SetStateAction<string>>;
-  selectedPhoto: string;
-  setSelectedPhoto: React.Dispatch<React.SetStateAction<string>>;
   setShowModificationPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  userId: number;
+  selectedAdresse: string;
+  setSelectedAdresse: React.Dispatch<React.SetStateAction<string>>;
+
 }
 
 const PopupModificationProfil: React.FC<PopupModificationProfilProps> = ({
@@ -23,21 +29,85 @@ const PopupModificationProfil: React.FC<PopupModificationProfilProps> = ({
   selectedPrenom,
   setSelectedPrenom,
   selectedTelephone,
-  setSelectedTelephone,
   selectedEmail,
-  setSelectedEmail,
-  selectedPhoto,
-  setSelectedPhoto,
   setShowModificationPopup,
+  userId,
+  selectedAdresse,
+  setSelectedAdresse
 }) => {
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [previewPhoto, setPreviewPhoto] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
   const handleCancelModification = () => {
     setShowModificationPopup(false);
     console.log('Modification annulee');
   };
 
-  const handleConfirmModification = () => {
-    setShowModificationPopup(false);
-    console.log('Modification confirmer');
+  const handleConfirmModification = async () => {
+    setIsLoading(true);
+    try {
+
+      const formData = new FormData();
+      formData.append('id', userId.toString());
+      formData.append('nom', selectedNom);
+      formData.append('prenom', selectedPrenom);
+      formData.append('adresse', selectedAdresse);
+      formData.append('mail', selectedEmail);
+
+
+      if (selectedFile) {
+        formData.append('photo', selectedFile);
+      }
+
+      const { value: token } = await Storage.get({ key: 'token' });
+
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+        'ngrok-skip-browser-warning': '1'
+      };
+
+      const response =  await api.put('/users/profile', formData, { headers });
+
+      if(response.status === 200) {
+        setToastMessage('Profil mis à jour avec succès');
+        setShowToast(true);
+        setShowModificationPopup(false);
+      }
+      
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du profil:', error);
+      setToastMessage('Erreur lors de la mise à jour du profil');
+      setShowToast(true);
+      setIsLoading(false);
+    }
+  };
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewPhoto(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setPreviewPhoto(null);
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -45,7 +115,7 @@ const PopupModificationProfil: React.FC<PopupModificationProfilProps> = ({
       <div className="popup-content">
         <div className="titrepopup">
           <img src="assets/logo.png" alt="logo" />
-          <h4>Modifié vos informations</h4>
+          <h4>Modifier vos informations</h4>
         </div>
 
         <div className="inputForm">
@@ -71,10 +141,20 @@ const PopupModificationProfil: React.FC<PopupModificationProfilProps> = ({
         <div className="inputForm">
           <input
             className="input"
-            type="number"
+            type="text"
+            placeholder='Votre adresse'
+            value={selectedAdresse}
+            onChange={e => setSelectedAdresse(e.target.value)}
+          />
+        </div>
+
+        {/* <div className="inputForm">
+          <input
+            className="input"
+            type="text"
             placeholder='+261 00 00 000 00'
-            value={selectedTelephone !== null ? selectedTelephone.toString() : ''}
-            onChange={e => setSelectedTelephone(e.target.value ? Number(e.target.value) : null)}
+            value={selectedTelephone}
+            onChange={e => setSelectedTelephone(e.target.value)}
           />
         </div>
 
@@ -86,7 +166,7 @@ const PopupModificationProfil: React.FC<PopupModificationProfilProps> = ({
             value={selectedEmail}
             onChange={e => setSelectedEmail(e.target.value)}
           />
-        </div>
+        </div> */}
 
         <label className="custum-file-upload" htmlFor="file">
           <div className="icon">
@@ -98,15 +178,35 @@ const PopupModificationProfil: React.FC<PopupModificationProfilProps> = ({
           <input
             type="file"
             id="file"
-            onChange={e => setSelectedPhoto(e.target.value)}
+            ref={fileInputRef}
+            onChange={handlePhotoChange}
+            accept="image/*"
           />
         </label>
 
+          {previewPhoto && (
+            <div className="preview-image-container">
+              <img src={previewPhoto} alt="Preview" className="preview-image" />
+              <button onClick={handleRemovePhoto} className="remove-photo-button">
+                Supprimer
+              </button>
+              {selectedFile && <p className="selected-file-name">{selectedFile.name}</p>}
+            </div>
+          )}
+
         <div className="popup-buttons">
-          <button className="cancel-button" onClick={handleCancelModification}>Annuler</button>
-          <button onClick={handleConfirmModification}>Confirmer</button>
+          <button className="cancel-button" onClick={handleCancelModification} disabled={isLoading}>Annuler</button>
+          <button onClick={handleConfirmModification} disabled={isLoading}>{!isLoading ? "Confirmer" :  <Loader/> }</button>
         </div>
       </div>
+
+      <IonToast
+        isOpen={showToast}
+        onDidDismiss={() => setShowToast(false)}
+        message={toastMessage}
+        duration={10000}
+      />
+      
     </div>
   );
 };

@@ -90,7 +90,15 @@ class UtilisateurController {
   }
 
   static async getProfile(req, res) {
-    res.json({ user: req.user.toJSON() });
+    const { userId } = req.params;
+    try {
+      const response = await Utilisateur.findById(userId);
+      res.json({ user: response });
+
+    } catch(error) {
+      console.error('Erreur dans le contrôleur:', error);
+      res.status(500).json({ message: 'Erreur lors de la vérification du code', error: error.message });
+    } 
   }
 
   static async initiateresetPassword(req, res) {
@@ -101,7 +109,7 @@ class UtilisateurController {
     if(result.success) {
       res.status(200).json({ message: result.message, code: result?.code, verificationId: result?.verificationId });
     } else {
-      res.status(400).json({ message: result.message, code: result?.code, error: result?.error });
+      res.status(500).json({ message: result.message, code: result?.code, error: result?.error });
     }
   }
 
@@ -139,8 +147,10 @@ class UtilisateurController {
       }
 
       let photoPath = user.photo;
+      let originalPath = '';
       if (req.file) {
-        photoPath = req.file.path;
+        originalPath = req.file.path;
+        photoPath = originalPath.replace(/^upload\//, '');
         if (user.photo) {
           fs.unlink(user.photo, (err) => {
             if (err) console.error('Erreur lors de la suppression de l\'ancienne photo:', err);
@@ -148,7 +158,7 @@ class UtilisateurController {
         }
       }
 
-      const result = await Utilisateur.updateProfile(user, nom, prenom, adresse, photoPath, mail);
+      const result = await Utilisateur.updateProfile(user, nom, prenom, adresse, originalPath, mail);
       res.json(result);
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);
