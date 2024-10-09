@@ -4,7 +4,7 @@ import './Menu.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useIonRouter } from '@ionic/react';
 import { Storage } from '@capacitor/storage';
-import { DEFAULT_USER_PIC, getDecodedToken, getPhotoUser } from '../services/api';
+import { DEFAULT_USER_PIC, getDecodedToken, getPhotoUser, getProfil } from '../services/api';
 import ChauffeurLocationTracker from './ChauffeurLocalisation';
 
 const Menu: React.FC = () => {
@@ -26,17 +26,21 @@ const Menu: React.FC = () => {
       const token = await Storage.get({ key: 'token' });
       if (token.value) {
         setIsLoggedIn(true);
-        const decodedToken = await getDecodedToken();
+
+        const profil = await getProfil();
+
         const course = await Storage.get({key: 'course'});
+
         if(course) {
           setCourse(Number(course.value));
         }
-        if (decodedToken) {
-          setUserRole(decodedToken.role);
-          setUsername(decodedToken.nom + " " + decodedToken.prenom);
-          if (decodedToken.photo && decodedToken.photo !== '') {
+
+        if (profil.data.user) {
+          setUserRole(profil.data.user.role);
+          setUsername(profil.data.user.nom + " " + profil.data.user.prenom);
+          if (profil.data.user.photo && profil.data.user.photo !== '') {
             try {
-              const photoResponse = await getPhotoUser(decodedToken.photo);
+              const photoResponse = await getPhotoUser(profil.data.user.photo);
 
               const blob = new Blob([photoResponse.data], { type: photoResponse.headers['content-type'] });
               const objectUrl = URL.createObjectURL(blob);
