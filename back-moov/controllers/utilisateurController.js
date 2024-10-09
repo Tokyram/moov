@@ -150,7 +150,7 @@ class UtilisateurController {
       let originalPath = '';
       if (req.file) {
         originalPath = req.file.path;
-        photoPath = originalPath.replace(/^upload\//, '');
+        photoPath = originalPath.replace('upload/', '');
         if (user.photo) {
           fs.unlink(user.photo, (err) => {
             if (err) console.error('Erreur lors de la suppression de l\'ancienne photo:', err);
