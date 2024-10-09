@@ -8,7 +8,7 @@ import Menu from '../components/Menu';
 import './MapComponent.css';
 import { Route, useHistory } from 'react-router-dom';
 import PopupModificationProfil from '../components/PopupModificationProfil';
-import { DEFAULT_USER_PIC, getDecodedToken, getKilometresByChauffeur, getKilometresByPassager, getMoyenneAvisChauffeur, getMoyenneAvisPassager, getPhotoUser } from '../services/api';
+import { DEFAULT_USER_PIC, getKilometresByChauffeur, getKilometresByPassager, getMoyenneAvisChauffeur, getMoyenneAvisPassager, getPhotoUser, getProfil } from '../services/api';
 
 const Profil: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,39 +37,36 @@ const Profil: React.FC = () => {
   const handleConfirmClick = () => {
     setShowModificationPopup(true);
   };
-  useEffect(() => {
-    // Ajouter la classe 'show' après le montage du composant
-    setIsVisible(true);
 
-    // Récupérer le rôle de l'utilisateur au montage du composant
     const fetchRoleAndKilometres = async () => {
-      try {
+        try {
         
-        const decodedToken = await getDecodedToken();
-        setUserId(decodedToken.id);
-        setUsername(decodedToken.nom + " " + decodedToken.prenom);
-        setEmail(decodedToken.mail);
-        setTelephone(decodedToken.telephone);
-        setSelectedNom(decodedToken.nom);
-        setSelectedPrenom(decodedToken.prenom);
-        setSelectedEmail(decodedToken.mail);
-        setSelectedTelephone(decodedToken.telephone);
-        setSelectedAdresse(decodedToken.adresse);
+        const profil = await getProfil();
 
-        if (decodedToken.photo && decodedToken.photo !== '') {
+        setUserId(profil.data.user.id);
+        setUsername(profil.data.user.nom + " " + profil.data.user.prenom);
+        setEmail(profil.data.user.mail);
+        setTelephone(profil.data.user.telephone);
+        setSelectedNom(profil.data.user.nom);
+        setSelectedPrenom(profil.data.user.prenom);
+        setSelectedEmail(profil.data.user.mail);
+        setSelectedTelephone(profil.data.user.telephone);
+        setSelectedAdresse(profil.data.user.adresse);
+
+        if (profil.data.user.photo && profil.data.user.photo !== '') {
             try {
-              const photoResponse = await getPhotoUser(decodedToken.photo);
+                const photoResponse = await getPhotoUser(profil.data.user.photo);
 
-              const blob = new Blob([photoResponse.data], { type: photoResponse.headers['content-type'] });
-              const objectUrl = URL.createObjectURL(blob);
-              setPhotoUrl(objectUrl);
+                const blob = new Blob([photoResponse.data], { type: photoResponse.headers['content-type'] });
+                const objectUrl = URL.createObjectURL(blob);
+                setPhotoUrl(objectUrl);
             } catch (photoError) {
-              console.error('Erreur lors de la récupération de la photo:', photoError);
+                console.error('Erreur lors de la récupération de la photo:', photoError);
             }
         }
-  
 
-        if ( decodedToken.role === 'CHAUFFEUR') {
+
+        if ( profil.data.user.role === 'CHAUFFEUR') {
 
             const response = await getKilometresByChauffeur();
             console.log("kilometre chauffeur", response.data);
@@ -79,7 +76,7 @@ const Profil: React.FC = () => {
             const reponse = await getMoyenneAvisChauffeur();
             setEtoile(reponse.data.moyenne_etoiles_chauffeur);
 
-        } else if (decodedToken.role === 'UTILISATEUR') {
+        } else if (profil.data.user.role === 'UTILISATEUR') {
 
             const response = await getKilometresByPassager();
             console.log("kilometre passager", response.data);
@@ -89,10 +86,14 @@ const Profil: React.FC = () => {
             const reponse = await getMoyenneAvisPassager();
             setEtoile(reponse.data.moyenne_etoiles_passager);
         }
-      } catch (error) {
+        } catch (error) {
         console.error('Erreur lors de la récupération des kilomètres ou du rôle:', error);
-      }
+        }
     };
+
+  useEffect(() => {
+
+    setIsVisible(true);
 
     fetchRoleAndKilometres();
 
@@ -141,6 +142,7 @@ const Profil: React.FC = () => {
                 setShowModificationPopup={setShowModificationPopup}
                 selectedAdresse={selectedAdresse}
                 setSelectedAdresse={setSelectedAdresse}
+                fetchRoleAndKilometres={fetchRoleAndKilometres}
                 />
             )}
             <div className="information">

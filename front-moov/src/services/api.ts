@@ -620,7 +620,7 @@ export const getProfil = async () => {
             'ngrok-skip-browser-warning': '1'
         };
 
-        const response =  await api.get(`/users/profil/${decodedToken.id}`, { headers });   
+        const response =  await api.get(`/users/profile/${decodedToken.id}`, { headers });   
         return response;
 
     } catch(error: any) {

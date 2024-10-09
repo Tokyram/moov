@@ -20,6 +20,7 @@ interface PopupModificationProfilProps {
   userId: number;
   selectedAdresse: string;
   setSelectedAdresse: React.Dispatch<React.SetStateAction<string>>;
+  fetchRoleAndKilometres: any;
 
 }
 
@@ -33,7 +34,8 @@ const PopupModificationProfil: React.FC<PopupModificationProfilProps> = ({
   setShowModificationPopup,
   userId,
   selectedAdresse,
-  setSelectedAdresse
+  setSelectedAdresse,
+  fetchRoleAndKilometres
 }) => {
 
   const [showToast, setShowToast] = useState(false);
@@ -79,6 +81,7 @@ const PopupModificationProfil: React.FC<PopupModificationProfilProps> = ({
         setToastMessage('Profil mis à jour avec succès');
         setShowToast(true);
         setShowModificationPopup(false);
+        fetchRoleAndKilometres();
       }
       
       setIsLoading(false);
@@ -87,6 +90,7 @@ const PopupModificationProfil: React.FC<PopupModificationProfilProps> = ({
       setToastMessage('Erreur lors de la mise à jour du profil');
       setShowToast(true);
       setIsLoading(false);
+      fetchRoleAndKilometres();
     }
   };
 

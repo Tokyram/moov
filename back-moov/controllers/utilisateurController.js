@@ -158,7 +158,7 @@ class UtilisateurController {
         }
       }
 
-      const result = await Utilisateur.updateProfile(user, nom, prenom, adresse, originalPath, mail);
+      const result = await Utilisateur.updateProfile(user, nom, prenom, adresse, photoPath, mail);
       res.json(result);
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);
