@@ -4,6 +4,7 @@ import "./historique.css";
 import { getAllHistoriqueCourse } from "../services/api";
 import { format } from "date-fns";
 import { fr } from 'date-fns/locale';
+import Loader from "./loader";
 interface CardProps {
   id: string;
   status: string;
@@ -67,10 +68,12 @@ const HistoriqueReservation: React.FC = () => {
   const [endDate, setEndDate] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [items, setItems] = useState<CardProps[]>([]); 
-  
+  const [isDataLoading, setIsDataLoading] = useState(false);
+
 
   useEffect(() => {
     const fetchHistorique = async () => {
+      setIsDataLoading(true);
       try {
         const historique = await getAllHistoriqueCourse();
         
@@ -96,6 +99,8 @@ const HistoriqueReservation: React.FC = () => {
         setItems(formattedData); // Mettre à jour les items avec les données formatées
       } catch (error) {
         console.error('Erreur lors de la récupération des historique :', error);
+      } finally {
+        setIsDataLoading(false);
       }
     };
     
@@ -125,82 +130,88 @@ const HistoriqueReservation: React.FC = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
-    <div className="listhisto">
-      <div className="titregraph">
-        <h3 >Historiques de réservation</h3>
-        <p>Vous pouvez voir l'historique de toutes vos réservations avec les détails nécessaires</p>
-      </div>
+      <>
+        {isDataLoading && (<Loader/>)}
+        {
+          !isDataLoading && (
+          <div className="listhisto">
+            <div className="titregraph">
+              <h3 >Historiques de réservation</h3>
+              <p>Vous pouvez voir l'historique de toutes vos réservations avec les détails nécessaires</p>
+            </div>
 
-      {/* Filtres de date et recherche */}
-      <div className="filters">
-      
-        <div className="filtredate">
-            <label className="filtrehisto">
-                Date de début:
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-            </label>
-            <label className="filtrehisto">
-                Date de fin:
-            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-            </label>
-        </div>
+            {/* Filtres de date et recherche */}
+            <div className="filters">
+            
+              <div className="filtredate">
+                  <label className="filtrehisto">
+                      Date de début:
+                  <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                  </label>
+                  <label className="filtrehisto">
+                      Date de fin:
+                  <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                  </label>
+              </div>
 
-        <label className="searchhisto">
-          Recherche:
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Rechercher client ou chauffeur"
-          />
-        </label>
-      </div>
+              <label className="searchhisto">
+                Recherche:
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Rechercher client ou chauffeur"
+                />
+              </label>
+            </div>
 
-      <ul className="cards">
-        {currentCards.map((card, index) => (
-          <Card
-            key={index}
-            id={card.id}
-            status={card.status}
-            destination={card.destination}
-            date={card.date}
-            client={card.client}
-            chauffeur={card.chauffeur}
-            prix={card.prix}
-            adresseArrivee={card.adresseArrivee}
-            adresseDepart={card.adresseDepart}
-          />
-        ))}
-      </ul>
+            <ul className="cards">
+              {currentCards.map((card, index) => (
+                <Card
+                  key={index}
+                  id={card.id}
+                  status={card.status}
+                  destination={card.destination}
+                  date={card.date}
+                  client={card.client}
+                  chauffeur={card.chauffeur}
+                  prix={card.prix}
+                  adresseArrivee={card.adresseArrivee}
+                  adresseDepart={card.adresseDepart}
+                />
+              ))}
+            </ul>
 
 
-      {/* Pagination */}
-      <div className="pagination">
-        <button
-          className="precedent"
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          <i className="bi bi-arrow-left-short"></i>
-        </button>
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => paginate(index + 1)}
-            className={currentPage === index + 1 ? "active" : ""}
-          >
-            {index + 1}
-          </button>
-        ))}
-        <button
-          className="suivant"
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          <i className="bi bi-arrow-right-short"></i>
-        </button>
-      </div>
-    </div>
+            {/* Pagination */}
+            <div className="pagination">
+              <button
+                className="precedent"
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <i className="bi bi-arrow-left-short"></i>
+              </button>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => paginate(index + 1)}
+                  className={currentPage === index + 1 ? "active" : ""}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button
+                className="suivant"
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                <i className="bi bi-arrow-right-short"></i>
+              </button>
+            </div>
+          </div>
+        )}
+      </>
   );
 };
 

@@ -2,6 +2,8 @@ import { jwtDecode } from 'jwt-decode';
 import API_BASE_URL from '../domaine';
 import axios from 'axios';
 
+export const DEFAULT_USER_PIC = "/profil.png";
+
 export const getDecodedToken = async (): Promise<any | null> => {
     try {
       // Utiliser localStorage pour récupérer le token

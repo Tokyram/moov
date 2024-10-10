@@ -65,7 +65,7 @@ const Sidebar: React.FC = () => {
         </h4>
         <li>
           <a href="/home/item-list">
-            <span className="material-symbols-outlined"><i className="bi bi-people-fill"></i></span>Client
+            <span className="material-symbols-outlined"><i className="bi bi-people-fill"></i></span>Clients
           </a>
         </li>
         <li>
@@ -75,7 +75,7 @@ const Sidebar: React.FC = () => {
         </li>
         <li>
           <a href="/home/notification-list">
-            <span className="material-symbols-outlined"><i className="bi bi-bell-fill"></i></span>Notification
+            <span className="material-symbols-outlined"><i className="bi bi-bell-fill"></i></span>Notifications
           </a>
         </li>
         <li>
@@ -109,16 +109,16 @@ const Sidebar: React.FC = () => {
           <span>Autre</span>
           <div className="menu-separator"></div>
         </h4>
-        <li>
+        {/* <li>
           <a href="/home/loader">
             <span className="material-symbols-outlined"><i className="bi bi-gear-fill"></i></span>Loader
           </a>
         </li>
         <li>
           <a href="#">
-            <span className="material-symbols-outlined"><i className="bi bi-gear-fill"></i></span>Paramètre
+            <span className="material-symbols-outlined"><i className="bi bi-gear-fill"></i></span>Paramètre(s)
           </a>
-        </li>
+        </li> */}
         <li>
           <a href="/" onClick={handleLogout}>
             <span className="material-symbols-outlined"><i className="bi bi-door-open-fill"></i></span>Déconnexion

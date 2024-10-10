@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import './liste.css';
-import { BannirChauffeurAdmin, getClient, getPhotoUser, supprimerChauffeurAdmin } from '../services/api';
+import { BannirChauffeurAdmin, DEFAULT_USER_PIC, getClient, getPhotoUser, supprimerChauffeurAdmin } from '../services/api';
 import CustomAlert from './CustomAlertProps';
+import Loader from './loader';
 
 interface ItemProps {
   id:number;
@@ -17,7 +18,7 @@ interface ItemProps {
 
 const Item: React.FC<ItemProps> = ({id, nom, prenom, mail, photo, telephone, status,onDelete }) => {
 
-  const [photoUrl, setPhotoUrl] = useState<string>('');
+  const [photoUrl, setPhotoUrl] = useState<string>(DEFAULT_USER_PIC);
 
   useEffect(() => {
     const fetchPhoto = async () => {
@@ -77,6 +78,7 @@ const ItemList: React.FC = () => {
     const itemsPerPage = 8; // Nombre d'éléments par page
     const [showModal, setShowModal] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<number | null>(null); // Pour stocker l'item à supprimer
+    const [isDataLoading, setIsDataLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [formData, setFormData] = useState({
       nom: "",
@@ -92,12 +94,15 @@ const ItemList: React.FC = () => {
     useEffect(() => {
       // Charger la liste des chauffeurs au chargement du composant
       const fetchChauffeurs = async () => {
+        setIsDataLoading(true);
         try {
           const chauffeurs = await getClient();
           console.log(chauffeurs); 
           setItems(chauffeurs.data); // Mettre à jour la liste des chauffeurs
         } catch (error) {
           console.error('Erreur lors de la récupération des chauffeurs :', error);
+        } finally {
+          setIsDataLoading(false);
         }
       };
       
@@ -153,95 +158,99 @@ const ItemList: React.FC = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
-    <div className='containerClient'>
-    <div className="titregraph">
-          <h3>Liste des clients</h3>
-          <p>Ce tableau comporte la liste des clients avec son status, ils peuvent etre alors banni ou pas selon leur statut</p>
-      </div>
-      {showAlert && (
-        <CustomAlert message="Client banni avec succès" onClose={closeAlert} />
-        )}
-      {/* Filtre par statut avec des boutons */}
-      <div className='buttonChart-group' style={{ marginBottom: '20px' }}>
-        <button
-          className={`buttonChart ${filterStatus === '' ? 'active' : ''}`}
-          onClick={() => setFilterStatus('')}
-        >
-          Tous
-        </button>
-        <button
-          className={`buttonChart ${filterStatus === 'Bon' ? 'active' : ''}`}
-          onClick={() => setFilterStatus('Bon')}
-        >
-          Bon
-        </button>
-        <button
-          className={`buttonChart ${filterStatus === 'Moyen' ? 'active' : ''}`}
-          onClick={() => setFilterStatus('Moyen')}
-        >
-          Moyen
-        </button>
-        <button
-          className={`buttonChart ${filterStatus === 'Mauvais' ? 'active' : ''}`}
-          onClick={() => setFilterStatus('Mauvais')}
-        >
-          Mauvais
-        </button>
-      </div>
-      
-      <div className="table">
-        <table className="liste-table">
-          <thead>
-            <tr>
-              <th>Image</th>
-              <th>Nom</th>
-              <th>Description</th>
-              <th>Téléphone</th>
-              <th>Email</th>
-              <th>Statut</th>
-              <th>Bannir</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.map((item, index) => (
-              <Item
-                key={index}
-                nom={item.nom}
-                id={item.id}
-                prenom={item.prenom}
-                mail={item.mail}
-                photo={item.photo}
-                telephone={item.telephone}
-                status={item.status}
-                onDelete={() => handleDeleteClick(item.id)}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {/* Modal de confirmation de suppression */}
-      {showModal && (
-            <div className="modal show fade" tabIndex={-1} style={{ display: "block" }}>
-            <div className="modal-dialog">
-                <div className="modal-content">
-                <div className="modal-header">
-                    <h5 className="modal-title">Message de Confirmation</h5>
-                    <button type="button" className="btn-close" onClick={closeModal}></button>
-                </div>
-                <div className="modal-body">
-                    <p>Êtes-vous sûr de vouloir bannir cette Personne ?</p>
-                </div>
-                <div className="modal-footer">
-                    <button style={{ borderRadius: '25px', backgroundColor: 'var(--text-color)' }} type="button" className="btn btn-secondary" onClick={closeModal}>Annuler</button>
-                    <button style={{ borderRadius: '25px', backgroundColor: 'var(--primary-color)' }} type="button" className="btn btn-danger" onClick={confirmDelete}>Bannir</button>
-                </div>
-                </div>
+      <>
+        {isDataLoading && (<Loader/>)}
+        {
+          !isDataLoading && (
+          <div className='containerClient'>
+            <div className="titregraph">
+                <h3>Liste des clients</h3>
+                <p>Ce tableau comporte la liste des clients avec son status, ils peuvent etre alors banni ou pas selon leur statut</p>
             </div>
+            {showAlert && (
+              <CustomAlert message="Client banni avec succès" onClose={closeAlert} />
+              )}
+            {/* Filtre par statut avec des boutons */}
+            <div className='buttonChart-group' style={{ marginBottom: '20px' }}>
+              <button
+                className={`buttonChart ${filterStatus === '' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('')}
+              >
+                Tous
+              </button>
+              <button
+                className={`buttonChart ${filterStatus === 'Bon' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('Bon')}
+              >
+                Bon
+              </button>
+              <button
+                className={`buttonChart ${filterStatus === 'Moyen' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('Moyen')}
+              >
+                Moyen
+              </button>
+              <button
+                className={`buttonChart ${filterStatus === 'Mauvais' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('Mauvais')}
+              >
+                Mauvais
+              </button>
             </div>
-        )}
+            
+            <div className="table">
+              <table className="liste-table">
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Nom</th>
+                    <th>Description</th>
+                    <th>Téléphone</th>
+                    <th>Email</th>
+                    <th>Statut</th>
+                    <th>Bannir</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentItems.map((item, index) => (
+                    <Item
+                      key={index}
+                      nom={item.nom}
+                      id={item.id}
+                      prenom={item.prenom}
+                      mail={item.mail}
+                      photo={item.photo}
+                      telephone={item.telephone}
+                      status={item.status}
+                      onDelete={() => handleDeleteClick(item.id)}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {/* Modal de confirmation de suppression */}
+            {showModal && (
+                  <div className="modal show fade" tabIndex={-1} style={{ display: "block" }}>
+                  <div className="modal-dialog">
+                      <div className="modal-content">
+                      <div className="modal-header">
+                          <h5 className="modal-title">Message de Confirmation</h5>
+                          <button type="button" className="btn-close" onClick={closeModal}></button>
+                      </div>
+                      <div className="modal-body">
+                          <p>Êtes-vous sûr de vouloir bannir cette Personne ?</p>
+                      </div>
+                      <div className="modal-footer">
+                          <button style={{ borderRadius: '25px', backgroundColor: 'var(--text-color)' }} type="button" className="btn btn-secondary" onClick={closeModal}>Annuler</button>
+                          <button style={{ borderRadius: '25px', backgroundColor: 'var(--primary-color)' }} type="button" className="btn btn-danger" onClick={confirmDelete}>Bannir</button>
+                      </div>
+                      </div>
+                  </div>
+                  </div>
+            )}
 
 
-          {/* Pagination */}
+            {/* Pagination */}
             <div className="pagination">
                 <button 
                 className='precedent'
@@ -268,6 +277,8 @@ const ItemList: React.FC = () => {
                 </button>
             </div>
           </div>
+        )}
+      </>
 
   );
 };
