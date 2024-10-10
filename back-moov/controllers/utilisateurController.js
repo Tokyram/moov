@@ -211,7 +211,7 @@ class UtilisateurController {
     try {
       const chauffeurs = await Utilisateur.findAllChauffeur();
 
-      res.json({ success: true, data: chauffeurs.map(chauffeur => chauffeur.toJSON())});
+      res.json({ success: true, data: chauffeurs });
 
     } catch(error) {
       console.error('Erreur lors de la récupération de la liste des chauffeurs:', error);
