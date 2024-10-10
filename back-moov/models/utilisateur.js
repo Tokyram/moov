@@ -341,33 +341,36 @@ class Utilisateur {
     let chauffeurs = [];
 
     const result = await db.query(`SELECT u.*, 
-                                  CASE 
-                                      WHEN ROUND(AVG(a.etoiles)) > 3 THEN 'Bon'
-                                      WHEN ROUND(AVG(a.etoiles)) = 3 THEN 'Moyen'
-                                      ELSE 'Mauvais'
-                                  END AS status
-                              FROM utilisateur u
-                              LEFT JOIN avis a ON a.passager_id = u.id
-                              WHERE u.role = 'CHAUFFEUR'
-                              GROUP BY u.id;
+                                    CASE 
+                                          WHEN AVG(a.etoiles) IS NULL THEN 'Pas encore d avis'
+                                          WHEN ROUND(AVG(a.etoiles)) > 3 THEN 'Bon'
+                                          WHEN ROUND(AVG(a.etoiles)) = 3 THEN 'Moyen'
+                                          ELSE 'Mauvais'
+                                      END AS status
+                                  FROM utilisateur u
+                                  LEFT JOIN avis a ON a.chauffeur_id = u.id
+                                  WHERE u.role = 'CHAUFFEUR'
+                                  GROUP BY u.id;
+
                               `);
 
     for (const row of result.rows) {
       chauffeurs.push(
-        new Utilisateur(
-          row.id,
-          row.nom,
-          row.prenom,
-          row.telephone,
-          row.mail,
-          row.mdp,
-          row.adresse,
-          row.photo,
-          row.role,
-          row.date_inscription,
-          row.est_banni,
-          row.date_banni
-        )
+        // new Utilisateur(
+        //   row.id,
+        //   row.nom,
+        //   row.prenom,
+        //   row.telephone,
+        //   row.mail,
+        //   row.mdp,
+        //   row.adresse,
+        //   row.photo,
+        //   row.role,
+        //   row.date_inscription,
+        //   row.est_banni,
+        //   row.date_banni
+        // )
+        row
       );
     }
 
@@ -376,18 +379,18 @@ class Utilisateur {
   static async findAllClient() {
     let client = [];
 
-    
-
     const result = await db.query(`SELECT u.*, 
-                                  CASE 
-                                      WHEN ROUND(AVG(a.etoiles)) > 3 THEN 'Bon'
-                                      WHEN ROUND(AVG(a.etoiles)) = 3 THEN 'Moyen'
-                                      ELSE 'Mauvais'
-                                  END AS status
-                              FROM utilisateur u
-                              LEFT JOIN avis a ON a.passager_id = u.id
-                              WHERE u.role = 'UTILISATEUR'
-                              GROUP BY u.id;
+                                    CASE 
+                                          WHEN AVG(a.etoiles) IS NULL THEN 'Pas encore d avis'
+                                          WHEN ROUND(AVG(a.etoiles)) > 3 THEN 'Bon'
+                                          WHEN ROUND(AVG(a.etoiles)) = 3 THEN 'Moyen'
+                                          ELSE 'Mauvais'
+                                      END AS status
+                                  FROM utilisateur u
+                                  LEFT JOIN avis a ON a.passager_id = u.id
+                                  WHERE u.role = 'UTILISATEUR'
+                                  GROUP BY u.id;
+
                               `);
 
     for (const row of result.rows) {
