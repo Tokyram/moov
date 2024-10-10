@@ -404,3 +404,17 @@ export const getPhotoUser = async (photo: any) => {
       throw error;
   }
 }
+
+export const getListeAssignation = async () => {
+  try {
+    const response =  await axios.get(`${API_BASE_URL}/cars_driver/liste`,  {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, 
+      },
+    });   
+    return response;
+  } catch(error: any) {
+    console.error('Erreur lors de la récupération de la photo :', error.message);
+    throw error;
+  }
+}

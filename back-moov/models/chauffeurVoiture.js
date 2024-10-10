@@ -26,6 +26,26 @@ class ChauffeurVoiture {
 
         return result;
     }
+
+    static async listeAssignation() {
+        const query = `
+            SELECT 
+                u.*,
+                v.*,
+                cv.date_affectation
+            FROM 
+                utilisateur u
+            JOIN 
+                chauffeur_voiture cv ON u.id = cv.chauffeur_id
+            JOIN 
+                voiture v ON cv.voiture_id = v.id
+            ORDER BY 
+                u.nom, u.prenom, cv.date_affectation DESC;
+        `;
+
+        const result = db.query(query);
+        return result.rows;
+    }
 }
 
 module.exports = ChauffeurVoiture;

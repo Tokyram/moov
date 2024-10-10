@@ -29,7 +29,7 @@ interface ItemProps {
         <td>{marque}</td>
         <td>{immatriculation}</td>
         
-        <td>
+        {/* <td>
           <div className="actions">
             <button className='supp' onClick={onEdit} ><i className="bi bi-pencil-square"></i></button>
           </div>
@@ -38,7 +38,7 @@ interface ItemProps {
           <div className="actions">
             <button className='supp' onClick={onDelete}><i className="bi bi-trash3-fill" style={{ color: 'var(--primary-color)' }}></i></button>
           </div>
-        </td>
+        </td> */}
       </tr>
     );
   };
@@ -211,8 +211,8 @@ const closeModal = () => {
         <div className="table">
 
         <div className="titregraph">
-          <h3>Liste des assignation</h3>
-          <p>Ce tableau comporte la liste des chauffeurs Assigner a une voiture</p>
+          <h3>Liste des assignations</h3>
+          <p>Ce tableau comporte la liste des chauffeurs assignés à une voiture</p>
         </div>
         <table className="liste-table">
           <thead>
@@ -222,8 +222,8 @@ const closeModal = () => {
               <th>Prénom</th>
               <th>Marque voiture</th>
               <th>Immatriculation voiture</th>
-              <th>Modifier</th>
-              <th>Bannir</th>
+              {/* <th>Modifier</th>
+              <th>Bannir</th> */}
             </tr>
           </thead>
           <tbody>

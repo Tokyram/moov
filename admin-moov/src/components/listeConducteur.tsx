@@ -14,9 +14,10 @@ interface ItemProps {
   telephone: string; 
   status: string; 
   onDelete: () => void;
+  nb_etoile: number;
 }
 
-const Item: React.FC<ItemProps> = ({id, nom, prenom, mail, photo, telephone, status,onDelete }) => {
+const Item: React.FC<ItemProps> = ({id, nom, prenom, mail, photo, telephone, status, onDelete, nb_etoile }) => {
 
   const [photoUrl, setPhotoUrl] = useState<string>(DEFAULT_USER_PIC);
 
@@ -57,7 +58,7 @@ const Item: React.FC<ItemProps> = ({id, nom, prenom, mail, photo, telephone, sta
       <td>{mail}</td>
       <td>
         <p className={`status ${status === 'Bon' ? 'active' : 'inactive'}`}>
-          {status} <br></br> <span>{ status !== 'Pas encore d avis' && <i className="bi bi-star-fill"></i> }</span>
+          {status} <br></br> <span>{ status !== 'Pas encore d avis' && <i className="bi bi-star-fill"></i> } {status !== 'Pas encore d avis' && nb_etoile }</span>
         </p>
       </td>
       <td>
@@ -224,6 +225,7 @@ const ItemListConducteur: React.FC = () => {
                       telephone={item.telephone}
                       status={item.status}
                       onDelete={() => handleDeleteClick(item.id)}
+                      nb_etoile={item.nb_etoile}
                     />
                   ))}
                 </tbody>

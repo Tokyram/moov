@@ -7,5 +7,6 @@ const path = require('path');
 const router = express.Router();
 
 router.post('/assignation', authMiddleware, ChauffeurVoitureController.assignationVoitureChauffeur);
+router.get('/liste', authMiddleware, ChauffeurVoitureController.listeAssignationChauffeurVoiture);
 
 module.exports = router;

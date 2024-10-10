@@ -21,7 +21,14 @@ class ChauffeurVoitureController {
         }
     }
 
-    
+    static async listeAssignationChauffeurVoiture(req, res) {
+        try {
+            const liste = await ChauffeurVoiture.listeAssignation();
+            res.json({ liste });
+        } catch(error) {
+            res.status(500).json({ message: 'Erreur', error: error.message });
+        }
+    }
 }
 
 module.exports = ChauffeurVoitureController;
