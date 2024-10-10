@@ -390,3 +390,13 @@ export const getTotalRevenue = async () => {
     throw error;
   }
 };
+
+export const getPhotoUser = async (photo: any) => {
+  try {
+      const response =  await axios.get(`${API_BASE_URL}/users/photo/${photo}`, {responseType: 'blob'});   
+      return response;
+  } catch(error: any) {
+      console.error('Erreur lors de la récupération de la photo :', error.message);
+      throw error;
+  }
+}

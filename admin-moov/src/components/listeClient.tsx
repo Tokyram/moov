@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import './liste.css';
-import { BannirChauffeurAdmin, getClient, supprimerChauffeurAdmin } from '../services/api';
+import { BannirChauffeurAdmin, getClient, getPhotoUser, supprimerChauffeurAdmin } from '../services/api';
 import CustomAlert from './CustomAlertProps';
 
 interface ItemProps {
@@ -16,11 +16,31 @@ interface ItemProps {
 }
 
 const Item: React.FC<ItemProps> = ({id, nom, prenom, mail, photo, telephone, status,onDelete }) => {
+
+  const [photoUrl, setPhotoUrl] = useState<string>('');
+
+  useEffect(() => {
+    const fetchPhoto = async () => {
+      if (photo && photo !== '') {
+        try {
+            const photoResponse = await getPhotoUser(photo);
+  
+            const blob = new Blob([photoResponse.data], { type: photoResponse.headers['content-type'] });
+            const objectUrl = URL.createObjectURL(blob);
+            setPhotoUrl(objectUrl);
+        } catch (photoError) {
+            console.error('Erreur lors de la récupération de la photo:', photoError);
+        }
+      }
+    }
+    fetchPhoto()
+  }, [photo]);
+
   return (
     <tr>
       <td>
         <div className="image-container">
-          <img src={photo} alt={telephone} className="profile-image" />
+          <img src={photoUrl} alt={telephone} className="profile-image" />
         </div>
       </td>
       <td>{nom}</td>
