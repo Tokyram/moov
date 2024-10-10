@@ -347,7 +347,7 @@ class Utilisateur {
                                       ELSE 'Mauvais'
                                   END AS status
                               FROM utilisateur u
-                              JOIN avis a ON a.passager_id = u.id
+                              LEFT JOIN avis a ON a.passager_id = u.id
                               WHERE u.role = 'CHAUFFEUR'
                               GROUP BY u.id;
                               `);
@@ -385,7 +385,7 @@ class Utilisateur {
                                       ELSE 'Mauvais'
                                   END AS status
                               FROM utilisateur u
-                              JOIN avis a ON a.passager_id = u.id
+                              LEFT JOIN avis a ON a.passager_id = u.id
                               WHERE u.role = 'UTILISATEUR'
                               GROUP BY u.id;
                               `);
