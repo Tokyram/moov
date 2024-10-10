@@ -34,7 +34,14 @@ const Item: React.FC<ItemProps> = ({id, nom, prenom, mail, photo, telephone, sta
       }
     }
     fetchPhoto()
-  }, [photo]);
+
+    return () => {
+      if (photoUrl !== '') {
+        URL.revokeObjectURL(photoUrl);
+      }
+    };
+
+  }, [photo, photoUrl]);
 
   return (
     <tr>

@@ -340,7 +340,17 @@ class Utilisateur {
   static async findAllChauffeur() {
     let chauffeurs = [];
 
-    const result = await db.query("SELECT * FROM utilisateur WHERE role = 'CHAUFFEUR'");
+    const result = await db.query(`SELECT u.*, 
+                                  CASE 
+                                      WHEN ROUND(AVG(a.etoiles)) > 3 THEN 'Bon'
+                                      WHEN ROUND(AVG(a.etoiles)) = 3 THEN 'Moyen'
+                                      ELSE 'Mauvais'
+                                  END AS status
+                              FROM utilisateur u
+                              JOIN avis a ON a.passager_id = u.id
+                              WHERE u.role = 'CHAUFFEUR'
+                              GROUP BY u.id;
+                              `);
 
     for (const row of result.rows) {
       chauffeurs.push(
