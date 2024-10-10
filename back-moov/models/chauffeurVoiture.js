@@ -28,6 +28,8 @@ class ChauffeurVoiture {
     }
 
     static async listeAssignation() {
+        let liste = [];
+
         const query = `
             SELECT 
                 u.*,
@@ -44,7 +46,11 @@ class ChauffeurVoiture {
         `;
 
         const result = db.query(query);
-        return result.rows;
+
+        for(row of result.rows) {
+            liste.push(row);
+        }
+        return liste;
     }
 }
 
