@@ -11,12 +11,14 @@ const LoginForm: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   
   const navigate = useNavigate();  // Utiliser useNavigate pour naviguer
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+    setIsLoading(true);
 
     try {
       const response = await axios.post(`${API_BASE_URL}/users/login`, {
@@ -49,6 +51,8 @@ const LoginForm: React.FC = () => {
       } else {
         setErrorMessage("Une erreur est survenue. Veuillez réessayer.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -152,7 +156,7 @@ const LoginForm: React.FC = () => {
                           {errorMessage && <div className="error-message">{errorMessage}</div>}
 
                           <div className="pt-1 mb-4">
-                            <button data-mdb-button-init data-mdb-ripple-init className="btn btn-dark btn-lg btn-block" type="submit" style={{borderRadius: '50px'}}>Se connecter</button>
+                            <button data-mdb-button-init data-mdb-ripple-init className="btn btn-dark btn-lg btn-block" type="submit" style={{borderRadius: '50px'}} disabled={isLoading}>{isLoading ? "En cours..." : "Se connecter"}</button>
                           </div>
 
                           <a style={{color: 'var(--primary-color) !important', textDecoration: 'none'}} className="small text-muted" href="#!">Mot de passe oublié?</a> <br />

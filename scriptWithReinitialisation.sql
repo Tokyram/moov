@@ -181,7 +181,7 @@ BEGIN
         SELECT tablename 
         FROM pg_tables 
         WHERE schemaname = 'public' 
-          AND tablename NOT IN ('utilisateur', 'voiture', 'chauffeur_voiture', 'photo_voiture', 'position_chauffeur')
+          AND tablename NOT IN ('utilisateur', 'voiture', 'chauffeur_voiture', 'position_chauffeur', 'token_device_user', 'type_panne', 'tarifs')
     LOOP
         EXECUTE 'TRUNCATE TABLE ' || quote_ident(row.tablename) || ' CASCADE';
     END LOOP;
@@ -206,8 +206,10 @@ BEGIN
           AND sequence_name NOT LIKE '%utilisateur%'
           AND sequence_name NOT LIKE '%voiture%'
           AND sequence_name NOT LIKE '%chauffeur_voiture%'
-          AND sequence_name NOT LIKE '%photo_voiture%'
           AND sequence_name NOT LIKE '%position_chauffeur%'
+          AND sequence_name NOT LIKE '%token_device_user%'
+          AND sequence_name NOT LIKE '%type_panne%'
+          AND sequence_name NOT LIKE '%tarifs%'
     LOOP
         EXECUTE 'ALTER SEQUENCE ' || quote_ident(row.sequence_name) || ' RESTART WITH 1';
     END LOOP;

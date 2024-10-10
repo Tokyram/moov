@@ -366,24 +366,37 @@ class Utilisateur {
   static async findAllClient() {
     let client = [];
 
-    const result = await db.query("SELECT * FROM utilisateur WHERE role = 'UTILISATEUR'");
+    
+
+    const result = await db.query(`SELECT u.*, 
+                                  CASE 
+                                      WHEN ROUND(AVG(a.etoiles)) > 3 THEN 'Bon'
+                                      WHEN ROUND(AVG(a.etoiles)) = 3 THEN 'Moyen'
+                                      ELSE 'Mauvais'
+                                  END AS status
+                              FROM utilisateur u
+                              JOIN avis a ON a.passager_id = u.id
+                              WHERE u.role = 'UTILISATEUR'
+                              GROUP BY u.id;
+                              `);
 
     for (const row of result.rows) {
       client.push(
-        new Utilisateur(
-          row.id,
-          row.nom,
-          row.prenom,
-          row.telephone,
-          row.mail,
-          row.mdp,
-          row.adresse,
-          row.photo,
-          row.role,
-          row.date_inscription,
-          row.est_banni,
-          row.date_banni
-        )
+        // new Utilisateur(
+        //   row.id,
+        //   row.nom,
+        //   row.prenom,
+        //   row.telephone,
+        //   row.mail,
+        //   row.mdp,
+        //   row.adresse,
+        //   row.photo,
+        //   row.role,
+        //   row.date_inscription,
+        //   row.est_banni,
+        //   row.date_banni
+        // )
+        row
       );
     }
 

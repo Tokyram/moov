@@ -223,7 +223,7 @@ class UtilisateurController {
     try {
       const clients = await Utilisateur.findAllClient();
 
-      res.json({ success: true, data: clients.map(client => client.toJSON())});
+      res.json({ success: true, data: clients });
 
     } catch(error) {
       console.error('Erreur lors de la récupération de la liste des cleints:', error);
