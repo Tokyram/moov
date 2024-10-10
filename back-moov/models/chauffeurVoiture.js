@@ -45,7 +45,7 @@ class ChauffeurVoiture {
                 u.nom, u.prenom, cv.date_affectation DESC
         `;
 
-        const result = db.query(query);
+        const result = await db.query(query);
 
         for(row of result.rows) {
             liste.push(row);
