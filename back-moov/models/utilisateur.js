@@ -512,18 +512,21 @@ static async deleteChauffeurAdmin(id) {
 
 static async updateUser(id, nom, prenom, telephone, mail, mdp, adresse, photo, role, est_banni, date_banni) {
   try {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(mdp, saltRounds);
+
     let query = 'UPDATE utilisateur SET nom = $1, prenom = $2, adresse = $3, mail= $4, telephone= $5, mdp= $6, role= $7, est_banni= $8, date_banni= $9';
-      let params = [nom, prenom, adresse, mail, telephone, mdp, role, est_banni, date_banni];
+    let params = [nom, prenom, adresse, mail, telephone, hashedPassword, role, est_banni, date_banni];
 
-      if (photo) {
-        query += ', photo = $10';
-        params.push(photo);
-      }
+    if (photo) {
+      query += ', photo = $10';
+      params.push(photo);
+    }
 
-      query += ' WHERE id = $' + (params.length + 1) + ' RETURNING *';
-      params.push(id);
+    query += ' WHERE id = $' + (params.length + 1) + ' RETURNING *';
+    params.push(id);
 
-      const result = await db.query(query, params);
+    const result = await db.query(query, params);
     return result.rows[0];
   } catch (error) {
     throw new Error('Erreur lors de la mise à jour de la personne : ' + error.message);
