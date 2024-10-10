@@ -42,7 +42,7 @@ class ChauffeurVoiture {
             JOIN 
                 voiture v ON cv.voiture_id = v.id
             ORDER BY 
-                u.nom, u.prenom, cv.date_affectation DESC;
+                u.nom, u.prenom, cv.date_affectation DESC
         `;
 
         const result = db.query(query);
