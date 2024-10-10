@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import '../pages/login.css';
 import './ajout.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import {   creatAssignationVoitureChauffeur, getAllVoiture, getChauffeurs } from "../services/api";
+import {   creatAssignationVoitureChauffeur, getAllVoiture, getChauffeurs, getListeAssignation } from "../services/api";
 import CustomAlert from "./CustomAlertProps";
 interface ItemProps {
   id:number;
@@ -61,9 +61,9 @@ const Assignation: React.FC = () => {
     useEffect(() => {
       const fetchChauffeurs = async () => {
         try {
-          const chauffeurs = await getChauffeurs();
-          console.log(chauffeurs); 
-          setItemsChauffeur(chauffeurs.data); 
+          const liste = await getListeAssignation();
+          console.log("assignation", liste.data); 
+          setItemsChauffeur(liste.data);
         } catch (error) {
           console.error('Erreur lors de la récupération des chauffeurs :', error);
         }
