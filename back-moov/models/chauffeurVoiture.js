@@ -47,7 +47,7 @@ class ChauffeurVoiture {
 
         const result = await db.query(query);
 
-        for(row of result.rows) {
+        for(const row of result.rows) {
             liste.push(row);
         }
         return liste;
