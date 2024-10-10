@@ -389,7 +389,7 @@ class Utilisateur {
                                           WHEN ROUND(AVG(a.etoiles)) > 3 THEN 'Bon'
                                           WHEN ROUND(AVG(a.etoiles)) = 3 THEN 'Moyen'
                                           ELSE 'Mauvais'
-                                      END AS status
+                                      END AS status,
                                     CASE 
                                         WHEN AVG(a.etoiles) IS NULL THEN 0
                                         ELSE ROUND(AVG(a.etoiles))
