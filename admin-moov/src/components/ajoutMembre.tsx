@@ -1,5 +1,5 @@
 /* eslint-disable no-dupe-keys */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import '../pages/login.css';
 import './ajout.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -90,11 +90,14 @@ const AjoutMembre: React.FC = () => {
     const [editingUserId, setEditingUserId] = useState<number | null>(null);
     const [selectedItem, setSelectedItem] = useState<number | null>(null); // Pour stocker l'item à supprimer
     const [isDataLoading, setIsDataLoading] = useState(false);
+    const [previewPhoto, setPreviewPhoto] = useState<string | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const [formData, setFormData] = useState({
       nom: "",
       prenom: "",
       mail: "",
-      photo: "",
       role: "",
       telephone: "",
       adresse: "",
@@ -140,7 +143,7 @@ const AjoutMembre: React.FC = () => {
     // Si la photo n'est pas définie, la mettre à null
     const dataToSend = {
       ...formData,
-      photo: formData.photo || null, // Définit `photo` comme null si non défini
+      photo: selectedFile || null, // Définit `photo` comme null si non défini
     };
   
       if (editingUserId !== null) {
@@ -152,7 +155,7 @@ const AjoutMembre: React.FC = () => {
         } catch (error) {
             console.error("Erreur lors de la modification de la voiture :", error);
         }
-    } else {
+      } else {
         // Ajout d'une nouvelle voiture
         try {
             await creationChauffeurAdmin(dataToSend);
@@ -169,7 +172,6 @@ const AjoutMembre: React.FC = () => {
       nom: "",
       prenom: "",
       mail: "",
-      photo: "",
       role: "",
       telephone: "",
       adresse: "",
@@ -182,13 +184,15 @@ const AjoutMembre: React.FC = () => {
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-        const file = e.target.files[0];
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            photo: URL.createObjectURL(file), // Création d'une URL d'objet pour l'image
-        }));
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewPhoto(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-};
+  };
   
   const handleDeleteClick = (id: number) => {
       setSelectedItem(id);
@@ -198,7 +202,7 @@ const AjoutMembre: React.FC = () => {
   const confirmDelete = async () => {
     const dataToSend = {
       ...formData,
-      photo: formData.photo || null, // Définit `photo` comme null si non défini
+      //photo: formData.photo || null, // Définit `photo` comme null si non défini
     };
     if (selectedItem !== null) {
       try {
@@ -221,7 +225,6 @@ const AjoutMembre: React.FC = () => {
         nom: user.nom,
         prenom: user.prenom,
         mail: user.mail,
-        photo: user.photo,
         role: user.role,
         telephone: user.telephone,
         adresse: user.adresse,
@@ -233,6 +236,15 @@ const AjoutMembre: React.FC = () => {
       console.error("Erreur lors de la récupération des données de la voiture :", error);
     }
   };
+
+  const handleRemovePhoto = () => {
+    setPreviewPhoto(null);
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const closeAlert = () => {
     setShowAlert(false); // Fermer l'alerte
   };
@@ -458,9 +470,19 @@ const closeModal = () => {
                       accept="image/*"
                       onChange={handleFileChange} // Créer une fonction pour gérer l'upload de fichier
                       placeholder="URL de la photo"
+                      ref={fileInputRef}
                     />
               </label>
 
+              {previewPhoto && (
+                <div className="preview-image-container">
+                  <img style={{ width: '50%', height: 'auto' }} src={previewPhoto} alt="Preview" className="preview-image" />
+                  <button onClick={handleRemovePhoto} style={{ width: '10px', height: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="confirmation-button2">
+                    <i className="bi bi-trash3-fill"></i>
+                  </button>
+                  {selectedFile && <p className="selected-file-name">{selectedFile.name}</p>}
+                </div>
+              )}
               
               <button className="button-submit">{formData.telephone ? "Modifier" : "Ajouter"} un membre</button>
               

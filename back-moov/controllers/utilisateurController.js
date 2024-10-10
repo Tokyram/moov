@@ -269,12 +269,20 @@ class UtilisateurController {
 
     try {
 
+      let photoPath = '';
+      let originalPath = '';
+      if (req.file) {
+        originalPath = req.file.path;
+        photoPath = originalPath.replace('uploads/', '');
+        console.log("photo", photoPath);
+      }
+
         // // Vous pouvez effectuer des validations ici
         // if (!utilisateurData.nom || !utilisateurData.prenom || !utilisateurData.telephone || !utilisateurData.mail || !utilisateurData.mdp || !utilisateurData.adresse || !utilisateurData.role) {
         //     return res.status(400).json({ error: 'Tous les champs sont obligatoires' });
         // }
 
-        const newUtilisateur = await Utilisateur.createUtilisateur(nom, prenom, telephone, mail, mdp, adresse, photo, role, est_banni, date_banni);
+        const newUtilisateur = await Utilisateur.createUtilisateur(nom, prenom, telephone, mail, mdp, adresse, photoPath, role, est_banni, date_banni);
         res.status(201).json(newUtilisateur);
     } catch (error) {
         console.error("Erreur lors de l'insertion de l'utilisateur controller :", error);
@@ -314,7 +322,26 @@ static async updateUser(req, res) {
       return res.status(400).json({ message: "Tous les champs requis doivent être fournis." });
     }
 
-    const utilisateur = await Utilisateur.updateUser(id, nom, prenom, telephone, mail, mdp, adresse, photo, role, est_banni, date_banni);
+    const user = await Utilisateur.findById(id);
+      
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Utilisateur non trouvé' });
+    }
+
+    let photoPath = user.photo;
+    let originalPath = '';
+    if (req.file) {
+      originalPath = req.file.path;
+      photoPath = originalPath.replace('uploads/', '');
+      console.log("photo", photoPath);
+      if (user.photo) {
+        fs.unlink(user.photo, (err) => {
+          if (err) console.error('Erreur lors de la suppression de l\'ancienne photo:', err);
+        });
+      }
+    }
+
+    const utilisateur = await Utilisateur.updateUser(id, nom, prenom, telephone, mail, mdp, adresse, photoPath, role, est_banni, date_banni);
 
     if (!utilisateur) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
