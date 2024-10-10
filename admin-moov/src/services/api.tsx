@@ -198,6 +198,7 @@ export const modifierUser = async (id: number, updatedData: any) => {
       {
         headers: {
           Authorization: `Bearer ${getToken()}`,
+          'Content-Type': 'multipart/form-data',
         },
       }
     );
@@ -309,7 +310,8 @@ export const creationChauffeurAdmin = async (voitureData: any) => {
   try {
       const response = await axios.post(`${API_BASE_URL}/users/insertionChauffeurAdmin`, voitureData, {
           headers: {
-              Authorization: `Bearer ${getToken()}`
+              Authorization: `Bearer ${getToken()}`,
+              'Content-Type': 'multipart/form-data',
           }
       });
       return response.data;

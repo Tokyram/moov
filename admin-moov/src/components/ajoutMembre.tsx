@@ -90,6 +90,7 @@ const AjoutMembre: React.FC = () => {
     const [editingUserId, setEditingUserId] = useState<number | null>(null);
     const [selectedItem, setSelectedItem] = useState<number | null>(null); // Pour stocker l'item à supprimer
     const [isDataLoading, setIsDataLoading] = useState(false);
+    const [isSubmitLoading, setIsSubmitLoading] = useState(false);
     const [previewPhoto, setPreviewPhoto] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -104,8 +105,7 @@ const AjoutMembre: React.FC = () => {
       mdp: "",
       mdp2: "",
     });
-  useEffect(() => {
-    // Charger la liste des chauffeurs au chargement du composant
+
     const fetchChauffeurAdmin = async () => {
       setIsDataLoading(true);
       try {
@@ -118,7 +118,9 @@ const AjoutMembre: React.FC = () => {
         setIsDataLoading(false);
       }
     };
-    
+
+  useEffect(() => {
+    // Charger la liste des chauffeurs au chargement du composant
     fetchChauffeurAdmin();
   }, []);
 
@@ -133,7 +135,8 @@ const AjoutMembre: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+    setIsSubmitLoading(true);
+
     // Vérification que les mots de passe correspondent
     if (formData.mdp !== formData.mdp2) {
       alert("Les mots de passe ne correspondent pas.");
@@ -143,31 +146,34 @@ const AjoutMembre: React.FC = () => {
     // Si la photo n'est pas définie, la mettre à null
     const dataToSend = {
       ...formData,
-      photo: selectedFile || null, // Définit `photo` comme null si non défini
+      photo: selectedFile ? selectedFile : null,
     };
   
       if (editingUserId !== null) {
         // Modification d'une voiture existante
         try {
             await modifierUser(editingUserId, dataToSend);
-            alert("Utilisateur modifiée avec succès");
+            alert("Utilisateur modifié avec succès");
             setEditingUserId(null);
         } catch (error) {
             console.error("Erreur lors de la modification de la voiture :", error);
+        } finally {
+          setIsSubmitLoading(false);
         }
       } else {
         // Ajout d'une nouvelle voiture
         try {
             await creationChauffeurAdmin(dataToSend);
-            alert("Voiture ajoutée avec succès");
+            alert("Utilisateur ajouté avec succès");
         } catch (error) {
             console.error("Erreur lors de l'ajout de la voiture :", error);
+        } finally {
+          setIsSubmitLoading(false);
         }
     }
 
     // Récupérer à nouveau la liste des voitures après modification ou ajout
-    const updatedUser = await getChauffeurAdmin();
-    setItems(updatedUser.data);
+    fetchChauffeurAdmin();
     setFormData({
       nom: "",
       prenom: "",
@@ -177,7 +183,8 @@ const AjoutMembre: React.FC = () => {
       adresse: "",
       mdp: "",
       mdp2: ""
-  });
+    });
+    handleRemovePhoto();
   
   };
   
@@ -484,7 +491,7 @@ const closeModal = () => {
                 </div>
               )}
               
-              <button className="button-submit">{formData.telephone ? "Modifier" : "Ajouter"} un membre</button>
+              <button className="button-submit" disabled={isSubmitLoading}>{ isSubmitLoading ? "En cours..." : formData.telephone ? "Modifier un membre" : "Ajouter un membre"}</button>
               
               
               </form>
