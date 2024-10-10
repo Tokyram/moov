@@ -346,7 +346,11 @@ class Utilisateur {
                                           WHEN ROUND(AVG(a.etoiles)) > 3 THEN 'Bon'
                                           WHEN ROUND(AVG(a.etoiles)) = 3 THEN 'Moyen'
                                           ELSE 'Mauvais'
-                                      END AS status
+                                      END AS status,
+                                    CASE 
+                                        WHEN AVG(a.etoiles) IS NULL THEN 0
+                                        ELSE ROUND(AVG(a.etoiles))
+                                    END AS nb_etoile
                                   FROM utilisateur u
                                   LEFT JOIN avis a ON a.chauffeur_id = u.id
                                   WHERE u.role = 'CHAUFFEUR'
@@ -386,6 +390,10 @@ class Utilisateur {
                                           WHEN ROUND(AVG(a.etoiles)) = 3 THEN 'Moyen'
                                           ELSE 'Mauvais'
                                       END AS status
+                                    CASE 
+                                        WHEN AVG(a.etoiles) IS NULL THEN 0
+                                        ELSE ROUND(AVG(a.etoiles))
+                                    END AS nb_etoile
                                   FROM utilisateur u
                                   LEFT JOIN avis a ON a.passager_id = u.id
                                   WHERE u.role = 'UTILISATEUR'
