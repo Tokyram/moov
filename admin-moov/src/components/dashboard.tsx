@@ -194,10 +194,10 @@ const Dashboard: React.FC = () => {
     return {
       labels: labels[filterType],
       datasets: [{
-        label: `Revenus (${filterType === 'week' ? 'Semaine' : filterType === 'month' ? 'Mois' : 'Année'})`,
+        label: ` ${type === "revenue" ? "Revenus" : "Nombre de courses"} (${filterType === 'week' ? 'Semaine' : filterType === 'month' ? 'Mois' : 'Année'})`,
         data: dataArray,
-        backgroundColor: 'rgb(24, 24, 24)',
-        borderColor: 'rgb(24, 24, 24)',
+        backgroundColor: `${type === "course" ? "rgb(238, 51, 36)" : "rgb(24, 24, 24)"}`,
+        borderColor: `${type === "course" ? "rgb(238, 51, 36)" : "rgb(24, 24, 24)"}`,
         borderWidth: 1,
         borderRadius: 20
       }]
