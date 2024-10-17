@@ -483,7 +483,7 @@ class Course {
                 `;
             } else if (periodType === 'week') {
                 query = `
-                    SELECT DATE_TRUNC('week', date_heure_depart) AS week, SUM(prix) AS total_revenu
+                    SELECT DATE_TRUNC('day', date_heure_depart) AS week, SUM(prix) AS total_revenu
                     FROM course
                     WHERE status = 'TERMINE'
                     GROUP BY week
@@ -491,7 +491,7 @@ class Course {
                 `;
             } else if (periodType === 'month') {
                 query = `
-                    SELECT DATE_TRUNC('month', date_heure_depart) AS month, SUM(prix) AS total_revenu
+                    SELECT DATE_TRUNC('week', date_heure_depart) AS month, SUM(prix) AS total_revenu
                     FROM course
                     WHERE status = 'TERMINE'
                     GROUP BY month
@@ -499,7 +499,7 @@ class Course {
                 `;
             } else if (periodType === 'year') {
                 query = `
-                    SELECT DATE_TRUNC('year', date_heure_depart) AS year, SUM(prix) AS total_revenu
+                    SELECT DATE_TRUNC('month', date_heure_depart) AS year, SUM(prix) AS total_revenu
                     FROM course
                     WHERE status = 'TERMINE'
                     GROUP BY year

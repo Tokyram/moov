@@ -26,12 +26,19 @@ const Dashboard: React.FC = () => {
   const [totalRevenue, setTotalRevenue] = useState<number | null>(null);
   const [totalClient, setTotalClient] = useState<number | null>(null);
   const [totalChauffeur, setTotalChauffeur] = useState<number | null>(null);
-  const [chartData, setChartData] = useState<number[]>([]);
-  const [chartDataRevenu, setChartDataRevenu] = useState<number[]>([]);
+  const [chartData, setChartData] = useState<any>(null);
+  const [chartDataRevenu, setChartDataRevenu] = useState<any>(null);
 
   const [chauffeurs, setChauffeurs] = useState<Chauffeur[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+
+    const labels: { [key: string]: string[] } = {
+      week: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+      month: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
+      year: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc']
+    };
+
 
     useEffect(() => {
         const fetchChauffeurs = async () => {
@@ -66,10 +73,9 @@ const Dashboard: React.FC = () => {
     const fetchChartData = async () => {
       try {
         const data = await getTotalCoursesByPeriod(filter);
-        if (Array.isArray(data)) {
-          // Extraire uniquement les valeurs de total_courses
-          const totalCoursesData = data.map(item => item.total_courses);
-          setChartData(totalCoursesData);
+        if (data && data.length > 0) {
+          const processedData = processData(data, filter, "course");
+          setChartData(processedData);
         } else {
           console.error('Les données du graphique ne sont pas au format tableau :', data);
         }
@@ -84,11 +90,9 @@ const Dashboard: React.FC = () => {
     const fetchChartDataRevenu = async () => {
       try {
         const data = await getTotalRevenueByPeriod(filter);
-        if (Array.isArray(data)) {
-          // Extraire uniquement les valeurs de total_courses et les convertir en nombres avec parseFloat
-          const totalCoursesData = data.map(item => parseFloat(item.total_revenu));
-          console.log("revenux", totalCoursesData); // Ici, vous aurez des nombres et non des chaînes
-          setChartDataRevenu(totalCoursesData);
+        if (data && data.length > 0) {
+          const processedData = processData(data, filter, "revenue");
+          setChartDataRevenu(processedData);
         } else {
           console.error('Les données du graphique ne sont pas au format tableau :', data);
         }
@@ -160,80 +164,119 @@ const Dashboard: React.FC = () => {
   }, []);
 
   
+  const processData = (rawData: any[], filterType: any, type: string): any => {
+    const dataArray = new Array(labels[filterType].length).fill(0);
+    rawData.forEach((item: any) => {
+      let index: number;
 
+      switch (filterType) {
+        case 'week':
+          const dateWeek = new Date(item.week);
+          index = dateWeek.getDay() === 0 ? 6 : dateWeek.getDay() - 1; // Adjust for Sunday
+          break;
+        case 'month':
+          const dateMonth = new Date(item.month);
+          index = Math.floor((dateMonth.getDate() - 1) / 7);
+          break;
+        case 'year':
+          const dateYear = new Date(item.year);
+          index = dateYear.getMonth();
+          break;
+        default:
+          index = 0;
+      }
 
-  const dataByFilter = {
-    week: {
-      labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+      console.log("index", index);
+
+      dataArray[index] += type === "course" ? item.total_courses : item.total_revenue;
+    });
+
+    return {
+      labels: labels[filterType],
       datasets: [{
-        label: 'Nombre de courses (Semaine)',
-        data: chartData,
-        backgroundColor: 'rgb(238, 51, 36)',
-        borderColor: 'rgb(238, 51, 36)',
+        label: `Revenus (${filterType === 'week' ? 'Semaine' : filterType === 'month' ? 'Mois' : 'Année'})`,
+        data: dataArray,
+        backgroundColor: 'rgb(24, 24, 24)',
+        borderColor: 'rgb(24, 24, 24)',
         borderWidth: 1,
         borderRadius: 20
-      }],
-    },
-    month: {
-      labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
-      datasets: [{
-        label: 'Nombre de courses (Mois)',
-        data: chartData,
-        backgroundColor: 'rgb(238, 51, 36)',
-        borderColor: 'rgb(238, 51, 36)',
-        borderWidth: 1,
-        borderRadius: 20
-      }],
-    },
-    year: {
-      labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
-      datasets: [{
-        label: 'Nombre de courses (Année)',
-        data: chartData,
-        backgroundColor: 'rgb(238, 51, 36)',
-        borderColor: 'rgb(238, 51, 36)',
-        borderWidth: 1,
-        borderRadius: 20
-      }],
-    },
+      }]
+    };
   };
+
+
+  // const dataByFilter = {
+  //   week: {
+  //     labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+  //     datasets: [{
+  //       label: 'Nombre de courses (Semaine)',
+  //       data: chartData,
+  //       backgroundColor: 'rgb(238, 51, 36)',
+  //       borderColor: 'rgb(238, 51, 36)',
+  //       borderWidth: 1,
+  //       borderRadius: 20
+  //     }],
+  //   },
+  //   month: {
+  //     labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
+  //     datasets: [{
+  //       label: 'Nombre de courses (Mois)',
+  //       data: chartData,
+  //       backgroundColor: 'rgb(238, 51, 36)',
+  //       borderColor: 'rgb(238, 51, 36)',
+  //       borderWidth: 1,
+  //       borderRadius: 20
+  //     }],
+  //   },
+  //   year: {
+  //     labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
+  //     datasets: [{
+  //       label: 'Nombre de courses (Année)',
+  //       data: chartData,
+  //       backgroundColor: 'rgb(238, 51, 36)',
+  //       borderColor: 'rgb(238, 51, 36)',
+  //       borderWidth: 1,
+  //       borderRadius: 20
+  //     }],
+  //   },
+  // };
   
 
-  const dataByFilterRevenu = {
-    week: {
-      labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
-      datasets: [{
-        label: 'Revenus (Semaine)',
-        data: chartDataRevenu,
-        backgroundColor: 'rgb(24, 24, 24)',
-        borderColor: 'rgb(24, 24, 24)',
-        borderWidth: 1,
-        borderRadius: 20
-      }],
-    },
-    month: {
-      labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
-      datasets: [{
-        label: 'Revenus (Mois)',
-        data: chartDataRevenu,
-        backgroundColor: 'rgb(24, 24, 24)',
-        borderColor: 'rgb(24, 24, 24)',
-        borderWidth: 1,
-        borderRadius: 20
-      }],
-    },
-    year: {
-      labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
-      datasets: [{
-        label: 'Revenus (Année)',
-        data: chartDataRevenu,
-        backgroundColor: 'rgb(24, 24, 24)',
-        borderColor: 'rgb(24, 24, 24)',
-        borderWidth: 1,
-        borderRadius: 20
-      }],
-    },
-  };
+  // const dataByFilterRevenu = {
+  //   week: {
+  //     labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+  //     datasets: [{
+  //       label: 'Revenus (Semaine)',
+  //       data: chartDataRevenu,
+  //       backgroundColor: 'rgb(24, 24, 24)',
+  //       borderColor: 'rgb(24, 24, 24)',
+  //       borderWidth: 1,
+  //       borderRadius: 20
+  //     }],
+  //   },
+  //   month: {
+  //     labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
+  //     datasets: [{
+  //       label: 'Revenus (Mois)',
+  //       data: chartDataRevenu,
+  //       backgroundColor: 'rgb(24, 24, 24)',
+  //       borderColor: 'rgb(24, 24, 24)',
+  //       borderWidth: 1,
+  //       borderRadius: 20
+  //     }],
+  //   },
+  //   year: {
+  //     labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
+  //     datasets: [{
+  //       label: 'Revenus (Année)',
+  //       data: chartDataRevenu,
+  //       backgroundColor: 'rgb(24, 24, 24)',
+  //       borderColor: 'rgb(24, 24, 24)',
+  //       borderWidth: 1,
+  //       borderRadius: 20
+  //     }],
+  //   },
+  // };
   
   // const options = {
   //   responsive: true,
@@ -247,7 +290,7 @@ const Dashboard: React.FC = () => {
   //     },
   //   },
   // };
-  console.log('Données utilisées pour le graphique:', dataByFilter[filter]);
+
 
    // Fonction pour changer le filtre
    const handleFilterChange = (newFilter: 'week' | 'month' | 'year') => {
@@ -316,12 +359,17 @@ const Dashboard: React.FC = () => {
       </div>
       <div className="cond">
       <div className="row">
-     
-            <ChartCard title="Graphique des revenus" chart={<Line data={dataByFilterRevenu[filter]} />} subtitle={''} />
+          {
+            chartDataRevenu && 
+            <ChartCard title="Graphique des revenus" chart={<Line data={chartDataRevenu} />} subtitle={''} />
+          }
       </div>
       <div className="row">
-     
-            <ChartCard title="Graphique des courses" chart={<Bar data={dataByFilter[filter]} />} subtitle={''} />
+          {
+            chartData &&
+            <ChartCard title="Graphique des courses" chart={<Bar data={chartData} />} subtitle={''} />
+
+          }
       </div>
       </div>
 
