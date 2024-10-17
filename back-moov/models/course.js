@@ -430,7 +430,7 @@ class Course {
                 `;
             } else if (periodType === 'week') {
                 query = `
-                    SELECT DATE_TRUNC('week', date_heure_depart) AS week, COUNT(*) AS total_courses
+                    SELECT DATE_TRUNC('day', date_heure_depart) AS week, COUNT(*) AS total_courses
                     FROM course
                     WHERE status = 'TERMINE'
                     GROUP BY week
@@ -438,7 +438,7 @@ class Course {
                 `;
             } else if (periodType === 'month') {
                 query = `
-                    SELECT DATE_TRUNC('month', date_heure_depart) AS month, COUNT(*) AS total_courses
+                    SELECT DATE_TRUNC('week', date_heure_depart) AS month, COUNT(*) AS total_courses
                     FROM course
                     WHERE status = 'TERMINE'
                     GROUP BY month
@@ -446,7 +446,7 @@ class Course {
                 `;
             } else if (periodType === 'year') {
                 query = `
-                    SELECT DATE_TRUNC('year', date_heure_depart) AS year, COUNT(*) AS total_courses
+                    SELECT DATE_TRUNC('month', date_heure_depart) AS year, COUNT(*) AS total_courses
                     FROM course
                     WHERE status = 'TERMINE'
                     GROUP BY year
