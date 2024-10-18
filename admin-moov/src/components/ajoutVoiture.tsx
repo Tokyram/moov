@@ -4,6 +4,8 @@ import './ajout.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { creationVoiture, getAllVoiture, getVoitureById, modifierVoiture, supprimerVoiture } from "../services/api";
 import CustomAlert from "./CustomAlertProps";
+import Papa from 'papaparse';
+
 interface ItemProps {
     id: number;
     modele: string;
@@ -49,6 +51,7 @@ const AjoutVoiture: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<number | null>(null); // ID de l'item à supprimer
   const [editingCarId, setEditingCarId] = useState<number | null>(null);
+  const [file, setFile] = useState<File | null>(null);
     const [formData, setFormData] = useState({
       modele: "",
       marque: "",
@@ -145,6 +148,68 @@ const AjoutVoiture: React.FC = () => {
     }
 };
 
+const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
+const handleFileChangeImportation = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+        setFile(selectedFile);
+        setErrorMessages([]); // Réinitialiser les messages d'erreur
+    }
+};
+const handleImportation = async () => {
+  if (!file) {
+      alert('Veuillez sélectionner un fichier CSV avant d\'importer.');
+      return;
+  }
+
+  Papa.parse<ItemProps>(file, {
+      header: true,
+      complete: async (results) => {
+          try {
+              const importResults = [];
+              setErrorMessages([]); // Réinitialiser les messages d'erreur
+
+              for (const voiture of results.data) {
+                  const errors: string[] = [];
+                  
+                  // Validation des données
+                  if (!voiture.marque || !voiture.modele || !voiture.immatriculation) {
+                      errors.push(`Erreur: Les champs 'marque', 'modele' et 'immatriculation' sont obligatoires pour l'enregistrement: ${JSON.stringify(voiture)}`);
+                  }
+
+                  // if (voiture.immatriculation.length !== 5) {
+                  //     errors.push(`Erreur: L'immatriculation '${voiture.immatriculation}' doit avoir 10 caractères.`);
+                  // }
+
+                  // Si des erreurs existent, les accumuler
+                  if (errors.length > 0) {
+                      setErrorMessages(prev => [...prev, ...errors]);
+                      continue; // Passer à l'enregistrement suivant
+                  }
+
+                  // Envoyer chaque voiture au backend
+                  const result = await creationVoiture(voiture);
+                  importResults.push(result);
+              }
+
+              if (importResults.length > 0) {
+                  alert(`Importation réussie de ${importResults.length} voitures.`);
+              } else {
+                  alert('Aucune voiture n\'a été importée.');
+              }
+          } catch (error) {
+              console.error('Erreur lors de l\'importation des voitures:', error);
+              alert('Erreur lors de l\'importation. Veuillez vérifier la console pour plus d\'informations.');
+          }
+      },
+      error: (error) => {
+          console.error('Erreur lors de la lecture du fichier CSV:', error);
+          alert('Erreur lors de la lecture du fichier CSV.');
+      },
+  });
+};
+
     const confirmDelete = async () => {
       if (selectedItem !== null) {
         try {
@@ -201,6 +266,25 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
         <div className="titregraph">
           <h3>Ajout de voiture</h3>
           <p>Ce tableau comporte la liste des voitures et l'ajout de voiture, les detail du voiture peuvent etre modifier et visualiser</p>
+
+          <div className="input-importation">
+            <input type="file" className="file-selector-button "  accept=".csv" onChange={handleFileChangeImportation} />
+            <button className="boutonImportation" onClick={handleImportation}>
+                Valider
+                <i className="bi bi-patch-check-fill"></i>
+            </button>
+              {errorMessages.length > 0 && (
+                  <div>
+                      <h4>Erreurs d'importation:</h4>
+                      <ul>
+                          {errorMessages.map((msg, index) => (
+                              <li key={index}>{msg}</li>
+                          ))}
+                      </ul>
+                  </div>
+              )}
+          </div>
+
         </div>
         {showAlert && (
         <CustomAlert message="Voiture Supprimer avec succès" onClose={closeAlert} />
