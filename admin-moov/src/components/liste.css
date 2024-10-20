@@ -25,27 +25,44 @@
   .image-container {
     display: flex;
     align-items: center;
+
+    img{
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+
+    }
   }
   
-  .profile-image {
+  /* .profile-image {
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
-  }
+    width: 50%;
+    height: auto;
+  } */
   
   .status {
     padding: 5px;
-    border-radius: 5px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
   }
   
   .status.active {
-    background-color: #d4edda; /* Vert clair pour 'Actif' */
-    color: #155724;
+    background-color: var(--win-color); /* Vert clair pour 'Actif' */
+    color: var(--white-color);
   }
   
   .status.inactive {
-    background-color: #f8d7da; /* Rouge clair pour 'Inactif' */
-    color: #721c24;
+    background-color: var(--secondary-color); /* Rouge clair pour 'Inactif' */
+    color: var(--white-color);
+  }
+
+  .status.falling {
+    background-color: var(--primary-color); /* Rouge clair pour 'Inactif' */
+    color: var(--white-color);
   }
   
   .actions {
@@ -89,7 +106,7 @@
   }
   
   .btn-danger {
-    background-color: #dc3545;
+    background-color: var(--primary-color);
     color: white;
   }
   

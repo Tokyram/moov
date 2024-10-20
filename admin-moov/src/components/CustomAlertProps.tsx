@@ -1,6 +1,5 @@
 import React from 'react';
 import './CustomAlert.css'; // Importe le fichier CSS séparé pour le style
-import Loader from './loader';
 
 interface CustomAlertProps {
   message: string;
@@ -14,7 +13,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({ message, onClose }) => {
             <img src="../logo.png" alt="" />
         </div>
       <p>{message}</p>
-      <button className="close-btn" onClick={onClose}>
+      <button className="close-btn" style={{ backgroundColor: 'var(--win-color)' , fontWeight: '1000'}} onClick={onClose}>
         OK
       </button>
     </div>

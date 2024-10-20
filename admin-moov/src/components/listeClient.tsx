@@ -57,7 +57,7 @@ const Item: React.FC<ItemProps> = ({id, nom, prenom, mail, photo, telephone, sta
       <td>{telephone}</td>
       <td>{mail}</td>
       <td>
-        <p className={`status ${status === 'Bon' ? 'active' : 'inactive'}`}>
+      <p className={`status ${status === 'Bon' ? 'active' : status === 'Moyen' ? 'inactive' : 'falling'}`}>
           {status} <br></br> <span>{ status !== 'Pas encore d avis' && <i className="bi bi-star-fill"></i> } {status !== 'Pas encore d avis' && nb_etoile }</span>
         </p>
       </td>

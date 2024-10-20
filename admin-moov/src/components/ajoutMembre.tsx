@@ -87,6 +87,8 @@ const AjoutMembre: React.FC = () => {
     const [items, setItems] = useState<ItemProps[]>([]);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [showAlert, setShowAlert] = useState(false);
+    const [showAlertModif, setShowAlertModif] = useState(false);
+    const [showAlertAjout, setShowAlertAjout] = useState(false);
     const [editingUserId, setEditingUserId] = useState<number | null>(null);
     const [selectedItem, setSelectedItem] = useState<number | null>(null); // Pour stocker l'item à supprimer
     const [isDataLoading, setIsDataLoading] = useState(false);
@@ -153,7 +155,8 @@ const AjoutMembre: React.FC = () => {
         // Modification d'une voiture existante
         try {
             await modifierUser(editingUserId, dataToSend);
-            alert("Utilisateur modifié avec succès");
+            // alert("Utilisateur modifié avec succès");
+            setShowAlertModif(true);
             setEditingUserId(null);
         } catch (error) {
             console.error("Erreur lors de la modification de la voiture :", error);
@@ -164,7 +167,8 @@ const AjoutMembre: React.FC = () => {
         // Ajout d'une nouvelle voiture
         try {
             await creationChauffeurAdmin(dataToSend);
-            alert("Utilisateur ajouté avec succès");
+            // alert("Utilisateur ajouté avec succès");
+            setShowAlertAjout(true);
         } catch (error) {
             console.error("Erreur lors de l'ajout de la voiture :", error);
         } finally {
@@ -187,7 +191,13 @@ const AjoutMembre: React.FC = () => {
     handleRemovePhoto();
   
   };
-  
+
+  const closeAlertModif = () => {
+    setShowAlertModif(false); // Fermer l'alerte
+  };
+  const closeAlertAjout = () => {
+    setShowAlertAjout(false); // Fermer l'alerte
+  };
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -207,6 +217,7 @@ const AjoutMembre: React.FC = () => {
   };
 
   const confirmDelete = async () => {
+    setIsSubmitLoading(true);
     const dataToSend = {
       ...formData,
       //photo: formData.photo || null, // Définit `photo` comme null si non défini
@@ -215,9 +226,11 @@ const AjoutMembre: React.FC = () => {
       try {
         await BannirChauffeurAdmin(selectedItem, dataToSend); // Appel à l'API pour supprimer la voiture
         setItems(items.filter(item => item.id !== selectedItem)); // Met à jour la liste des voitures
+        setIsSubmitLoading(false);
         setShowAlert(true);
       } catch (error) {
         console.error('Erreur lors de la suppression de la personne :', error);
+        setIsSubmitLoading(false);
         alert("Échec de la suppression de la voiture");
       }
     }
@@ -288,9 +301,19 @@ const closeModal = () => {
                 <h3>Gestion des membres du platforme (chauffeurs/administrateurs)</h3>
                 <p>Ce tableau comporte la liste des chauffeurs et des administateurs présents dans le plateforme, ainsi que la possiblité d'ajout ou de modification d'un membre.</p>
               </div>
+
               {showAlert && (
               <CustomAlert message="Membre banni avec succès" onClose={closeAlert} />
               )}
+
+              {showAlertModif && (
+              <CustomAlert message="Utilisateur modifié avec succès" onClose={closeAlertModif} />
+              )}
+
+              {showAlertAjout && (
+              <CustomAlert message="Utilisateur ajouté avec succès" onClose={closeAlertAjout} />
+              )}
+
               {/* Filtre par statut avec des boutons */}
               <div className='buttonChart-group' style={{ marginBottom: '20px' }}>
                       <button
@@ -426,7 +449,7 @@ const closeModal = () => {
                   <label>Confirmer le mot de passe </label>
               </div>
               <div className="inputForm">
-                  
+              <i className="bi bi-key"></i>
                 <input
                   type="password"
                   name="mdp2"
@@ -482,9 +505,9 @@ const closeModal = () => {
               </label>
 
               {previewPhoto && (
-                <div className="preview-image-container">
-                  <img style={{ width: '50%', height: 'auto' }} src={previewPhoto} alt="Preview" className="preview-image" />
-                  <button onClick={handleRemovePhoto} style={{ width: '10px', height: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="confirmation-button2">
+                <div className="preview-image-container" style={{ display: 'flex',flexDirection: 'column',color: 'var(--background-color)', justifyContent: 'center', alignItems: 'center' }}>
+                  <img style={{ width: '50%', height: 'auto',borderRadius: '20px' }} src={previewPhoto} alt="Preview" className="preview-image" />
+                  <button onClick={handleRemovePhoto} style={{ width: '10px', height: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'var(--primary-color)', backgroundColor: 'transparent', border: 'none' }} className="confirmation-button2">
                     <i className="bi bi-trash3-fill"></i>
                   </button>
                   {selectedFile && <p className="selected-file-name">{selectedFile.name}</p>}
@@ -547,7 +570,7 @@ const closeModal = () => {
                       </div>
                       <div className="modal-footer">
                           <button style={{ borderRadius: '25px', backgroundColor: 'var(--text-color)' }} type="button" className="btn btn-secondary" onClick={closeModal}>Annuler</button>
-                          <button style={{ borderRadius: '25px', backgroundColor: 'var(--primary-color)' }} type="button" className="btn btn-danger" onClick={confirmDelete}>Bannir</button>
+                          <button style={{ borderRadius: '25px', backgroundColor: 'var(--primary-color)' }} type="button" className="btn btn-danger" onClick={confirmDelete}disabled={isSubmitLoading}>{isSubmitLoading ? "En cours..." :  formData.telephone ? "Bannir l'utilisateur" : "Bannir l'utilisateur"}</button>
                       </div>
                       </div>
                   </div>

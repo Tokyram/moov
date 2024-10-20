@@ -48,6 +48,11 @@ const AjoutVoiture: React.FC = () => {
     const itemsPerPage = 8; // Nombre d'éléments par page
     const [items, setItems] = useState<ItemProps[]>([]); 
     const [showAlert, setShowAlert] = useState(false);
+    const [showAlertImport, setShowAlertImport] = useState(false);
+    const [showAlertModif, setShowAlertModif] = useState(false);
+    const [showAlertAjout, setShowAlertAjout] = useState(false);
+    const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<number | null>(null); // ID de l'item à supprimer
   const [editingCarId, setEditingCarId] = useState<number | null>(null);
@@ -100,7 +105,8 @@ const AjoutVoiture: React.FC = () => {
   
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-  
+      setIsSubmitLoading(true);
+
       // Vérifiez que tous les champs obligatoires sont remplis
       if (!formData.modele || !formData.marque || !formData.immatriculation) {
           alert("Veuillez remplir tous les champs sauf la photo.");
@@ -117,18 +123,24 @@ const AjoutVoiture: React.FC = () => {
           // Modification d'une voiture existante
           try {
               await modifierVoiture(editingCarId, dataToSend);
-              alert("Voiture modifiée avec succès");
+              // alert("Voiture modifiée avec succès");
+              setShowAlertModif(true);
               setEditingCarId(null);
           } catch (error) {
               console.error("Erreur lors de la modification de la voiture :", error);
+          }finally {
+              setIsSubmitLoading(false);
           }
       } else {
           // Ajout d'une nouvelle voiture
           try {
               await creationVoiture(dataToSend);
-              alert("Voiture ajoutée avec succès");
+              // alert("Voiture ajoutée avec succès");
+              setShowAlertAjout(true);
           } catch (error) {
               console.error("Erreur lors de l'ajout de la voiture :", error);
+          }finally {
+              setIsSubmitLoading(false);
           }
       }
   
@@ -194,7 +206,8 @@ const handleImportation = async () => {
               }
 
               if (importResults.length > 0) {
-                  alert(`Importation réussie de ${importResults.length} voitures.`);
+                  // alert(`Importation réussie de ${importResults.length} voitures.`);
+                  setShowAlertImport(true);
               } else {
                   alert('Aucune voiture n\'a été importée.');
               }
@@ -211,13 +224,16 @@ const handleImportation = async () => {
 };
 
     const confirmDelete = async () => {
+      setIsLoading(true);
       if (selectedItem !== null) {
         try {
           await supprimerVoiture(selectedItem); // Appel à l'API pour supprimer la voiture
           setItems(items.filter(item => item.id !== selectedItem)); // Met à jour la liste des voitures
+          setIsLoading(false);
           setShowAlert(true);
         } catch (error) {
           console.error('Erreur lors de la suppression de la voiture :', error);
+          setIsLoading(false);
           alert("Échec de la suppression de la voiture");
         }
       }
@@ -236,6 +252,16 @@ const handleImportation = async () => {
     // };
     const closeAlert = () => {
       setShowAlert(false); // Fermer l'alerte
+    };
+
+    const closeAlertImport = () => {
+      setShowAlertImport(false); // Fermer l'alerte
+    };
+    const closeAlertModif = () => {
+      setShowAlertModif(false); // Fermer l'alerte
+    };
+    const closeAlertAjout = () => {
+      setShowAlertAjout(false); // Fermer l'alerte
     };
 
   const closeModal = () => {
@@ -289,6 +315,17 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
         {showAlert && (
         <CustomAlert message="Voiture Supprimer avec succès" onClose={closeAlert} />
         )}
+        {showAlertImport && (
+        <CustomAlert message="Importation reussie" onClose={closeAlertImport} />
+        )}
+
+        {showAlertModif && (
+        <CustomAlert message="Voiture modifiée avec succès" onClose={closeAlertModif} />
+        )}
+
+        {showAlertAjout && (
+        <CustomAlert message="Voiture ajoutée avec succès" onClose={closeAlertAjout} />
+        )}
         
         {/* Barre de recherche */}
         <div className="searchhisto2" style={{ marginBottom: '20px' }}>
@@ -314,7 +351,7 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
         </div>
         <div className="inputForm">
             
-            <i className="bi bi-person"></i>
+          <i className="bi bi-car-front"></i>
             <input
             type="text"
             name="modele"
@@ -330,7 +367,7 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
         </div>
         <div className="inputForm">
             
-          <i className="bi bi-at"></i>
+        <i className="bi bi-ev-front"></i>
           <input
             type="text"
             name="marque"
@@ -346,7 +383,7 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
         </div>
         <div className="inputForm">
             
-            <i className="bi bi-person"></i>
+          <i className="bi bi-credit-card-2-front"></i>
             <input
             type="text"
             name="immatriculation"
@@ -380,8 +417,9 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
                 placeholder="URL de la photo"
               />
         </label>
-        <button className="button-submit">Ajouter la voiture</button>
+        {/* <button className="button-submit">Ajouter la voiture</button> */}
         
+        <button className="button-submit" disabled={isSubmitLoading}>{ isSubmitLoading ? "En cours..." : formData.immatriculation ? "Modifier une voiture" : "Ajouter une vouture"}</button>
         
         </form>
 
@@ -433,7 +471,7 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
                 </div>
                 <div className="modal-footer">
                     <button style={{ borderRadius: '25px', backgroundColor: 'var(--text-color)' }} type="button" className="btn btn-secondary" onClick={closeModal}>Annuler</button>
-                    <button style={{ borderRadius: '25px', backgroundColor: 'var(--primary-color)' }} type="button" className="btn btn-danger" onClick={confirmDelete}>Supprimer</button>
+                    <button style={{ borderRadius: '25px', backgroundColor: 'var(--primary-color)' }} type="button" className="btn btn-danger" onClick={confirmDelete} disabled={isLoading}>{isLoading ? "En cours..." :  formData.immatriculation ? "Supprimer une voiture" : "Supprimer la vouture"}</button>
                 </div>
                 </div>
             </div>
