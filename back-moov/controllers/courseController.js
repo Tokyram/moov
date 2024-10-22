@@ -272,9 +272,10 @@ class CourseController {
    
     static async getTotalCoursesByPeriod (req, res){
         const periodType = req.params.periodType; // Assurez-vous que cette ligne est bien présente
-    
+        const year = req.params.year || new Date().getFullYear();
+
         try {
-            const totalCourses = await Course.getTotalCoursesByPeriod(periodType);
+            const totalCourses = await Course.getTotalCoursesByPeriod(periodType, year);
             return res.status(200).json(totalCourses);
         } catch (error) {
             return res.status(500).json({ error: error.message });
@@ -283,9 +284,10 @@ class CourseController {
 
     static async getTotalRevenueByPeriod (req, res){
         const periodType = req.params.periodType; // Assurez-vous que cette ligne est bien présente
+        const year = req.params.year || new Date().getFullYear();
     
         try {
-            const totalRevenue = await Course.getTotalRevenueByPeriod(periodType);
+            const totalRevenue = await Course.getTotalRevenueByPeriod(periodType, year);
             return res.status(200).json(totalRevenue);
         } catch (error) {
             return res.status(500).json({ error: error.message });

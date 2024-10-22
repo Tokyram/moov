@@ -25,8 +25,8 @@ router.get('/chauffeurTotalCourse/:chauffeur_id/:period',authMiddleware, CourseC
 router.get('/chauffeursCourseCount',authMiddleware, CourseController.getChauffeursWithCourseCount);
 router.get('/totalCourses',authMiddleware, CourseController.getTotalCourses); // Total global
 // router.get('/totalCoursesPeriode/:period',authMiddleware, CourseController.getCoursesByPeriod);
-router.get('/totalCoursesPeriode/:periodType', authMiddleware,CourseController.getTotalCoursesByPeriod);
-router.get('/totalRevenuePeriode/:periodType', authMiddleware,CourseController.getTotalRevenueByPeriod);
+router.get('/totalCoursesPeriode/:periodType/:year?', authMiddleware,CourseController.getTotalCoursesByPeriod);
+router.get('/totalRevenuePeriode/:periodType/:year?', authMiddleware,CourseController.getTotalRevenueByPeriod);
 router.get('/historique-user/:userId', authMiddleware,CourseController.historiqueReservationUser);
 router.get('/historique-chauffeur/:chauffeurId', authMiddleware,CourseController.historiqueReservationChauffeur);
 

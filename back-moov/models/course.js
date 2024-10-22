@@ -416,7 +416,7 @@ class Course {
     }
 
 
-    static async getTotalCoursesByPeriod(periodType) {
+    static async getTotalCoursesByPeriod(periodType, year = new Date().getFullYear()) {
         try {
             let query;
     
@@ -446,17 +446,32 @@ class Course {
                 `;
             } else if (periodType === 'year') {
                 query = `
-                    SELECT DATE_TRUNC('month', date_heure_depart) AS year, COUNT(*) AS total_courses
-                    FROM course
-                    WHERE status = 'TERMINE'
-                    GROUP BY year
-                    ORDER BY year ASC
+                    WITH RECURSIVE months AS (
+                        SELECT DATE_TRUNC('month', TO_DATE($1 || '-01-01', 'YYYY-MM-DD')) AS month
+                        UNION ALL
+                        SELECT month + INTERVAL '1 month'
+                        FROM months
+                        WHERE month < DATE_TRUNC('month', TO_DATE($1 || '-12-01', 'YYYY-MM-DD'))
+                    ),
+                    course_counts AS (
+                        SELECT DATE_TRUNC('month', date_heure_depart) AS month, COUNT(*) AS total_courses
+                        FROM course
+                        WHERE status = 'TERMINE'
+                        AND EXTRACT(YEAR FROM date_heure_depart) = $1
+                        GROUP BY DATE_TRUNC('month', date_heure_depart)
+                    )
+                    SELECT 
+                        months.month,
+                        COALESCE(course_counts.total_courses, 0) AS total_courses
+                    FROM months
+                    LEFT JOIN course_counts ON months.month = course_counts.month
+                    ORDER BY months.month ASC
                 `;
             } else {
                 throw new Error('Type de période invalide');
             }
     
-            const result = await db.query(query);
+            const result = await db.query(query, [year]);
     
             // Parcourir les résultats et parser le champ 'total_courses'
             return result.rows.map(row => ({
@@ -469,7 +484,7 @@ class Course {
         }
     }
 
-    static async getTotalRevenueByPeriod(periodType) {
+    static async getTotalRevenueByPeriod(periodType, year = new Date().getFullYear()) {
         try {
             let query;
     
@@ -499,17 +514,34 @@ class Course {
                 `;
             } else if (periodType === 'year') {
                 query = `
-                    SELECT DATE_TRUNC('month', date_heure_depart) AS year, SUM(prix) AS total_revenu
-                    FROM course
-                    WHERE status = 'TERMINE'
-                    GROUP BY year
-                    ORDER BY year ASC
+                    WITH RECURSIVE months AS (
+                    SELECT DATE_TRUNC('month', TO_DATE($1 || '-01-01', 'YYYY-MM-DD')) AS month
+                    UNION ALL
+                    SELECT month + INTERVAL '1 month'
+                    FROM months
+                    WHERE month < DATE_TRUNC('month', TO_DATE($1 || '-12-01', 'YYYY-MM-DD'))
+                    ),
+                    revenue_by_month AS (
+                        SELECT 
+                            DATE_TRUNC('month', date_heure_depart) AS month, 
+                            SUM(prix) AS total_revenu
+                        FROM course
+                        WHERE status = 'TERMINE'
+                        AND EXTRACT(YEAR FROM date_heure_depart) = $1
+                        GROUP BY DATE_TRUNC('month', date_heure_depart)
+                    )
+                    SELECT 
+                        months.month,
+                        COALESCE(revenue_by_month.total_revenu, 0) AS total_revenu
+                    FROM months
+                    LEFT JOIN revenue_by_month ON months.month = revenue_by_month.month
+                    ORDER BY months.month ASC
                 `;
             } else {
                 throw new Error('Type de période invalide');
             }
     
-            const result = await db.query(query);
+            const result = await db.query(query, [year]);
     
             return result.rows.map(row => ({
                 ...row,
