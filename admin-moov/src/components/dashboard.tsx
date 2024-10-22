@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // App.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './dashboard.css'; // Votre CSS personnalisé
 import { Bar, Line, Pie } from 'react-chartjs-2';
@@ -19,6 +19,8 @@ interface ConduxteurCourseProps {
 }
 const Dashboard: React.FC = () => {
   
+  const currentYear = new Date().getFullYear();
+
   const [userName, setUserName] = useState<string | null>(null);
   const [userPrenom, setUserPrenom] = useState<string | null>(null);
   const [filter, setFilter] = useState<'week' | 'month' | 'year'>('week');
@@ -28,6 +30,8 @@ const Dashboard: React.FC = () => {
   const [totalChauffeur, setTotalChauffeur] = useState<number | null>(null);
   const [chartData, setChartData] = useState<any>(null);
   const [chartDataRevenu, setChartDataRevenu] = useState<any>(null);
+  const [yearFilter, setYearFilter] = useState<number>(currentYear);
+
 
   const [chauffeurs, setChauffeurs] = useState<Chauffeur[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -38,6 +42,14 @@ const Dashboard: React.FC = () => {
       month: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
       year: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc']
     };
+
+    const years = useMemo(() => {
+      const yearsArray = [];
+      for (let year = currentYear; year >= 1900; year--) {
+        yearsArray.push(year);
+      }
+      return yearsArray;
+    }, [currentYear]);
 
 
     useEffect(() => {
@@ -72,6 +84,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchChartData = async () => {
       try {
+        setYearFilter(currentYear);
         const data = await getTotalCoursesByPeriod(filter);
         if (data && data.length > 0) {
           const processedData = processData(data, filter, "course");
@@ -89,6 +102,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchChartDataRevenu = async () => {
       try {
+        setYearFilter(currentYear);
         const data = await getTotalRevenueByPeriod(filter);
         if (data && data.length > 0) {
           const processedData = processData(data, filter, "revenue");
@@ -293,9 +307,31 @@ const Dashboard: React.FC = () => {
 
 
    // Fonction pour changer le filtre
-   const handleFilterChange = (newFilter: 'week' | 'month' | 'year') => {
+  const handleFilterChange = (newFilter: 'week' | 'month' | 'year') => {
     setFilter(newFilter);
   };
+
+  const handleChangeYearFilter = async () => {
+    try {
+      const dataRevenue = await getTotalRevenueByPeriod(filter, yearFilter);
+      if (dataRevenue && dataRevenue.length > 0) {
+        const processedData = processData(dataRevenue, filter, "revenue");
+        setChartDataRevenu(processedData);
+      } else {
+        console.error('Les données du graphique ne sont pas au format tableau :', dataRevenue);
+      }
+
+      const dataCourse = await getTotalCoursesByPeriod(filter, yearFilter);
+      if (dataCourse && dataCourse.length > 0) {
+        const processedData = processData(dataCourse, filter, "course");
+        setChartData(processedData);
+      } else {
+        console.error('Les données du graphique ne sont pas au format tableau :', dataCourse);
+      }
+    } catch(error) {
+        console.error('Erreurr', error);
+    }
+  }
 
   return (
     <div className="dashboard  ">
@@ -355,7 +391,26 @@ const Dashboard: React.FC = () => {
               onClick={() => handleFilterChange('year')}>Année</button>
           </div>
 
+          {
+            filter === "year" && 
+            <>
+            <select value={yearFilter} onChange={(e) => setYearFilter(parseInt(e.target.value))}>
+                {years.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+
+              <button 
+                onClick={() => handleChangeYearFilter()}
+              >
+                Valider l'année choisie
+              </button>
+            </>
+          }
           
+
       </div>
       <div className="cond">
       <div className="row">

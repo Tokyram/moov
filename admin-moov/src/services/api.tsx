@@ -322,9 +322,17 @@ export const creationChauffeurAdmin = async (voitureData: any) => {
 };
 
 
-export const getTotalCoursesByPeriod = async (periodType: string) => {
+export const getTotalCoursesByPeriod = async (periodType: string, year?: any) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/courses/totalCoursesPeriode/${periodType}`, {
+
+    var url = ``;
+    if(year) {
+      url = `${API_BASE_URL}/courses/totalCoursesPeriode/${periodType}/${year}`;
+    } else {
+      url = `${API_BASE_URL}/courses/totalCoursesPeriode/${periodType}`;
+    }
+
+    const response = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${getToken()}`, 
       },
@@ -336,9 +344,15 @@ export const getTotalCoursesByPeriod = async (periodType: string) => {
   }
 };
 
-export const getTotalRevenueByPeriod = async (periodType: string) => {
+export const getTotalRevenueByPeriod = async (periodType: string, year?: any) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/courses/totalRevenuePeriode/${periodType}`, {
+    var url = ``;
+    if(year) {
+      url = `${API_BASE_URL}/courses/totalRevenuePeriode/${periodType}/${year}`;
+    } else {
+      url = `${API_BASE_URL}/courses/totalRevenuePeriode/${periodType}`;
+    }
+    const response = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${getToken()}`, 
       },
