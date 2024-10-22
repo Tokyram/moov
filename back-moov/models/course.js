@@ -521,11 +521,11 @@ class Course {
             } else if (periodType === 'year') {
                 query = `
                     WITH RECURSIVE months AS (
-                    SELECT DATE_TRUNC('month', make_date(2024::integer, 1, 1)) AS year
+                    SELECT DATE_TRUNC('month', make_date($1::integer, 1, 1)) AS year
                     UNION ALL
                     SELECT year + INTERVAL '1 month'
                     FROM months
-                    WHERE year < DATE_TRUNC('month', make_date(2024::integer, 12, 1))
+                    WHERE year < DATE_TRUNC('month', make_date($1::integer, 12, 1))
                     ),
                     revenue_by_month AS (
                         SELECT 
@@ -533,7 +533,7 @@ class Course {
                             SUM(prix) AS total_revenu
                         FROM course
                         WHERE status = 'TERMINE'
-                        AND EXTRACT(YEAR FROM date_heure_depart) = 2024::integer
+                        AND EXTRACT(YEAR FROM date_heure_depart) = $1::integer
                         GROUP BY DATE_TRUNC('month', date_heure_depart)
                     )
                     SELECT 
