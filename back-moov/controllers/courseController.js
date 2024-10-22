@@ -272,7 +272,7 @@ class CourseController {
    
     static async getTotalCoursesByPeriod (req, res){
         const periodType = req.params.periodType; // Assurez-vous que cette ligne est bien présente
-        const year = req.params.year || new Date().getFullYear();
+        const year = parseInt(req.params.year) || new Date().getFullYear();
 
         try {
             const totalCourses = await Course.getTotalCoursesByPeriod(periodType, year);
@@ -284,7 +284,7 @@ class CourseController {
 
     static async getTotalRevenueByPeriod (req, res){
         const periodType = req.params.periodType; // Assurez-vous que cette ligne est bien présente
-        const year = req.params.year || new Date().getFullYear();
+        const year = parseInt(req.params.year) || new Date().getFullYear();
     
         try {
             const totalRevenue = await Course.getTotalRevenueByPeriod(periodType, year);

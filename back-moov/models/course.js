@@ -425,6 +425,7 @@ class Course {
                     SELECT DATE(date_heure_depart) AS date, COUNT(*) AS total_courses
                     FROM course
                     WHERE status = 'TERMINE'
+                    AND EXTRACT(YEAR FROM date_heure_depart) = $1::integer
                     GROUP BY DATE(date_heure_depart)
                     ORDER BY DATE(date_heure_depart) ASC
                 `;
@@ -433,6 +434,7 @@ class Course {
                     SELECT DATE_TRUNC('day', date_heure_depart) AS week, COUNT(*) AS total_courses
                     FROM course
                     WHERE status = 'TERMINE'
+                    AND EXTRACT(YEAR FROM date_heure_depart) = $1::integer
                     GROUP BY week
                     ORDER BY week ASC
                 `;
@@ -441,23 +443,24 @@ class Course {
                     SELECT DATE_TRUNC('week', date_heure_depart) AS month, COUNT(*) AS total_courses
                     FROM course
                     WHERE status = 'TERMINE'
+                    AND EXTRACT(YEAR FROM date_heure_depart) = $1::integer
                     GROUP BY month
                     ORDER BY month ASC
                 `;
             } else if (periodType === 'year') {
                 query = `
                     WITH RECURSIVE months AS (
-                        SELECT DATE_TRUNC('month', TO_DATE($1 || '-01-01', 'YYYY-MM-DD')) AS month
-                        UNION ALL
-                        SELECT month + INTERVAL '1 month'
-                        FROM months
-                        WHERE month < DATE_TRUNC('month', TO_DATE($1 || '-12-01', 'YYYY-MM-DD'))
+                    SELECT DATE_TRUNC('month', make_date($1::integer, 1, 1)) AS month
+                    UNION ALL
+                    SELECT month + INTERVAL '1 month'
+                    FROM months
+                    WHERE month < DATE_TRUNC('month', make_date($1::integer, 12, 1))
                     ),
                     course_counts AS (
                         SELECT DATE_TRUNC('month', date_heure_depart) AS month, COUNT(*) AS total_courses
                         FROM course
                         WHERE status = 'TERMINE'
-                        AND EXTRACT(YEAR FROM date_heure_depart) = $1
+                        AND EXTRACT(YEAR FROM date_heure_depart) = $1::integer
                         GROUP BY DATE_TRUNC('month', date_heure_depart)
                     )
                     SELECT 
@@ -493,6 +496,7 @@ class Course {
                     SELECT DATE(date_heure_depart) AS date, SUM(prix) AS total_revenu
                     FROM course
                     WHERE status = 'TERMINE'
+                    AND EXTRACT(YEAR FROM date_heure_depart) = $1::integer
                     GROUP BY DATE(date_heure_depart)
                     ORDER BY DATE(date_heure_depart) ASC
                 `;
@@ -501,6 +505,7 @@ class Course {
                     SELECT DATE_TRUNC('day', date_heure_depart) AS week, SUM(prix) AS total_revenu
                     FROM course
                     WHERE status = 'TERMINE'
+                    AND EXTRACT(YEAR FROM date_heure_depart) = $1::integer
                     GROUP BY week
                     ORDER BY week ASC
                 `;
@@ -509,17 +514,18 @@ class Course {
                     SELECT DATE_TRUNC('week', date_heure_depart) AS month, SUM(prix) AS total_revenu
                     FROM course
                     WHERE status = 'TERMINE'
+                    AND EXTRACT(YEAR FROM date_heure_depart) = $1::integer
                     GROUP BY month
                     ORDER BY month ASC
                 `;
             } else if (periodType === 'year') {
                 query = `
-                    WITH RECURSIVE months AS (
-                    SELECT DATE_TRUNC('month', TO_DATE($1 || '-01-01', 'YYYY-MM-DD')) AS month
+                     WITH RECURSIVE months AS (
+                    SELECT DATE_TRUNC('month', make_date($1::integer, 1, 1)) AS month
                     UNION ALL
                     SELECT month + INTERVAL '1 month'
                     FROM months
-                    WHERE month < DATE_TRUNC('month', TO_DATE($1 || '-12-01', 'YYYY-MM-DD'))
+                    WHERE month < DATE_TRUNC('month', make_date($1::integer, 12, 1))
                     ),
                     revenue_by_month AS (
                         SELECT 
@@ -527,7 +533,7 @@ class Course {
                             SUM(prix) AS total_revenu
                         FROM course
                         WHERE status = 'TERMINE'
-                        AND EXTRACT(YEAR FROM date_heure_depart) = $1
+                        AND EXTRACT(YEAR FROM date_heure_depart) = $1::integer
                         GROUP BY DATE_TRUNC('month', date_heure_depart)
                     )
                     SELECT 
