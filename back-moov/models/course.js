@@ -450,25 +450,25 @@ class Course {
             } else if (periodType === 'year') {
                 query = `
                     WITH RECURSIVE months AS (
-                    SELECT DATE_TRUNC('month', make_date($1::integer, 1, 1)) AS month
+                    SELECT DATE_TRUNC('month', make_date($1::integer, 1, 1)) AS year
                     UNION ALL
-                    SELECT month + INTERVAL '1 month'
+                    SELECT year + INTERVAL '1 month'
                     FROM months
-                    WHERE month < DATE_TRUNC('month', make_date($1::integer, 12, 1))
+                    WHERE year < DATE_TRUNC('month', make_date($1::integer, 12, 1))
                     ),
                     course_counts AS (
-                        SELECT DATE_TRUNC('month', date_heure_depart) AS month, COUNT(*) AS total_courses
+                        SELECT DATE_TRUNC('month', date_heure_depart) AS year, COUNT(*) AS total_courses
                         FROM course
                         WHERE status = 'TERMINE'
                         AND EXTRACT(YEAR FROM date_heure_depart) = $1::integer
                         GROUP BY DATE_TRUNC('month', date_heure_depart)
                     )
                     SELECT 
-                        months.month,
+                        months.year,
                         COALESCE(course_counts.total_courses, 0) AS total_courses
                     FROM months
-                    LEFT JOIN course_counts ON months.month = course_counts.month
-                    ORDER BY months.month ASC
+                    LEFT JOIN course_counts ON months.year = course_counts.year
+                    ORDER BY months.year ASC
                 `;
             } else {
                 throw new Error('Type de période invalide');
@@ -520,28 +520,28 @@ class Course {
                 `;
             } else if (periodType === 'year') {
                 query = `
-                     WITH RECURSIVE months AS (
-                    SELECT DATE_TRUNC('month', make_date($1::integer, 1, 1)) AS month
+                    WITH RECURSIVE months AS (
+                    SELECT DATE_TRUNC('month', make_date(2024::integer, 1, 1)) AS year
                     UNION ALL
-                    SELECT month + INTERVAL '1 month'
+                    SELECT year + INTERVAL '1 month'
                     FROM months
-                    WHERE month < DATE_TRUNC('month', make_date($1::integer, 12, 1))
+                    WHERE year < DATE_TRUNC('month', make_date(2024::integer, 12, 1))
                     ),
                     revenue_by_month AS (
                         SELECT 
-                            DATE_TRUNC('month', date_heure_depart) AS month, 
+                            DATE_TRUNC('month', date_heure_depart) AS year, 
                             SUM(prix) AS total_revenu
                         FROM course
                         WHERE status = 'TERMINE'
-                        AND EXTRACT(YEAR FROM date_heure_depart) = $1::integer
+                        AND EXTRACT(YEAR FROM date_heure_depart) = 2024::integer
                         GROUP BY DATE_TRUNC('month', date_heure_depart)
                     )
                     SELECT 
-                        months.month,
+                        months.year,
                         COALESCE(revenue_by_month.total_revenu, 0) AS total_revenu
                     FROM months
-                    LEFT JOIN revenue_by_month ON months.month = revenue_by_month.month
-                    ORDER BY months.month ASC
+                    LEFT JOIN revenue_by_month ON months.year = revenue_by_month.year
+                    ORDER BY months.year ASC
                 `;
             } else {
                 throw new Error('Type de période invalide');
