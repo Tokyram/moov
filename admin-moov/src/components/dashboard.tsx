@@ -344,10 +344,10 @@ const Dashboard: React.FC = () => {
 
       <div className="cond">
         
-      <div className="row">
+      {/* <div className="row">
        
         <RecentOrders />
-      </div>
+      </div> */}
       <div className="row">
         
         <ConduxteurCourse chauffeurs={chauffeurs}/>
