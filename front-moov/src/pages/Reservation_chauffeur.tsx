@@ -43,16 +43,19 @@ const Reservation_chauffeur: React.FC = () => {
         setIsLoading(true);
         if(activeView === "reservations") {
             const response = await listeCourseEnAttente();
+            console.log("object", response.data.data);
             setReservations(Array.isArray(response.data.data) ? response.data.data : []);
             setIsLoading(false);
         }
         if(activeView === "attribues") {
             const response = await getReservationAttribues();
+            console.log("object", response.data.data);
             setAttribues(Array.isArray(response.data.data) ? response.data.data : []);
             setIsLoading(false);
         }
         if(activeView === "historique") {
             const response = await historiqueReservationChauffeur();
+            console.log("object", response.data.data);
             setHistorique(Array.isArray(response.data.data) ? response.data.data : []);
             setIsLoading(false);
         }
@@ -356,7 +359,7 @@ const Reservation_chauffeur: React.FC = () => {
                                 </div>
                                 <div className="info-detail">
                                     
-                                    {reservation.chauffeur_id && <p>Chauffeur : <span>{reservation.chauffeur_nom+" "+reservation.chauffeur_prenom}</span></p>} 
+                                    {reservation.passager_id && <p>Passager : <span>{reservation.passager_nom+" "+reservation.passager_prenom}</span></p>} 
                                     {reservation.voiture_id && <p>Immatriculation : <span>{reservation.immatriculation}</span></p>}
                                     <p>Date : <span>{splitDateTime(reservation?.date_heure_depart).date}</span> à <span>{splitDateTime(reservation?.date_heure_depart).time}</span></p>
                                     <p>Destination : <span>{splitPlace(reservation?.adresse_depart)}</span> à <span>{splitPlace(reservation?.adresse_arrivee)}</span></p>
