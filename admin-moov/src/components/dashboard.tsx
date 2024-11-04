@@ -246,22 +246,36 @@ const Dashboard: React.FC = () => {
         console.error('Erreurr', error);
     }
   }
+  const formatCurrency = (value: number): string => {
+    const parts = value.toFixed(2).split(".");
+    const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    const decimalPart = parts[1] ? "," + parts[1] : "";
+    return `${integerPart}${decimalPart} Ar`;
+  };
+  
 
   return (
     <div className="dashboard  ">
       <div className='stat'>
-      <div className="titregraph">
+      <div style={{display: 'flex', justifyContent: 'space-between'}} className="titregraph">
           <h3>Bienvenue,<span> {userName  || 'Utilisateur'} {userPrenom  || 'Utilisateur'}</span></h3>
           <p>Présentation de tableau de bord concernant tout les mouvements de résevation et de clients</p>
         </div>
       <div className="row">
-        <Widget
-          iconClass="bi bi-currency-exchange"
-          title="Revenue total" 
-          data={totalRevenue !== null ? `${totalRevenue}` : 'Chargement...'}
-          subtitle={<span className="text-success"><i className="fas fa-arrow-up"></i> 3% than last month</span>}
-          bgColor="bg-primary"
-        />
+      <Widget
+  iconClass="bi bi-currency-exchange"
+  title="Revenu total"
+  data={
+    totalRevenue !== null 
+      ? formatCurrency(totalRevenue)
+      : 'Chargement...'
+  }
+  subtitle={<span className="text-success"><i className="fas fa-arrow-up"></i> 3% par rapport au mois dernier</span>}
+  bgColor="bg-primary"
+/>
+
+
+
          <Widget
             iconClass="bi bi-patch-plus-fill"
             title="Total réservation"
