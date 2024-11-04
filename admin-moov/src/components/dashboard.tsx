@@ -257,7 +257,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="dashboard  ">
       <div className='stat'>
-      <div style={{display: 'flex', justifyContent: 'space-between'}} className="titregraph">
+      <div style={{display: 'flex !important', justifyContent: 'space-between !important' , left:'0 !important'}} className="titregraph">
           <h3>Bienvenue,<span> {userName  || 'Utilisateur'} {userPrenom  || 'Utilisateur'}</span></h3>
           <p>Présentation de tableau de bord concernant tout les mouvements de résevation et de clients</p>
         </div>
