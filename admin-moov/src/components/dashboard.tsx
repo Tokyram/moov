@@ -219,93 +219,7 @@ const Dashboard: React.FC = () => {
   };
 
 
-  // const dataByFilter = {
-  //   week: {
-  //     labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
-  //     datasets: [{
-  //       label: 'Nombre de courses (Semaine)',
-  //       data: chartData,
-  //       backgroundColor: 'rgb(238, 51, 36)',
-  //       borderColor: 'rgb(238, 51, 36)',
-  //       borderWidth: 1,
-  //       borderRadius: 20
-  //     }],
-  //   },
-  //   month: {
-  //     labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
-  //     datasets: [{
-  //       label: 'Nombre de courses (Mois)',
-  //       data: chartData,
-  //       backgroundColor: 'rgb(238, 51, 36)',
-  //       borderColor: 'rgb(238, 51, 36)',
-  //       borderWidth: 1,
-  //       borderRadius: 20
-  //     }],
-  //   },
-  //   year: {
-  //     labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
-  //     datasets: [{
-  //       label: 'Nombre de courses (Année)',
-  //       data: chartData,
-  //       backgroundColor: 'rgb(238, 51, 36)',
-  //       borderColor: 'rgb(238, 51, 36)',
-  //       borderWidth: 1,
-  //       borderRadius: 20
-  //     }],
-  //   },
-  // };
   
-
-  // const dataByFilterRevenu = {
-  //   week: {
-  //     labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
-  //     datasets: [{
-  //       label: 'Revenus (Semaine)',
-  //       data: chartDataRevenu,
-  //       backgroundColor: 'rgb(24, 24, 24)',
-  //       borderColor: 'rgb(24, 24, 24)',
-  //       borderWidth: 1,
-  //       borderRadius: 20
-  //     }],
-  //   },
-  //   month: {
-  //     labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
-  //     datasets: [{
-  //       label: 'Revenus (Mois)',
-  //       data: chartDataRevenu,
-  //       backgroundColor: 'rgb(24, 24, 24)',
-  //       borderColor: 'rgb(24, 24, 24)',
-  //       borderWidth: 1,
-  //       borderRadius: 20
-  //     }],
-  //   },
-  //   year: {
-  //     labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
-  //     datasets: [{
-  //       label: 'Revenus (Année)',
-  //       data: chartDataRevenu,
-  //       backgroundColor: 'rgb(24, 24, 24)',
-  //       borderColor: 'rgb(24, 24, 24)',
-  //       borderWidth: 1,
-  //       borderRadius: 20
-  //     }],
-  //   },
-  // };
-  
-  // const options = {
-  //   responsive: true,
-  //   plugins: {
-  //     legend: {
-  //       position: 'top' as const,
-  //     },
-  //     title: {
-  //       display: true,
-  //       text: `Revenus (${filter === 'week' ? 'Semaine' : filter === 'month' ? 'Mois' : 'Année'})`,
-  //     },
-  //   },
-  // };
-
-
    // Fonction pour changer le filtre
   const handleFilterChange = (newFilter: 'week' | 'month' | 'year') => {
     setFilter(newFilter);
@@ -393,8 +307,8 @@ const Dashboard: React.FC = () => {
 
           {
             filter === "year" && 
-            <>
-            <select value={yearFilter} onChange={(e) => setYearFilter(parseInt(e.target.value))}>
+            <div className='date' style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+            <select className='inputForm' style={{ borderRadius: '50px', backgroundColor: 'var(--white--color)', width: '80%'}} value={yearFilter} onChange={(e) => setYearFilter(parseInt(e.target.value))}>
                 {years.map((year) => (
                   <option key={year} value={year}>
                     {year}
@@ -402,12 +316,12 @@ const Dashboard: React.FC = () => {
                 ))}
               </select>
 
-              <button 
+              <button className='buttonChart' style={{width:'20%'}}
                 onClick={() => handleChangeYearFilter()}
               >
                 Valider l'année choisie
               </button>
-            </>
+            </div>
           }
           
 
