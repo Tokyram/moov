@@ -79,6 +79,11 @@ const Sidebar: React.FC = () => {
           </a>
         </li>
         <li>
+          <a href="/home/panne">
+            <span className="material-symbols-outlined"><i className="bi bi-exclamation-triangle-fill"></i></span>Panne de service
+          </a>
+        </li>
+        <li>
           <a href="/home/historiquqe-list">
             <span className="material-symbols-outlined"><i className="bi bi-list-check"></i></span>Historiques
           </a>
