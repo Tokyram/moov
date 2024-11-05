@@ -270,7 +270,7 @@ const Dashboard: React.FC = () => {
       ? formatCurrency(totalRevenue)
       : 'Chargement...'
   }
-  subtitle={<span className="text-success"><i className="fas fa-arrow-up"></i> 3% par rapport au mois dernier</span>}
+  subtitle={<span className="text-success"><i className="fas fa-arrow-up"></i> </span>}
   bgColor="bg-primary"
 />
 
@@ -281,21 +281,21 @@ const Dashboard: React.FC = () => {
             title="Total réservation"
             // Vérifiez si totalCourses est défini avant d'afficher son contenu
             data={totalCourses !== null ? `${totalCourses}` : 'Chargement...'}
-            subtitle={<span className="text-success"><i className="fas fa-arrow-up"></i> 1% than yesterday</span>}
+            subtitle={<span className="text-success"><i className="fas fa-arrow-up"></i> </span>}
             bgColor="bg-success"
           />
         <Widget
           iconClass="bi bi-person-fill-check"
           title="Total clients"
           data={totalClient !== null ? `${totalClient}` : 'Chargement...'}
-          subtitle="Just updated"
+          subtitle=""
           bgColor="bg-warning"
         />
         <Widget
           iconClass="bi bi-people-fill"
           title="Total conducteur"
           data={totalChauffeur !== null ? `${totalChauffeur}` : 'Chargement...'}
-          subtitle="Just updated"
+          subtitle=""
           bgColor="bg-danger"
         />
       </div>
@@ -380,7 +380,7 @@ const Widget: React.FC<{ iconClass: string, title: string, data: string, subtitl
           <i className={iconClass}></i>
         </div>
         <h5 className="card-title">{title}</h5>
-        <h2 className="card-text">{data}</h2>
+        <h1 style={{ fontWeight: '1000', color: 'var(--text-color)' }} className="card-text">{data}</h1>
         <p className="card-subtitle">{subtitle}</p>
       </div>
     </div>
