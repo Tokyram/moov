@@ -35,7 +35,7 @@ const Facture: React.FC = () => {
     const [showDetailPopup, setShowDetailPopup] = useState(false);
     const [factures, setFactures] = useState<any[]>([]); // État pour stocker les factures
     const [isLoading, setIsLoading] = useState(false);
-
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     useEffect(() => {
         const fetchFactures = async () => {
             try {
@@ -150,6 +150,7 @@ const Facture: React.FC = () => {
                 });
     
                 // Optionnel : Afficher un message de confirmation
+                setShowSuccessPopup(true);
                 console.log('PDF sauvegardé avec succès:', savedFile.uri);
                 return savedFile.uri;
             } else {
@@ -165,6 +166,10 @@ const Facture: React.FC = () => {
         }
     };
     
+    const handleCloseSuccess = () => {
+        setShowSuccessPopup(false);
+        // router.push('/profil', 'root', 'replace');
+      };
 
     return (
         <div className="homeMap">
@@ -253,6 +258,68 @@ const Facture: React.FC = () => {
                 )}
 
             </div>
+
+            {/* Success Popup */}
+      {showSuccessPopup && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <div className="titrepopup2">
+              {/* <i className="bi bi-check-circle-fill"></i> */}
+              <svg
+                    width="115px"
+                    height="115px"
+                    viewBox="0 0 133 133"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    
+                >
+                    <g
+                        id="check-group"
+                        stroke="none"
+                        stroke-width="1"
+                        fill="none"
+                        fill-rule="evenodd"
+                    >
+                            <circle
+                            id="filled-circle"
+                            fill="var(--win-color)"
+                            cx="66.5"
+                            cy="66.5"
+                            r="54.5"
+                        />
+                        <circle
+                            id="white-circle"
+                            fill="#FFFFFF"
+                            cx="66.5"
+                            cy="66.5"
+                            r="55.5"
+                        />
+                        <circle
+                            id="outline"
+                            stroke="var(--win-color)"
+                            stroke-width="4"
+                            cx="66.5"
+                            cy="66.5"
+                            r="54.5"
+                        />
+                        <polyline
+                            id="check"
+                            stroke="#FFFFFF"
+                            stroke-width="5.5"
+                            points="41 70 56 85 92 49"
+                        />
+                    </g>
+                </svg>
+              <h4>Téléchargement réussi</h4>
+              <p>Vérifier dans votre document</p>
+            </div>
+
+            <div className="popup-buttons">
+              <button onClick={handleCloseSuccess}>OK</button>
+            </div>
+          </div>
+        </div>
+      )}
         </div>
     );
 };
