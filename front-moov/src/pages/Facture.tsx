@@ -7,6 +7,10 @@ import { factureReservationUser } from '../services/api'; // Assurez-vous que le
 import { format } from "date-fns";
 import { fr } from 'date-fns/locale';
 import jsPDF from 'jspdf';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
+import { Capacitor } from '@capacitor/core';
+import Loader from '../components/Loader';
 
 interface FactureData {
     facture_id: number;
@@ -30,6 +34,7 @@ const Facture: React.FC = () => {
     const [currentFactureId, setCurrentFactureId] = useState<number | null>(null);
     const [showDetailPopup, setShowDetailPopup] = useState(false);
     const [factures, setFactures] = useState<any[]>([]); // État pour stocker les factures
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchFactures = async () => {
@@ -77,6 +82,8 @@ const Facture: React.FC = () => {
     }
 
     const generatePDF = async (facture: FactureData) => {
+        setShowDetailPopup(true);
+        setIsLoading(true);
         const doc = new jsPDF();
     
         const getImageDimensions = (url: string) => {
@@ -126,7 +133,36 @@ const Facture: React.FC = () => {
         doc.text('Merci de votre confiance !', 10, 280);
         doc.text('102 Tsiadana Ankatso, Antananarivo, Madagascar', 10, 290);
         
-        doc.save(`Facture_${facture.facture_id}.pdf`);
+        try {
+            const isNativePlatform = Capacitor.isNativePlatform();
+            const fileName = `Facture_${facture.facture_id}.pdf`;
+    
+            if (isNativePlatform) {
+                // Convertir le PDF en base64
+                const pdfOutput = doc.output('datauristring');
+                
+                // Sauvegarder le PDF dans le système de fichiers
+                const savedFile = await Filesystem.writeFile({
+                    path: `Documents/${fileName}`,
+                    data: pdfOutput.split(',')[1],
+                    directory: Directory.ExternalStorage,
+                    recursive: true
+                });
+    
+                // Optionnel : Afficher un message de confirmation
+                console.log('PDF sauvegardé avec succès:', savedFile.uri);
+                return savedFile.uri;
+            } else {
+                // Comportement web classique
+                doc.save(fileName);
+            }
+        } catch (error) {
+            console.error('Erreur lors de la génération du PDF:', error);
+            throw error;
+        } finally {
+            setIsLoading(false);
+            setShowDetailPopup(false);
+        }
     };
     
 
@@ -204,8 +240,8 @@ const Facture: React.FC = () => {
                                     <p><i className="bi bi-car-front-fill"></i><b>Marque: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.marque}</span></p>
                                     <p><i className="bi bi-patch-check-fill"></i><b>Modèle: </b><span>{factures.find(f => f.facture_id === currentFactureId)?.modele}</span></p>
                                 </div>
-                                <button className="confirmation-button2" style={{marginTop: '10px', backgroundColor: 'var(--primary-color)', color: 'var(--background-color)'}} onClick={() => generatePDF(factures.find(f => f.facture_id === currentFactureId))}>
-                                    Exporter en PDF
+                                <button className="confirmation-button2" style={{marginTop: '10px', backgroundColor: 'var(--primary-color)', color: 'var(--background-color)'}} onClick={() => generatePDF(factures.find(f => f.facture_id === currentFactureId))} disabled={isLoading}>
+                                    {!isLoading ? "Exporter en PDF" :  <Loader/> }
                                 </button>
                             </div>
                             <div className="titrepopupMerci">
