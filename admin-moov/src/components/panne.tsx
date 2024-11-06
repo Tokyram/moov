@@ -100,9 +100,9 @@ export const Pannes: React.FC<any> = (props) => {
         </div>
             
             <div className="panneinfo" key={props?.utilisateur_id}>
-                {/* <p><strong>Nom :</strong> <span>{`${props?.prenom} ${props?.nom}`}</span></p>  */}
+                <p><strong>Voiture :</strong> <span>{`${props?.marque} ${props?.modele}`}</span></p> 
                 <br />
-                {/* <p><strong>Immatriculation :</strong> <span>{props?.immatriculation}</span></p>  */}
+                <p><strong>Immatriculation :</strong> <span>{props?.immatriculation}</span></p> 
                 <br />
                 <p><strong>Téléphone :</strong><span> {props?.telephone}</span></p> 
                 <br />
