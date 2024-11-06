@@ -150,9 +150,8 @@ const Facture: React.FC = () => {
                 });
     
                 // Optionnel : Afficher un message de confirmation
-                setShowSuccessPopup(true);
                 console.log('PDF sauvegardé avec succès:', savedFile.uri);
-                return savedFile.uri;
+                // return savedFile.uri;
             } else {
                 // Comportement web classique
                 doc.save(fileName);
@@ -161,6 +160,7 @@ const Facture: React.FC = () => {
             console.error('Erreur lors de la génération du PDF:', error);
             throw error;
         } finally {
+            setShowSuccessPopup(true);
             setIsLoading(false);
             setShowDetailPopup(false);
         }
@@ -311,7 +311,7 @@ const Facture: React.FC = () => {
                     </g>
                 </svg>
               <h4>Téléchargement réussi</h4>
-              <p>Vérifier dans votre document</p>
+              <p>Vérifiez dans votre document</p>
             </div>
 
             <div className="popup-buttons">
