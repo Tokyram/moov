@@ -3,6 +3,7 @@ import API_BASE_URL from '../domaine';
 import axios from 'axios';
 
 export const DEFAULT_USER_PIC = "/profil.png";
+export const DEFAULT_CAR_PIC = "/voiture.png";
 
 export const getDecodedToken = async (): Promise<any | null> => {
     try {
@@ -180,6 +181,7 @@ export const modifierVoiture = async (voitureId: number, updatedData: any) => {
       {
         headers: {
           Authorization: `Bearer ${getToken()}`,
+          'Content-Type': 'multipart/form-data',
         },
       }
     );
@@ -283,7 +285,8 @@ export const creationVoiture = async (voitureData: any) => {
   try {
       const response = await axios.post(`${API_BASE_URL}/voiture/creationVoiture`, voitureData, {
           headers: {
-              Authorization: `Bearer ${getToken()}`
+              Authorization: `Bearer ${getToken()}`,
+              'Content-Type': 'multipart/form-data',
           }
       });
       return response.data;

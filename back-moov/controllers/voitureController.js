@@ -5,7 +5,16 @@ class VoitureController {
     static async createVoiture(req, res) {
         const { marque, modele, immatriculation,photo_url } = req.body;
         try {
-            const newVoiture = await VoitureService.createVoiture({ marque, modele, immatriculation, photo_url });
+
+            let photoPath = '';
+            let originalPath = '';
+            if (req.file) {
+                originalPath = req.file.path;
+                photoPath = originalPath.replace('uploads/', '');
+                console.log("photo", photoPath);
+            }
+
+            const newVoiture = await VoitureService.createVoiture({ marque, modele, immatriculation, photoPath });
             res.status(201).json(newVoiture);
         } catch (error) {
             res.status(500).json({ error: error.message });

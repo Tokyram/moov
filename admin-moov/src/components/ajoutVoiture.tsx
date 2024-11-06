@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import '../pages/login.css';
 import './ajout.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { creationVoiture, getAllVoiture, getVoitureById, modifierVoiture, supprimerVoiture } from "../services/api";
+import { creationVoiture, DEFAULT_CAR_PIC, getAllVoiture, getPhotoUser, getVoitureById, modifierVoiture, supprimerVoiture } from "../services/api";
 import CustomAlert from "./CustomAlertProps";
 import Papa from 'papaparse';
 
@@ -17,11 +17,38 @@ interface ItemProps {
     onEdit: () => void;
   }
   const Item: React.FC<ItemProps> = ({ id, modele, marque, immatriculation , icon, photo_url ,onDelete, onEdit  }) => {
+
+    const [photoUrl, setPhotoUrl] = useState<string>(DEFAULT_CAR_PIC);
+    
+    useEffect(() => {
+      const fetchPhoto = async () => {
+        if (photo_url && photo_url !== '') {
+          try {
+              const photoResponse = await getPhotoUser(photo_url);
+    
+              const blob = new Blob([photoResponse.data], { type: photoResponse.headers['content-type'] });
+              const objectUrl = URL.createObjectURL(blob);
+              setPhotoUrl(objectUrl);
+          } catch (photoError) {
+              console.error('Erreur lors de la récupération de la photo:', photoError);
+          }
+        }
+      }
+      fetchPhoto()
+  
+      return () => {
+        if (photoUrl !== '') {
+          URL.revokeObjectURL(photoUrl);
+        }
+      };
+  
+    }, [photo_url, photoUrl]);
+
     return (
       <tr>
         <td>
           <div className="image-container">
-            <img src={photo_url} alt={immatriculation} className="profile-image" />
+            <img src={photoUrl} alt={immatriculation} className="profile-image" />
           </div>
         </td>
         <td>{modele}</td>
@@ -60,9 +87,13 @@ const AjoutVoiture: React.FC = () => {
     const [formData, setFormData] = useState({
       modele: "",
       marque: "",
-      immatriculation: "",
-      photo_url: "",
+      immatriculation: ""
     });
+
+    const [previewPhoto, setPreviewPhoto] = useState<string | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
 
     useEffect(() => {
       // Charger la liste des chauffeurs au chargement du composant
@@ -86,8 +117,7 @@ const AjoutVoiture: React.FC = () => {
         setFormData({
           modele: voiture.modele,
           marque: voiture.marque,
-          immatriculation: voiture.immatriculation,
-          photo_url: voiture.photo_url,
+          immatriculation: voiture.immatriculation
         });
       } catch (error) {
         console.error("Erreur lors de la récupération des données de la voiture :", error);
@@ -101,6 +131,14 @@ const AjoutVoiture: React.FC = () => {
         ...prevFormData,
         [name]: value,
       }));
+    };
+
+    const handleRemovePhoto = () => {
+      setPreviewPhoto(null);
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     };
   
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -116,7 +154,7 @@ const AjoutVoiture: React.FC = () => {
       // Si la photo n'est pas définie, la mettre à null
       const dataToSend = {
           ...formData,
-          photo_url: formData.photo_url || null, // Définit `photo_url` comme null si non défini
+          photo: selectedFile ? selectedFile : null,
       };
   
       if (editingCarId !== null) {
@@ -147,16 +185,20 @@ const AjoutVoiture: React.FC = () => {
       // Récupérer à nouveau la liste des voitures après modification ou ajout
       const updatedVoitures = await getAllVoiture();
       setItems(updatedVoitures);
-      setFormData({ modele: "", marque: "", immatriculation: "", photo_url: "" }); // Réinitialiser le formulaire
+      setFormData({ modele: "", marque: "", immatriculation: "" }); // Réinitialiser le formulaire
+      handleRemovePhoto();
+
   };
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
         const file = e.target.files[0];
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            photo_url: URL.createObjectURL(file), // Création d'une URL d'objet pour l'image
-        }));
+        setSelectedFile(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreviewPhoto(reader.result as string);
+        };
+        reader.readAsDataURL(file);
     }
 };
 
@@ -415,8 +457,20 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
                 accept="image/*"
                 onChange={handleFileChange} // Créer une fonction pour gérer l'upload de fichier
                 placeholder="URL de la photo"
+                ref={fileInputRef}
               />
         </label>
+
+        {previewPhoto && (
+          <div className="preview-image-container" style={{ display: 'flex',flexDirection: 'column',color: 'var(--background-color)', justifyContent: 'center', alignItems: 'center' }}>
+            <img style={{ width: '50%', height: 'auto',borderRadius: '20px' }} src={previewPhoto} alt="Preview" className="preview-image" />
+            <button onClick={handleRemovePhoto} style={{ width: '10px', height: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'var(--primary-color)', backgroundColor: 'transparent', border: 'none' }} className="confirmation-button2">
+              <i className="bi bi-trash3-fill"></i>
+            </button>
+            {selectedFile && <p className="selected-file-name">{selectedFile.name}</p>}
+          </div>
+        )}
+
         {/* <button className="button-submit">Ajouter la voiture</button> */}
         
         <button className="button-submit" disabled={isSubmitLoading}>{ isSubmitLoading ? "En cours..." : formData.immatriculation ? "Modifier une voiture" : "Ajouter une vouture"}</button>
