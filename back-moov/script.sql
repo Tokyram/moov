@@ -115,7 +115,15 @@ CREATE TABLE IF NOT EXISTS panne (
     FOREIGN KEY (type_panne_id) REFERENCES type_panne(id)
 );
 
-ALTER TABLE panne ADD COLUMN resolu BOOLEAN DEFAULT false;
+DO $$ 
+BEGIN 
+    IF NOT EXISTS (SELECT 1 
+                   FROM information_schema.columns 
+                   WHERE table_name='panne' 
+                   AND column_name='resolu') THEN
+        ALTER TABLE panne ADD COLUMN resolu BOOLEAN DEFAULT false;
+    END IF;
+END $$;
 
 CREATE TABLE IF NOT EXISTS position_chauffeur (
   id SERIAL PRIMARY KEY,
