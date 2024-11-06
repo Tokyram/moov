@@ -432,3 +432,18 @@ export const getListeAssignation = async () => {
     throw error;
   }
 }
+
+export const getListePanne = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/panne/allPannes`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+        'Content-Type': 'multipart/form-data',
+      }
+    });
+
+    return response.data;
+  } catch(error) {
+
+  }
+}

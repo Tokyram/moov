@@ -7,7 +7,7 @@ router.post('/CreationSignalerPanne',authMiddleware, PanneController.insertPanne
 
 router.get('/getTypesPanne',authMiddleware, PanneController.getTypes);
 router.post('/ajouterTypePanne',authMiddleware, PanneController.insertTypePanne);
-router.post('/allPannes',authMiddleware, PanneController.getListePannes);
+router.get('/allPannes',authMiddleware, PanneController.getListePannes);
 router.put('/resoudre/:panneId',authMiddleware, PanneController.resoudrePanne);
 
 module.exports = router;

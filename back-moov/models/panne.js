@@ -44,6 +44,7 @@ class Panne {
             u.telephone,
             u.mail,
             u.adresse,
+            u.photo,
             pc.latitude,
             pc.longitude,
             pc.timestamp AS derniere_position
