@@ -1,6 +1,7 @@
 // controllers/voitureController.js
 const Voiture = require('../models/voiture');
 const VoitureService = require('../services/voitureService');
+const fs = require('fs');
 
 class VoitureController {
     static async createVoiture(req, res) {
@@ -15,7 +16,7 @@ class VoitureController {
                 console.log("photo", photoPath);
             }
 
-            const newVoiture = await VoitureService.createVoiture({ marque, modele, immatriculation, photoPath });
+            const newVoiture = await VoitureService.createVoiture({ marque, modele, immatriculation, photo_url: photoPath });
             res.status(201).json(newVoiture);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -49,13 +50,13 @@ class VoitureController {
                 photoPath = originalPath.replace('uploads/', '');
                 console.log("photo", photoPath);
                 if (voiture.photo_url) {
-                fs.unlink(voiture.photo_url, (err) => {
-                    if (err) console.error('Erreur lors de la suppression de l\'ancienne photo:', err);
-                });
+                    fs.unlink(voiture.photo_url, (err) => {
+                        if (err) console.error('Erreur lors de la suppression de l\'ancienne photo:', err);
+                    });
                 }
             }
 
-            const updatedVoiture = await VoitureService.updateVoiture(id, { marque, modele, immatriculation, photoPath });
+            const updatedVoiture = await VoitureService.updateVoiture(id, { marque, modele, immatriculation, photo_url: photoPath });
             res.status(200).json(updatedVoiture);
         } catch (error) {
             res.status(500).json({ error: error.message });
