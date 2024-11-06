@@ -115,6 +115,8 @@ CREATE TABLE IF NOT EXISTS panne (
     FOREIGN KEY (type_panne_id) REFERENCES type_panne(id)
 );
 
+ALTER TABLE panne ADD COLUMN resolu BOOLEAN DEFAULT false;
+
 CREATE TABLE IF NOT EXISTS position_chauffeur (
   id SERIAL PRIMARY KEY,
   chauffeur_id INT NOT NULL REFERENCES utilisateur(id),

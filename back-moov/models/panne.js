@@ -29,6 +29,44 @@ class Panne {
             throw new Error('Erreur lors de l\'insertion du message de panne : ' + error.message);
         }
     }
+
+    static async getListePanne() {
+        const query = `
+        SELECT 
+            p.id AS panne_id,
+            p.commentaire,
+            p.date_signalement,
+            p.resolu,
+            tp.type AS type_panne,
+            u.id AS utilisateur_id,
+            u.nom,
+            u.prenom,
+            u.telephone,
+            u.mail,
+            u.adresse,
+            pc.latitude,
+            pc.longitude,
+            pc.timestamp AS derniere_position
+        FROM panne p
+        INNER JOIN type_panne tp ON p.type_panne_id = tp.id
+        INNER JOIN utilisateur u ON p.utilisateur_id = u.id
+        LEFT JOIN position_chauffeur pc ON u.id = pc.chauffeur_id
+        ORDER BY p.date_signalement DESC;
+        `;
+
+        const result = await db.query(query);
+        return result.rows;
+
+    }
+
+    static async resoudrePanne(panne_id) {
+        const query = `
+            UPDATE panne set resolu = true WHERE id = $1
+            RETURNING *
+        `;
+        const result = await db.query(query, [panne_id]);
+        return result.rows[0];
+    }
 }
 
 module.exports = Panne;
