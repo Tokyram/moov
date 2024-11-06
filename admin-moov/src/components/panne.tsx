@@ -3,7 +3,7 @@ import "./panne.css";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { DEFAULT_USER_PIC, getListePanne, getPhotoUser } from "../services/api";
+import { DEFAULT_USER_PIC, getListePanne, getPhotoUser, resoudrePanne } from "../services/api";
 import Loader from "./loader";
 import { format } from "date-fns";
 import { fr } from 'date-fns/locale';
@@ -22,28 +22,6 @@ const chauffeurIcon = new L.Icon({
     iconAnchor: [10, 10],
     popupAnchor: [0, -10]
 });
-
-interface Chauffeur {
-  id: number;
-  latitude: number;
-  longitude: number;
-  nom: string;
-  prenom: string;
-  immatriculation: string;
-  telephone: string;
-  message: string;
-}
-
-interface PanneProps {
-  avatar: string;
-  name: string;
-  action: string;
-  target?: string;
-  time: string;
-  unread: boolean;
-  message?: string;
-  chauffeurs: Chauffeur[];
-}
 
 export const Pannes: React.FC<any> = (props) => {
 
@@ -76,7 +54,7 @@ export const Pannes: React.FC<any> = (props) => {
   }, [props?.photo, photoUrl]);
 
   return (
-    <div className={`pannes ${!props?.resolu ? "unreaded" : "readed"}`}>
+    <div className={`pannes ${!props?.resolu ? "unreaded" : "readed"}`} onClick={props?.resoudre}>
       <div className="mappanne">
         
         <div className="infopanne">
@@ -137,20 +115,30 @@ const Panne: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const notificationsPerPage = 6;
 
-  useEffect(() => {
-    const fetchPannes = async () => {
-      setIsDataLoading(true);
-      try {
-        const chauffeurs = await getListePanne();
-        setPannes(chauffeurs.data);
-      } catch (error) {
-        console.error('Erreur lors de la récupération des chauffeurs :', error);
-      } finally {
-        setIsDataLoading(false);
-      }
+  const fetchPannes = async () => {
+    setIsDataLoading(true);
+    try {
+      const chauffeurs = await getListePanne();
+      setPannes(chauffeurs.data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des chauffeurs :', error);
+    } finally {
+      setIsDataLoading(false);
     }
+  }
+
+  useEffect(() => {
     fetchPannes();
   },[])
+
+  const resoudre = async (panne_id: number) => {
+    try {
+      await resoudrePanne(panne_id);
+      fetchPannes();
+    } catch (error) {
+      console.error('Erreur lors de la résolution de la panne:', error);
+    }
+  };
 
   const unreadCount = Array.isArray(pannes) ? pannes.filter((n) => !n.resolu).length : 0;
 
@@ -193,12 +181,12 @@ const Panne: React.FC = () => {
                 <span className="title">Nombre de pannes non résolues</span>{" "}
                 <span className="unread-notification-number">{unreadCount}</span>
               </h2>
-              <p onClick={markAllAsRead}>Résoudre tous les pannes</p>
+              {/* <p onClick={markAllAsRead}>Résoudre toutes les pannes</p> */}
             </div>
 
             <div className="ilayliste">
               {currentNotifications.map((panne, index) => (
-                <Pannes key={index} {...panne} />
+                <Pannes key={index} {...panne} resoudre={() => resoudre(panne.panne_id)} />
               ))}
             </div>
           </div>

@@ -444,6 +444,43 @@ export const getListePanne = async () => {
 
     return response.data;
   } catch(error) {
+    console.error('Erreur :', error);
+    throw error;
+  }
+}
 
+export const resoudrePanne = async (panne_id: any) => {
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/panne/resoudre/${panne_id}`,
+      { resolu: true },
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
+    return response.data;
+  } catch(error) {
+    console.error('Erreur :', error);
+    throw error;
+  }
+}
+
+export const resoudreToutPanne = async () => {
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/panne/resoudre/tout`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
+    return response.data;
+  } catch(error) {
+    console.error('Erreur :', error);
+    throw error;
   }
 }
