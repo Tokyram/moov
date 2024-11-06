@@ -44,14 +44,18 @@ class Panne {
             u.telephone,
             u.mail,
             u.adresse,
-            u.photo,
             pc.latitude,
             pc.longitude,
-            pc.timestamp AS derniere_position
+            pc.timestamp AS derniere_position,
+            v.immatriculation,
+            v.marque,
+            v.modele
         FROM panne p
         INNER JOIN type_panne tp ON p.type_panne_id = tp.id
         INNER JOIN utilisateur u ON p.utilisateur_id = u.id
         LEFT JOIN position_chauffeur pc ON u.id = pc.chauffeur_id
+        LEFT JOIN chauffeur_voiture cv ON u.id = cv.chauffeur_id
+        LEFT JOIN voiture v ON cv.voiture_id = v.id
         ORDER BY p.date_signalement DESC;
         `;
 
@@ -66,6 +70,15 @@ class Panne {
             RETURNING *
         `;
         const result = await db.query(query, [panne_id]);
+        return result.rows[0];
+    }
+
+    static async resoudreToutPanne() {
+        const query = `
+            UPDATE panne set resolu = true
+            RETURNING *
+        `;
+        const result = await db.query(query);
         return result.rows[0];
     }
 }

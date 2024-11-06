@@ -9,5 +9,6 @@ router.get('/getTypesPanne',authMiddleware, PanneController.getTypes);
 router.post('/ajouterTypePanne',authMiddleware, PanneController.insertTypePanne);
 router.get('/allPannes',authMiddleware, PanneController.getListePannes);
 router.put('/resoudre/:panneId',authMiddleware, PanneController.resoudrePanne);
+router.put('/resoudre/tout',authMiddleware, PanneController.resoudreToutPanne);
 
 module.exports = router;

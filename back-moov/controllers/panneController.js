@@ -59,6 +59,18 @@ class PanneController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    static async resoudreToutPanne(req, res) {
+        try {
+            const panne = await Panne.resoudreToutPanne();
+            res.json({
+                success: true,
+                data: panne
+            })
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = PanneController;
