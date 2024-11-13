@@ -44,7 +44,7 @@ const Navbar: React.FC = () => {
     <nav className="navbar">
       <div className="logo_item">
         <i className="bx bx-menu" id="sidebarOpen"></i>
-        Bienvenue dans le plateforme Moov
+        Bienvenue dans la plateforme Moov
       </div>
       <div className="search_bare">
         <form className="search_bar" action="">
